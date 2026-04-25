@@ -1,0 +1,9 @@
+id;nombre;apellidos;fechaNacimiento;dni;alergias;enfermedades
+1;María;García López;1978-04-12;12345678A;Penicilina;Hipertensión|Diabetes tipo 2
+2;Juan;Martínez Ruiz;1965-09-23;23456789B;;Insuficiencia cardíaca
+3;Ana;Fernández Torres;1990-01-05;34567890C;Ibuprofeno|Aspirina;
+4;Carlos;Pérez Sánchez;1952-11-30;45678901D;;Diabetes tipo 2|EPOC
+5;Lucía;Ramírez Díaz;2001-07-18;56789012E;;
+6;Miguel;López González;1973-03-07;67890123F;Sulfonamidas;Asma
+7;Elena;Jiménez Castro;1987-12-14;78901234G;;Hipotiroidismo
+8;Roberto;Morales Vega;1944-06-25;89012345H;;Fibrilación auricular|Hipertensión

@@ -1,0 +1,19 @@
+id;nombre;categoria;stock;stockMinimo;fechaCaducidad;precioUnitario;restringido
+1;Paracetamol 500mg;ANALGESICO;200;30;2027-06-30;0.15;false
+2;Ibuprofeno 600mg;ANTIINFLAMATORIO;150;25;2027-03-15;0.25;false
+3;Amoxicilina 500mg;ANTIBIOTICO;80;15;2026-08-20;0.45;false
+4;Omeprazol 20mg;GASTROINTESTINAL;120;20;2027-12-01;0.30;false
+5;Enalapril 10mg;ANTIHIPERTENSIVO;100;20;2027-09-10;0.20;false
+6;Metformina 850mg;ANTIDIABETICO;90;15;2027-05-25;0.35;false
+7;Atorvastatina 20mg;CARDIOVASCULAR;75;10;2027-11-30;0.55;false
+8;Diazepam 5mg;PSICOFARMACOS;40;8;2026-07-01;0.80;true
+9;Morfina 10mg;ANALGESICO;20;5;2026-06-15;3.50;true
+10;Warfarina 5mg;ANTICOAGULANTE;60;10;2027-04-20;0.90;true
+11;Salbutamol Inhalador;RESPIRATORIO;50;10;2026-12-31;4.20;false
+12;Loratadina 10mg;OTRO;130;20;2027-08-15;0.18;false
+13;Clopidogrel 75mg;CARDIOVASCULAR;65;12;2027-10-05;1.20;false
+14;Doxorrubicina 50mg;ONCOLOGICO;10;3;2026-05-10;85.00;true
+15;Azitromicina 500mg;ANTIBIOTICO;45;10;2026-09-30;1.10;false
+16;Levotiroxina 50mcg;OTRO;70;15;2027-07-22;0.28;false
+17;Furosemida 40mg;CARDIOVASCULAR;55;10;2027-01-15;0.22;false
+18;Tramadol 100mg;ANALGESICO;35;8;2026-05-20;1.60;true

@@ -1,0 +1,16 @@
+package model.enums;
+
+public enum CategoriaMedicamento {
+    ANALGESICO,
+    ANTIBIOTICO,
+    ANTIINFLAMATORIO,
+    ANTIHIPERTENSIVO,
+    ANTICOAGULANTE,
+    ANTIDIABETICO,
+    PSICOFARMACOS,
+    ONCOLOGICO,
+    CARDIOVASCULAR,
+    RESPIRATORIO,
+    GASTROINTESTINAL,
+    OTRO
+}
