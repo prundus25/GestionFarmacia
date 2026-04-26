@@ -10,16 +10,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MenuInventario {
 
     private SistemaFarmacia sistema;
-    private Scanner scanner;
 
     public MenuInventario(SistemaFarmacia sistema) {
         this.sistema = sistema;
-        this.scanner = new Scanner(System.in);
     }
 
     public void mostrar() {
@@ -38,7 +35,7 @@ public class MenuInventario {
             System.out.println("======================================");
             System.out.print("  Opcion: ");
 
-            int opcion = leerEntero(0, 7);
+            int opcion = Consola.leerEntero(0, 7);
 
             switch (opcion) {
                 case 1:
@@ -80,12 +77,12 @@ public class MenuInventario {
                 System.out.println("  " + m);
             }
         }
-        pausar();
+        Consola.pausar();
     }
 
     private void buscarPorNombre() {
         System.out.print("  Nombre a buscar: ");
-        String texto = scanner.nextLine().trim().toLowerCase();
+        String texto = Consola.scanner.nextLine().trim().toLowerCase();
         System.out.println();
         System.out.println("--- RESULTADOS ---");
         boolean encontrado = false;
@@ -98,7 +95,7 @@ public class MenuInventario {
         if (!encontrado) {
             System.out.println("  No se encontro ningun medicamento con ese nombre.");
         }
-        pausar();
+        Consola.pausar();
     }
 
     private void buscarPorCategoria() {
@@ -115,16 +112,16 @@ public class MenuInventario {
         if (!encontrado) {
             System.out.println("  No hay medicamentos en esta categoria.");
         }
-        pausar();
+        Consola.pausar();
     }
 
     private void verDetalle() {
         System.out.print("  ID del medicamento: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
         Medicamento m = sistema.buscarMedicamentoPorId(id);
         if (m == null) {
             System.out.println("  No se encontro ningun medicamento con ese ID.");
-            pausar();
+            Consola.pausar();
             return;
         }
         System.out.println();
@@ -137,7 +134,7 @@ public class MenuInventario {
         System.out.println("  Caducidad:    " + m.getFechaCaducidad());
         System.out.println("  Precio:       " + m.getPrecioUnitario() + " EUR");
         System.out.println("  Restringido:  " + (m.isRestringido() ? "SI" : "NO"));
-        pausar();
+        Consola.pausar();
     }
 
     private void añadirMedicamento() {
@@ -145,29 +142,29 @@ public class MenuInventario {
         System.out.println("--- NUEVO MEDICAMENTO ---");
 
         System.out.print("  Nombre: ");
-        String nombre = scanner.nextLine().trim();
+        String nombre = Consola.scanner.nextLine().trim();
         if (nombre.isEmpty()) {
             System.out.println("  El nombre no puede estar vacio.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         CategoriaMedicamento categoria = seleccionarCategoria();
 
         System.out.print("  Stock inicial: ");
-        int stock = leerEnteroPositivo();
+        int stock = Consola.leerEnteroPositivo();
 
         System.out.print("  Stock minimo: ");
-        int stockMinimo = leerEnteroPositivo();
+        int stockMinimo = Consola.leerEnteroPositivo();
 
         System.out.print("  Fecha de caducidad (dd/MM/yyyy): ");
-        LocalDate fechaCaducidad = leerFecha();
+        LocalDate fechaCaducidad = Consola.leerFecha();
 
         System.out.print("  Precio unitario (EUR): ");
-        double precio = leerDecimal();
+        double precio = Consola.leerDecimal();
 
         System.out.print("  ¿Es medicamento restringido? (s/n): ");
-        boolean restringido = scanner.nextLine().trim().equalsIgnoreCase("s");
+        boolean restringido = Consola.scanner.nextLine().trim().equalsIgnoreCase("s");
 
         // Creamos el medicamento con ID 0, el sistema le asignara el ID correcto
         Medicamento nuevo = new Medicamento(0, nombre, categoria, stock, stockMinimo,
@@ -188,29 +185,29 @@ public class MenuInventario {
         }
 
         System.out.println("  Medicamento añadido con ID: " + nuevo.getId());
-        pausar();
+        Consola.pausar();
     }
 
     private void editarMedicamento() {
         System.out.print("  ID del medicamento a editar: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
         Medicamento m = sistema.buscarMedicamentoPorId(id);
         if (m == null) {
             System.out.println("  Medicamento no encontrado.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         System.out.println("  Editando: " + m.getNombre() + " (deja en blanco para no cambiar)");
 
         System.out.print("  Nombre [" + m.getNombre() + "]: ");
-        String nombre = scanner.nextLine().trim();
+        String nombre = Consola.scanner.nextLine().trim();
         if (!nombre.isEmpty()) {
             m.setNombre(nombre);
         }
 
         System.out.print("  Stock [" + m.getStock() + "]: ");
-        String stockStr = scanner.nextLine().trim();
+        String stockStr = Consola.scanner.nextLine().trim();
         if (!stockStr.isEmpty()) {
             try {
                 m.setStock(Integer.parseInt(stockStr));
@@ -220,7 +217,7 @@ public class MenuInventario {
         }
 
         System.out.print("  Stock minimo [" + m.getStockMinimo() + "]: ");
-        String stockMinStr = scanner.nextLine().trim();
+        String stockMinStr = Consola.scanner.nextLine().trim();
         if (!stockMinStr.isEmpty()) {
             try {
                 m.setStockMinimo(Integer.parseInt(stockMinStr));
@@ -230,7 +227,7 @@ public class MenuInventario {
         }
 
         System.out.print("  Fecha caducidad [" + m.getFechaCaducidad() + "] (dd/MM/yyyy): ");
-        String fechaStr = scanner.nextLine().trim();
+        String fechaStr = Consola.scanner.nextLine().trim();
         if (!fechaStr.isEmpty()) {
             try {
                 m.setFechaCaducidad(LocalDate.parse(fechaStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
@@ -240,7 +237,7 @@ public class MenuInventario {
         }
 
         System.out.print("  Precio [" + m.getPrecioUnitario() + "]: ");
-        String precioStr = scanner.nextLine().trim();
+        String precioStr = Consola.scanner.nextLine().trim();
         if (!precioStr.isEmpty()) {
             try {
                 m.setPrecioUnitario(Double.parseDouble(precioStr.replace(",", ".")));
@@ -250,7 +247,7 @@ public class MenuInventario {
         }
 
         System.out.print("  Restringido [" + (m.isRestringido() ? "s" : "n") + "] (s/n): ");
-        String restStr = scanner.nextLine().trim();
+        String restStr = Consola.scanner.nextLine().trim();
         if (restStr.equalsIgnoreCase("s")) {
             m.setRestringido(true);
         } else if (restStr.equalsIgnoreCase("n")) {
@@ -258,30 +255,30 @@ public class MenuInventario {
         }
 
         System.out.println("  Medicamento actualizado.");
-        pausar();
+        Consola.pausar();
     }
 
     private void eliminarMedicamento() {
         System.out.print("  ID del medicamento a eliminar: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
         Medicamento m = sistema.buscarMedicamentoPorId(id);
         if (m == null) {
             System.out.println("  Medicamento no encontrado.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         System.out.print("  ¿Seguro que quieres eliminar '" + m.getNombre() + "'? (s/n): ");
-        String conf = scanner.nextLine().trim();
+        String conf = Consola.scanner.nextLine().trim();
         if (!conf.equalsIgnoreCase("s")) {
             System.out.println("  Cancelado.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         sistema.eliminarMedicamento(id);
         System.out.println("  Medicamento eliminado.");
-        pausar();
+        Consola.pausar();
     }
 
     private CategoriaMedicamento seleccionarCategoria() {
@@ -291,62 +288,6 @@ public class MenuInventario {
             System.out.println("    " + (i + 1) + ". " + categorias[i]);
         }
         System.out.print("  Elige categoria (numero): ");
-        return categorias[leerEntero(1, categorias.length) - 1];
-    }
-
-    // ======= Métodos auxiliares de entrada =======
-
-    private int leerEntero(int min, int max) {
-        while (true) {
-            try {
-                int valor = Integer.parseInt(scanner.nextLine().trim());
-                if (valor >= min && valor <= max) {
-                    return valor;
-                }
-                System.out.print("  Valor entre " + min + " y " + max + ": ");
-            } catch (NumberFormatException e) {
-                System.out.print("  Escribe un numero: ");
-            }
-        }
-    }
-
-    private int leerEnteroPositivo() {
-        while (true) {
-            try {
-                int valor = Integer.parseInt(scanner.nextLine().trim());
-                if (valor >= 0) {
-                    return valor;
-                }
-                System.out.print("  Escribe un numero positivo: ");
-            } catch (NumberFormatException e) {
-                System.out.print("  Escribe un numero: ");
-            }
-        }
-    }
-
-    private double leerDecimal() {
-        while (true) {
-            try {
-                return Double.parseDouble(scanner.nextLine().trim().replace(",", "."));
-            } catch (NumberFormatException e) {
-                System.out.print("  Escribe un numero decimal: ");
-            }
-        }
-    }
-
-    private LocalDate leerFecha() {
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        while (true) {
-            try {
-                return LocalDate.parse(scanner.nextLine().trim(), fmt);
-            } catch (DateTimeParseException e) {
-                System.out.print("  Formato incorrecto (dd/MM/yyyy): ");
-            }
-        }
-    }
-
-    private void pausar() {
-        System.out.print("\n  Pulsa Enter para continuar...");
-        scanner.nextLine();
+        return categorias[Consola.leerEntero(1, categorias.length) - 1];
     }
 }

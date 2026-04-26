@@ -4,19 +4,14 @@ import model.Paciente;
 import sistema.SistemaFarmacia;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MenuPacientes {
 
     private SistemaFarmacia sistema;
-    private Scanner scanner;
 
     public MenuPacientes(SistemaFarmacia sistema) {
         this.sistema = sistema;
-        this.scanner = new Scanner(System.in);
     }
 
     public void mostrar() {
@@ -33,7 +28,7 @@ public class MenuPacientes {
             System.out.println("================================");
             System.out.print("  Opcion: ");
 
-            int opcion = leerEntero(0, 5);
+            int opcion = Consola.leerEntero(0, 5);
 
             switch (opcion) {
                 case 1: listarTodos(); break;
@@ -57,16 +52,16 @@ public class MenuPacientes {
                 System.out.println("  " + p);
             }
         }
-        pausar();
+        Consola.pausar();
     }
 
     private void verDetalle() {
         System.out.print("  ID del paciente: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
         Paciente p = sistema.buscarPacientePorId(id);
         if (p == null) {
             System.out.println("  Paciente no encontrado.");
-            pausar();
+            Consola.pausar();
             return;
         }
         System.out.println();
@@ -77,7 +72,7 @@ public class MenuPacientes {
         System.out.println("  Fecha nacimiento: " + p.getFechaNacimiento());
         System.out.println("  Alergias:         " + (p.getAlergias().isEmpty() ? "Ninguna" : String.join(", ", p.getAlergias())));
         System.out.println("  Enf. cronicas:    " + (p.getEnfermedadesCronicas().isEmpty() ? "Ninguna" : String.join(", ", p.getEnfermedadesCronicas())));
-        pausar();
+        Consola.pausar();
     }
 
     private void añadirPaciente() {
@@ -85,26 +80,26 @@ public class MenuPacientes {
         System.out.println("--- NUEVO PACIENTE ---");
 
         System.out.print("  Nombre: ");
-        String nombre = scanner.nextLine().trim();
+        String nombre = Consola.scanner.nextLine().trim();
         if (nombre.isEmpty()) {
             System.out.println("  El nombre no puede estar vacio.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         System.out.print("  Apellidos: ");
-        String apellidos = scanner.nextLine().trim();
+        String apellidos = Consola.scanner.nextLine().trim();
 
         System.out.print("  DNI: ");
-        String dni = scanner.nextLine().trim();
+        String dni = Consola.scanner.nextLine().trim();
 
         System.out.print("  Fecha de nacimiento (dd/MM/yyyy): ");
-        LocalDate fechaNacimiento = leerFecha();
+        LocalDate fechaNacimiento = Consola.leerFecha();
 
         Paciente nuevo = new Paciente(0, nombre, apellidos, fechaNacimiento, dni);
 
         System.out.print("  Alergias (separadas por comas, o Enter si no tiene): ");
-        String alergiasStr = scanner.nextLine().trim();
+        String alergiasStr = Consola.scanner.nextLine().trim();
         if (!alergiasStr.isEmpty()) {
             String[] partes = alergiasStr.split(",");
             ArrayList<String> alergias = new ArrayList<>();
@@ -117,7 +112,7 @@ public class MenuPacientes {
         }
 
         System.out.print("  Enfermedades cronicas (separadas por comas, o Enter si no tiene): ");
-        String enfsStr = scanner.nextLine().trim();
+        String enfsStr = Consola.scanner.nextLine().trim();
         if (!enfsStr.isEmpty()) {
             String[] partes = enfsStr.split(",");
             ArrayList<String> enfs = new ArrayList<>();
@@ -131,41 +126,41 @@ public class MenuPacientes {
 
         sistema.agregarPaciente(nuevo);
         System.out.println("  Paciente añadido con ID: " + nuevo.getId());
-        pausar();
+        Consola.pausar();
     }
 
     private void editarPaciente() {
         System.out.print("  ID del paciente a editar: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
         Paciente p = sistema.buscarPacientePorId(id);
         if (p == null) {
             System.out.println("  Paciente no encontrado.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         System.out.println("  Editando: " + p.getNombreCompleto() + " (deja en blanco para no cambiar)");
 
         System.out.print("  Nombre [" + p.getNombre() + "]: ");
-        String nombre = scanner.nextLine().trim();
+        String nombre = Consola.scanner.nextLine().trim();
         if (!nombre.isEmpty()) {
             p.setNombre(nombre);
         }
 
         System.out.print("  Apellidos [" + p.getApellidos() + "]: ");
-        String apellidos = scanner.nextLine().trim();
+        String apellidos = Consola.scanner.nextLine().trim();
         if (!apellidos.isEmpty()) {
             p.setApellidos(apellidos);
         }
 
         System.out.print("  DNI [" + p.getDni() + "]: ");
-        String dni = scanner.nextLine().trim();
+        String dni = Consola.scanner.nextLine().trim();
         if (!dni.isEmpty()) {
             p.setDni(dni);
         }
 
         System.out.print("  Alergias [" + String.join(", ", p.getAlergias()) + "]: ");
-        String alergiasStr = scanner.nextLine().trim();
+        String alergiasStr = Consola.scanner.nextLine().trim();
         if (!alergiasStr.isEmpty()) {
             String[] partes = alergiasStr.split(",");
             ArrayList<String> alergias = new ArrayList<>();
@@ -178,75 +173,29 @@ public class MenuPacientes {
         }
 
         System.out.println("  Paciente actualizado.");
-        pausar();
+        Consola.pausar();
     }
 
     private void eliminarPaciente() {
         System.out.print("  ID del paciente a eliminar: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
         Paciente p = sistema.buscarPacientePorId(id);
         if (p == null) {
             System.out.println("  Paciente no encontrado.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         System.out.print("  ¿Seguro que quieres eliminar a " + p.getNombreCompleto() + "? (s/n): ");
-        String conf = scanner.nextLine().trim();
+        String conf = Consola.scanner.nextLine().trim();
         if (!conf.equalsIgnoreCase("s")) {
             System.out.println("  Cancelado.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         sistema.eliminarPaciente(id);
         System.out.println("  Paciente eliminado.");
-        pausar();
-    }
-
-    // ======= Métodos auxiliares de entrada =======
-
-    private int leerEntero(int min, int max) {
-        while (true) {
-            try {
-                int valor = Integer.parseInt(scanner.nextLine().trim());
-                if (valor >= min && valor <= max) {
-                    return valor;
-                }
-                System.out.print("  Valor entre " + min + " y " + max + ": ");
-            } catch (NumberFormatException e) {
-                System.out.print("  Escribe un numero: ");
-            }
-        }
-    }
-
-    private int leerEnteroPositivo() {
-        while (true) {
-            try {
-                int valor = Integer.parseInt(scanner.nextLine().trim());
-                if (valor >= 0) {
-                    return valor;
-                }
-                System.out.print("  Numero positivo: ");
-            } catch (NumberFormatException e) {
-                System.out.print("  Escribe un numero: ");
-            }
-        }
-    }
-
-    private LocalDate leerFecha() {
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        while (true) {
-            try {
-                return LocalDate.parse(scanner.nextLine().trim(), fmt);
-            } catch (DateTimeParseException e) {
-                System.out.print("  Formato incorrecto (dd/MM/yyyy): ");
-            }
-        }
-    }
-
-    private void pausar() {
-        System.out.print("\n  Pulsa Enter para continuar...");
-        scanner.nextLine();
+        Consola.pausar();
     }
 }

@@ -2,16 +2,12 @@ package ui;
 
 import sistema.SistemaFarmacia;
 
-import java.util.Scanner;
-
 public class MenuPrincipal {
 
     private SistemaFarmacia sistema;
-    private Scanner scanner;
 
     public MenuPrincipal(SistemaFarmacia sistema) {
         this.sistema = sistema;
-        this.scanner = new Scanner(System.in);
     }
 
     public void iniciar() {
@@ -37,7 +33,7 @@ public class MenuPrincipal {
             System.out.println("====================================");
             System.out.print("  Opcion: ");
 
-            int opcion = leerEntero(0, 5);
+            int opcion = Consola.leerEntero(0, 5);
 
             switch (opcion) {
                 case 1:
@@ -62,19 +58,6 @@ public class MenuPrincipal {
         }
     }
 
-    private int leerEntero(int min, int max) {
-        while (true) {
-            try {
-                int valor = Integer.parseInt(scanner.nextLine().trim());
-                if (valor >= min && valor <= max) {
-                    return valor;
-                }
-                System.out.print("  Opcion invalida, elige entre " + min + " y " + max + ": ");
-            } catch (NumberFormatException e) {
-                System.out.print("  Escribe un numero: ");
-            }
-        }
-    }
 }
 
 

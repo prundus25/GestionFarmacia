@@ -10,16 +10,13 @@ import sistema.SistemaFarmacia;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MenuAlertas {
 
     private SistemaFarmacia sistema;
-    private Scanner scanner;
 
     public MenuAlertas(SistemaFarmacia sistema) {
         this.sistema = sistema;
-        this.scanner = new Scanner(System.in);
     }
 
     public void mostrar() {
@@ -38,7 +35,7 @@ public class MenuAlertas {
             System.out.println("==================================");
             System.out.print("  Opcion: ");
 
-            int opcion = leerEntero(0, 7);
+            int opcion = Consola.leerEntero(0, 7);
 
             switch (opcion) {
                 case 1: verAlertasActivas(); break;
@@ -64,7 +61,7 @@ public class MenuAlertas {
                 System.out.println("  " + a);
             }
         }
-        pausar();
+        Consola.pausar();
     }
 
     private void verTodasLasAlertas() {
@@ -78,12 +75,12 @@ public class MenuAlertas {
                 System.out.println("  " + a);
             }
         }
-        pausar();
+        Consola.pausar();
     }
 
     private void resolverAlerta() {
         System.out.print("  ID de la alerta a resolver: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
 
         // Buscamos la alerta en la lista
         Alerta alertaEncontrada = null;
@@ -96,18 +93,18 @@ public class MenuAlertas {
 
         if (alertaEncontrada == null) {
             System.out.println("  Alerta no encontrada.");
-            pausar();
+            Consola.pausar();
             return;
         }
         if (alertaEncontrada.isResuelta()) {
             System.out.println("  Esta alerta ya estaba resuelta.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         alertaEncontrada.setResuelta(true);
         System.out.println("  Alerta marcada como resuelta.");
-        pausar();
+        Consola.pausar();
     }
 
     // Genera una orden de reposicion con todos los medicamentos que tienen alerta
@@ -122,7 +119,7 @@ public class MenuAlertas {
 
         if (alertasStock.isEmpty()) {
             System.out.println("  No hay alertas de stock minimo activas para generar una orden.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
@@ -142,7 +139,7 @@ public class MenuAlertas {
         for (LineaOrden l : lineas) {
             System.out.println("" + l);
         }
-        pausar();
+        Consola.pausar();
     }
 
     private void verOrdenes() {
@@ -156,22 +153,22 @@ public class MenuAlertas {
                 System.out.println("  " + o);
             }
         }
-        pausar();
+        Consola.pausar();
     }
 
     private void aprobarOrden() {
         System.out.print("  ID de la orden a aprobar: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
 
         OrdenReposicion orden = sistema.buscarOrdenPorId(id);
         if (orden == null) {
             System.out.println("  Orden no encontrada.");
-            pausar();
+            Consola.pausar();
             return;
         }
         if (orden.getEstado() != EstadoOrden.PENDIENTE) {
             System.out.println("  Solo se pueden aprobar ordenes en estado PENDIENTE.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
@@ -187,62 +184,27 @@ public class MenuAlertas {
 
         orden.setEstado(EstadoOrden.APROBADA);
         System.out.println("  Orden aprobada y stock actualizado.");
-        pausar();
+        Consola.pausar();
     }
 
     private void cancelarOrden() {
         System.out.print("  ID de la orden a cancelar: ");
-        int id = leerEnteroPositivo();
+        int id = Consola.leerEnteroPositivo();
 
         OrdenReposicion orden = sistema.buscarOrdenPorId(id);
         if (orden == null) {
             System.out.println("  Orden no encontrada.");
-            pausar();
+            Consola.pausar();
             return;
         }
         if (orden.getEstado() != EstadoOrden.PENDIENTE) {
             System.out.println("  Solo se pueden cancelar ordenes en estado PENDIENTE.");
-            pausar();
+            Consola.pausar();
             return;
         }
 
         orden.setEstado(EstadoOrden.CANCELADA);
         System.out.println("  Orden cancelada.");
-        pausar();
-    }
-
-    // ======= Métodos auxiliares de entrada =======
-
-    private int leerEntero(int min, int max) {
-        while (true) {
-            try {
-                int valor = Integer.parseInt(scanner.nextLine().trim());
-                if (valor >= min && valor <= max) {
-                    return valor;
-                }
-                System.out.print("  Valor entre " + min + " y " + max + ": ");
-            } catch (NumberFormatException e) {
-                System.out.print("  Escribe un numero: ");
-            }
-        }
-    }
-
-    private int leerEnteroPositivo() {
-        while (true) {
-            try {
-                int valor = Integer.parseInt(scanner.nextLine().trim());
-                if (valor >= 0) {
-                    return valor;
-                }
-                System.out.print("  Numero positivo: ");
-            } catch (NumberFormatException e) {
-                System.out.print("  Escribe un numero: ");
-            }
-        }
-    }
-
-    private void pausar() {
-        System.out.print("\n  Pulsa Enter para continuar...");
-        scanner.nextLine();
+        Consola.pausar();
     }
 }

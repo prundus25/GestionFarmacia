@@ -1,0 +1,4 @@
+1. Reescribir (o escribir, en caso de que no se incluyan pero se deban incluir, según las convenciones Oracle) todos los comentarios de 
+clases, campos, constructores o metodos de todo el proyecto siguiendo las convenciones de estilo de documentación propuestos por Oracle,
+como en este artículo: https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#format
+
