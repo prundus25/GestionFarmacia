@@ -27,7 +27,7 @@ public class MenuRecetas {
             System.out.println("  4. Historial por paciente");
             System.out.println("  5. Nueva receta");
             System.out.println("  6. Dispensar receta");
-            System.out.println("  7. Autorizar receta (comite)");
+            System.out.println("  7. Autorizar receta (comité)");
             System.out.println("  8. Cancelar receta");
             System.out.println("  9. Ver detalle de receta");
             System.out.println("  0. Volver");

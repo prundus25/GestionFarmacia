@@ -2,3 +2,26 @@
 clases, campos, constructores o metodos de todo el proyecto siguiendo las convenciones de estilo de documentación propuestos por Oracle,
 como en este artículo: https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#format
 
+2. Por qué no se ha realizado una clase Persona de la que hereden los medicos y pacientes?
+
+3. Quitar editarMedicamento() - MenuInventario ???
+
+4. por qué en Consola has hecho: int valor = Integer.parseInt(scanner.nextLine().trim()); en vez de int valor = scanner.nextInt() ??
+
+5. Quitar métodos buscar de MenuInvetario ???
+
+6. Por qué se ha decidido que el límite de caducidad (LocalDate limiteCaducidad = hoy.plusDays(30);) sean 30 días? alguna razón especial?
+Según lo que veo, se asignan 30 días a todos los medicamentos nuevos?
+
+7. Por qué has decidido no poner static a métodos que podrían ser static?? por ejemplo, en SistemaFarmacia existe buscarMedicamentoPorId(), que se usa en otros otros menús,
+y lo que hacen es crear un objeto sistema, pero si el método fuera static podrían hacer SistemaFarmacia.buscarMedicamentoPorId().
+Alguna razón especial para ello? Es mejor no hacerlo static y crear un objeto sistema en cada menú?
+Supongo que la pregunta es: Por qué cada menú gestiona un objeto SistemaFarmacia en vez de usar estáticamente los métodos de SistemaFarmacia?? No sería lo mismo? Es peor hacerlo static?
+
+------
+8. La línea System.out.println("  [FACTURACION] Los cargos han sido registrados en el sistema."); en el método dispensarRecetas() de MenuRecetas verdaderamente no significa nada no?
+Es decir, el tema de la facturación no se registra de ninguna forma en el sistema, o si?
+
+9. Relacionado con una frase que veo en el mismo método, explícame cómo has hecho la reposición automática para los tratamientos crónicos.
+Es decir, explícame el flujo en el programa que hace posible y efectiva esa reposición automática.
+------

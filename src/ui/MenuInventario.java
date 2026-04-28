@@ -38,30 +38,14 @@ public class MenuInventario {
             int opcion = Consola.leerEntero(0, 7);
 
             switch (opcion) {
-                case 1:
-                    listarTodos();
-                    break;
-                case 2:
-                    buscarPorNombre();
-                    break;
-                case 3:
-                    buscarPorCategoria();
-                    break;
-                case 4:
-                    verDetalle();
-                    break;
-                case 5:
-                    añadirMedicamento();
-                    break;
-                case 6:
-                    editarMedicamento();
-                    break;
-                case 7:
-                    eliminarMedicamento();
-                    break;
-                case 0:
-                    salir = true;
-                    break;
+                case 1 -> listarTodos();
+                case 2 -> buscarPorNombre();
+                case 3 -> buscarPorCategoria();
+                case 4 -> verDetalle();
+                case 5 -> añadirMedicamento();
+                case 6 -> editarMedicamento();
+                case 7 -> eliminarMedicamento();
+                case 0 -> salir = true;
             }
         }
     }

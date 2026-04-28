@@ -31,12 +31,12 @@ public class MenuPacientes {
             int opcion = Consola.leerEntero(0, 5);
 
             switch (opcion) {
-                case 1: listarTodos(); break;
-                case 2: verDetalle(); break;
-                case 3: añadirPaciente(); break;
-                case 4: editarPaciente(); break;
-                case 5: eliminarPaciente(); break;
-                case 0: salir = true; break;
+                case 1 -> listarTodos();
+                case 2 -> verDetalle();
+                case 3 -> añadirPaciente();
+                case 4 -> editarPaciente();
+                case 5 -> eliminarPaciente();
+                case 0 -> salir = true;
             }
         }
     }

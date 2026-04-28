@@ -30,12 +30,12 @@ public class MenuMedicos {
             int opcion = Consola.leerEntero(0, 5);
 
             switch (opcion) {
-                case 1: listarTodos(); break;
-                case 2: verDetalle(); break;
-                case 3: añadirMedico(); break;
-                case 4: editarMedico(); break;
-                case 5: eliminarMedico(); break;
-                case 0: salir = true; break;
+                case 1 -> listarTodos();
+                case 2 -> verDetalle();
+                case 3 -> añadirMedico();
+                case 4 -> editarMedico();
+                case 5 -> eliminarMedico();
+                case 0 -> salir = true;
             }
         }
     }

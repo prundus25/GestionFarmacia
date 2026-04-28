@@ -38,14 +38,14 @@ public class MenuAlertas {
             int opcion = Consola.leerEntero(0, 7);
 
             switch (opcion) {
-                case 1: verAlertasActivas(); break;
-                case 2: verTodasLasAlertas(); break;
-                case 3: resolverAlerta(); break;
-                case 4: generarOrden(); break;
-                case 5: verOrdenes(); break;
-                case 6: aprobarOrden(); break;
-                case 7: cancelarOrden(); break;
-                case 0: salir = true; break;
+                case 1 -> verAlertasActivas();
+                case 2 -> verTodasLasAlertas();
+                case 3 -> resolverAlerta();
+                case 4 -> generarOrden();
+                case 5 -> verOrdenes();
+                case 6 -> aprobarOrden();
+                case 7 -> cancelarOrden();
+                case 0 -> salir = true;
             }
         }
     }
