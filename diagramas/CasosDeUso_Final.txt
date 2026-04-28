@@ -1,0 +1,56 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Personal de\nFarmacia" as PF
+actor "Comité\nFarmacoterapéutico" as CF
+
+rectangle "Sistema de Gestión de Farmacia Hospitalaria" {
+
+    ' --- Inventario ---
+    (Gestionar Inventario\nde Medicamentos) as UC1
+    (Consultar Medicamentos) as UC2
+    (Generar Alerta Automática) as UC3
+
+    ' --- Recetas ---
+    (Gestionar Recetas\nMédicas) as UC4
+    (Crear Receta) as UC5
+    (Dispensar Receta) as UC6
+    (Cancelar Receta) as UC7
+    (Autorizar Receta\nRestringida) as UC8
+
+    ' --- Datos Maestros ---
+    (Gestionar Pacientes) as UC9
+    (Gestionar Médicos) as UC10
+
+    ' --- Alertas y Reposición ---
+    (Gestionar Alertas\ny Órdenes) as UC11
+    (Generar Orden de\nReposición) as UC12
+
+    ' === Relaciones actor principal ===
+    PF -- UC1
+    PF -- UC4
+    PF -- UC9
+    PF -- UC10
+    PF -- UC11
+
+    ' === Inventario ===
+    ' UC1 siempre incluye la consulta del catálogo
+    UC1 ..> UC2 : <<include>>
+    ' La alerta se genera de forma condicional al añadir o editar
+    UC3 ..> UC1 : <<extend>>
+
+    ' === Recetas ===
+    UC4 ..> UC5 : <<include>>
+    UC4 ..> UC6 : <<include>>
+    UC4 ..> UC7 : <<include>>
+    ' Solo cuando la receta contiene medicamentos restringidos
+    UC8 ..> UC5 : <<extend>>
+    CF -- UC8
+
+    ' === Alertas y Reposición ===
+    ' Solo se genera una orden cuando existen alertas de STOCK_MINIMO activas
+    UC12 ..> UC11 : <<extend>>
+}
+@enduml

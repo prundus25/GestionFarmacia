@@ -8,28 +8,61 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-// Esta clase guarda todos los datos del programa y tiene los métodos para manejarlos.
-// Actúa como el "núcleo" del sistema de farmacia.
+/**
+ * Núcleo de datos del sistema de farmacia hospitalaria.
+ * <p>
+ * Almacena las listas de todas las entidades del dominio
+ * (medicamentos, pacientes, médicos, recetas, alertas y
+ * órdenes de reposición) y expone los métodos CRUD
+ * necesarios para gestionarlas. Gestiona también la
+ * persistencia mediante serialización Java al fichero
+ * {@code data/farmacia.dat} y la carga inicial de datos
+ * de muestra desde ficheros CSV.
+ */
 public class SistemaFarmacia implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // Listas donde guardamos todos los datos
+    /** Lista de medicamentos registrados en el inventario. */
     private ArrayList<Medicamento> medicamentos;
+
+    /** Lista de pacientes registrados en el sistema. */
     private ArrayList<Paciente> pacientes;
+
+    /** Lista de médicos registrados en el sistema. */
     private ArrayList<Medico> medicos;
+
+    /** Lista de recetas emitidas. */
     private ArrayList<Receta> recetas;
+
+    /** Lista de alertas generadas por el sistema. */
     private ArrayList<Alerta> alertas;
+
+    /** Lista de órdenes de reposición creadas. */
     private ArrayList<OrdenReposicion> ordenes;
 
-    // Contadores para asignar IDs únicos a cada entidad
+    /** Siguiente identificador disponible para medicamentos. */
     private int nextIdMedicamento = 1;
+
+    /** Siguiente identificador disponible para pacientes. */
     private int nextIdPaciente = 1;
+
+    /** Siguiente identificador disponible para médicos. */
     private int nextIdMedico = 1;
+
+    /** Siguiente identificador disponible para recetas. */
     private int nextIdReceta = 1;
+
+    /** Siguiente identificador disponible para alertas. */
     private int nextIdAlerta = 1;
+
+    /** Siguiente identificador disponible para órdenes. */
     private int nextIdOrden = 1;
 
+    /**
+     * Crea un nuevo {@code SistemaFarmacia} con todas las
+     * listas vacías.
+     */
     public SistemaFarmacia() {
         medicamentos = new ArrayList<>();
         pacientes = new ArrayList<>();
@@ -41,16 +74,36 @@ public class SistemaFarmacia implements Serializable {
 
     // ==================== MEDICAMENTOS ====================
 
+    /**
+     * Añade un medicamento al inventario asignándole un
+     * identificador único.
+     *
+     * @param m medicamento a registrar; su {@code id}
+     *          se sobreescribe con el próximo disponible
+     */
     public void agregarMedicamento(Medicamento m) {
         m.setId(nextIdMedicamento);
         nextIdMedicamento++;
         medicamentos.add(m);
     }
 
+    /**
+     * Devuelve la lista completa de medicamentos del
+     * inventario.
+     *
+     * @return lista de medicamentos
+     */
     public ArrayList<Medicamento> getMedicamentos() {
         return medicamentos;
     }
 
+    /**
+     * Busca un medicamento por su identificador único.
+     *
+     * @param id identificador del medicamento
+     * @return el medicamento encontrado, o {@code null}
+     *         si no existe ninguno con ese id
+     */
     public Medicamento buscarMedicamentoPorId(int id) {
         for (Medicamento m : medicamentos) {
             if (m.getId() == id) {
@@ -60,6 +113,13 @@ public class SistemaFarmacia implements Serializable {
         return null; // no encontrado
     }
 
+    /**
+     * Elimina el medicamento con el identificador dado.
+     *
+     * @param id identificador del medicamento a eliminar
+     * @return {@code true} si se ha eliminado;
+     *         {@code false} si no se encontró
+     */
     public boolean eliminarMedicamento(int id) {
         Medicamento m = buscarMedicamentoPorId(id);
         if (m != null) {
@@ -71,16 +131,35 @@ public class SistemaFarmacia implements Serializable {
 
     // ==================== PACIENTES ====================
 
+    /**
+     * Añade un paciente al sistema asignándole un
+     * identificador único.
+     *
+     * @param p paciente a registrar; su {@code id}
+     *          se sobreescribe con el próximo disponible
+     */
     public void agregarPaciente(Paciente p) {
         p.setId(nextIdPaciente);
         nextIdPaciente++;
         pacientes.add(p);
     }
 
+    /**
+     * Devuelve la lista completa de pacientes registrados.
+     *
+     * @return lista de pacientes
+     */
     public ArrayList<Paciente> getPacientes() {
         return pacientes;
     }
 
+    /**
+     * Busca un paciente por su identificador único.
+     *
+     * @param id identificador del paciente
+     * @return el paciente encontrado, o {@code null}
+     *         si no existe ninguno con ese id
+     */
     public Paciente buscarPacientePorId(int id) {
         for (Paciente p : pacientes) {
             if (p.getId() == id) {
@@ -90,6 +169,13 @@ public class SistemaFarmacia implements Serializable {
         return null;
     }
 
+    /**
+     * Elimina el paciente con el identificador dado.
+     *
+     * @param id identificador del paciente a eliminar
+     * @return {@code true} si se ha eliminado;
+     *         {@code false} si no se encontró
+     */
     public boolean eliminarPaciente(int id) {
         Paciente p = buscarPacientePorId(id);
         if (p != null) {
@@ -101,16 +187,35 @@ public class SistemaFarmacia implements Serializable {
 
     // ==================== MÉDICOS ====================
 
+    /**
+     * Añade un médico al sistema asignándole un
+     * identificador único.
+     *
+     * @param m médico a registrar; su {@code id}
+     *          se sobreescribe con el próximo disponible
+     */
     public void agregarMedico(Medico m) {
         m.setId(nextIdMedico);
         nextIdMedico++;
         medicos.add(m);
     }
 
+    /**
+     * Devuelve la lista completa de médicos registrados.
+     *
+     * @return lista de médicos
+     */
     public ArrayList<Medico> getMedicos() {
         return medicos;
     }
 
+    /**
+     * Busca un médico por su identificador único.
+     *
+     * @param id identificador del médico
+     * @return el médico encontrado, o {@code null}
+     *         si no existe ninguno con ese id
+     */
     public Medico buscarMedicoPorId(int id) {
         for (Medico m : medicos) {
             if (m.getId() == id) {
@@ -120,6 +225,13 @@ public class SistemaFarmacia implements Serializable {
         return null;
     }
 
+    /**
+     * Elimina el médico con el identificador dado.
+     *
+     * @param id identificador del médico a eliminar
+     * @return {@code true} si se ha eliminado;
+     *         {@code false} si no se encontró
+     */
     public boolean eliminarMedico(int id) {
         Medico m = buscarMedicoPorId(id);
         if (m != null) {
@@ -131,16 +243,35 @@ public class SistemaFarmacia implements Serializable {
 
     // ==================== RECETAS ====================
 
+    /**
+     * Añade una receta al sistema asignándole un
+     * identificador único.
+     *
+     * @param r receta a registrar; su {@code id}
+     *          se sobreescribe con el próximo disponible
+     */
     public void agregarReceta(Receta r) {
         r.setId(nextIdReceta);
         nextIdReceta++;
         recetas.add(r);
     }
 
+    /**
+     * Devuelve la lista completa de recetas registradas.
+     *
+     * @return lista de recetas
+     */
     public ArrayList<Receta> getRecetas() {
         return recetas;
     }
 
+    /**
+     * Busca una receta por su identificador único.
+     *
+     * @param id identificador de la receta
+     * @return la receta encontrada, o {@code null}
+     *         si no existe ninguna con ese id
+     */
     public Receta buscarRecetaPorId(int id) {
         for (Receta r : recetas) {
             if (r.getId() == id) {
@@ -152,16 +283,35 @@ public class SistemaFarmacia implements Serializable {
 
     // ==================== ALERTAS ====================
 
+    /**
+     * Añade una alerta al sistema asignándole un
+     * identificador único.
+     *
+     * @param a alerta a registrar; su {@code id}
+     *          se sobreescribe con el próximo disponible
+     */
     public void agregarAlerta(Alerta a) {
         a.setId(nextIdAlerta);
         nextIdAlerta++;
         alertas.add(a);
     }
 
+    /**
+     * Devuelve la lista completa de alertas, incluyendo
+     * las ya resueltas.
+     *
+     * @return lista de todas las alertas
+     */
     public ArrayList<Alerta> getAlertas() {
         return alertas;
     }
 
+    /**
+     * Devuelve únicamente las alertas que no han sido
+     * resueltas.
+     *
+     * @return lista de alertas activas
+     */
     public ArrayList<Alerta> getAlertasActivas() {
         ArrayList<Alerta> activas = new ArrayList<>();
         for (Alerta a : alertas) {
@@ -172,9 +322,19 @@ public class SistemaFarmacia implements Serializable {
         return activas;
     }
 
-    // Comprueba si ya existe una alerta activa del mismo tipo para ese medicamento
-    // para no crear alertas duplicadas
-    public boolean existeAlertaActiva(int idMedicamento, TipoAlerta tipo) {
+    /**
+     * Comprueba si ya existe una alerta activa del tipo
+     * dado para el medicamento indicado, para evitar
+     * alertas duplicadas.
+     *
+     * @param idMedicamento identificador del medicamento
+     * @param tipo          tipo de alerta a comprobar
+     * @return {@code true} si existe una alerta activa
+     *         de ese tipo para ese medicamento;
+     *         {@code false} en caso contrario
+     */
+    public boolean existeAlertaActiva(int idMedicamento,
+                                      TipoAlerta tipo) {
         for (Alerta a : alertas) {
             if (!a.isResuelta()
                     && a.getMedicamento().getId() == idMedicamento
@@ -187,16 +347,36 @@ public class SistemaFarmacia implements Serializable {
 
     // ==================== ÓRDENES DE REPOSICIÓN ====================
 
+    /**
+     * Añade una orden de reposición al sistema asignándole
+     * un identificador único.
+     *
+     * @param o orden a registrar; su {@code id}
+     *          se sobreescribe con el próximo disponible
+     */
     public void agregarOrden(OrdenReposicion o) {
         o.setId(nextIdOrden);
         nextIdOrden++;
         ordenes.add(o);
     }
 
+    /**
+     * Devuelve la lista completa de órdenes de reposición.
+     *
+     * @return lista de órdenes
+     */
     public ArrayList<OrdenReposicion> getOrdenes() {
         return ordenes;
     }
 
+    /**
+     * Busca una orden de reposición por su identificador
+     * único.
+     *
+     * @param id identificador de la orden
+     * @return la orden encontrada, o {@code null}
+     *         si no existe ninguna con ese id
+     */
     public OrdenReposicion buscarOrdenPorId(int id) {
         for (OrdenReposicion o : ordenes) {
             if (o.getId() == id) {
@@ -206,8 +386,20 @@ public class SistemaFarmacia implements Serializable {
         return null;
     }
 
-    // Revisa todos los medicamentos y genera alertas de caducidad y stock mínimo
-    // Se llama al arrancar el programa
+    /**
+     * Revisa todos los medicamentos del inventario y
+     * genera alertas de caducidad o stock mínimo cuando
+     * es necesario.
+     * <p>
+     * Se genera una alerta de {@link TipoAlerta#CADUCIDAD}
+     * si la fecha de caducidad del medicamento es anterior
+     * a 30 días desde hoy, y una alerta de
+     * {@link TipoAlerta#STOCK_MINIMO} si el stock actual
+     * es igual o inferior al mínimo configurado. No se
+     * crean alertas duplicadas para el mismo medicamento
+     * y tipo. Este método debe llamarse al arrancar el
+     * programa.
+     */
     public void generarAlertasIniciales() {
         LocalDate hoy = LocalDate.now();
         LocalDate limiteCaducidad = hoy.plusDays(30);
@@ -232,6 +424,14 @@ public class SistemaFarmacia implements Serializable {
 
     // ==================== GUARDAR Y CARGAR ====================
 
+    /**
+     * Serializa el estado completo del sistema al fichero
+     * {@code data/farmacia.dat}.
+     * <p>
+     * Crea la carpeta {@code data/} si no existe. Los
+     * errores de escritura se notifican por la salida
+     * estándar sin interrumpir la ejecución.
+     */
     public void guardar() {
         try {
             // Crear la carpeta data si no existe todavía
@@ -250,7 +450,17 @@ public class SistemaFarmacia implements Serializable {
         }
     }
 
-    // Carga el sistema desde el fichero guardado, o crea uno nuevo con datos de ejemplo
+    /**
+     * Carga el sistema desde el fichero serializado
+     * {@code data/farmacia.dat}.
+     * <p>
+     * Si el fichero no existe (primera ejecución) o no
+     * puede leerse, crea un sistema nuevo con los datos
+     * de muestra de los CSV de la carpeta {@code data/}.
+     *
+     * @return la instancia de {@code SistemaFarmacia}
+     *         restaurada o de ejemplo
+     */
     public static SistemaFarmacia cargar() {
         File fichero = new File("data/farmacia.dat");
 

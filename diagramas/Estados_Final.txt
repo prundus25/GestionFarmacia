@@ -1,0 +1,65 @@
+@startuml
+title Ciclo de Vida de la Receta Médica
+
+[*] --> PENDIENTE : Receta creada\n(sin medicamentos restringidos)
+[*] --> PENDIENTE_AUTORIZACION : Receta creada\n(contiene medicamentos restringidos)
+
+PENDIENTE --> PENDIENTE_AUTORIZACION : Medicamento restringido\ndetectado al crear
+
+PENDIENTE_AUTORIZACION --> PENDIENTE : Comité autoriza\nla prescripción
+
+PENDIENTE --> DISPENSADA : Stock verificado\nMedicamentos entregados
+
+PENDIENTE --> CANCELADA : Cancelada por\nel personal
+
+PENDIENTE_AUTORIZACION --> CANCELADA : Cancelada antes\nde la autorización
+
+DISPENSADA --> [*]
+CANCELADA  --> [*]
+
+note right of PENDIENTE_AUTORIZACION
+  El estado cambia a PENDIENTE
+  antes de poder ser dispensada.
+  No se puede dispensar directamente
+  desde PENDIENTE_AUTORIZACION.
+end note
+
+note right of DISPENSADA
+  Se descuenta el stock de cada
+  medicamento al entrar en este estado.
+  Si algún stock queda bajo mínimo,
+  se genera una Alerta STOCK_MINIMO.
+end note
+
+@enduml
+
+' ─────────────────────────────────────────────────────────
+' Segundo diagrama: Ciclo de vida de la Orden de Reposición
+' ─────────────────────────────────────────────────────────
+
+@startuml
+title Ciclo de Vida de la Orden de Reposición
+
+[*] --> PENDIENTE : Orden generada\nautomáticamente desde\nalertas de STOCK_MINIMO
+
+PENDIENTE --> APROBADA  : Personal aprueba\nla orden
+
+PENDIENTE --> CANCELADA : Personal cancela\nla orden
+
+APROBADA  --> [*]
+CANCELADA --> [*]
+
+note right of APROBADA
+  Al aprobar, el sistema suma
+  la cantidadSolicitada de cada
+  LineaOrden al stock del
+  medicamento correspondiente.
+end note
+
+note right of PENDIENTE
+  Solo las órdenes en estado
+  PENDIENTE pueden ser aprobadas
+  o canceladas.
+end note
+
+@enduml

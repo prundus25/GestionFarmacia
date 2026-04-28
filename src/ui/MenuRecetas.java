@@ -8,14 +8,36 @@ import sistema.SistemaFarmacia;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Menú de gestión de recetas médicas.
+ * <p>
+ * Permite listar, crear, dispensar, autorizar y
+ * cancelar recetas, así como consultar el historial
+ * por paciente. La creación fija automáticamente el
+ * estado a {@link model.enums.EstadoReceta#PENDIENTE_AUTORIZACION}
+ * cuando la receta incluye medicamentos de uso
+ * restringido.
+ */
 public class MenuRecetas {
 
     private SistemaFarmacia sistema;
 
+    /**
+     * Crea un nuevo {@code MenuRecetas} asociado al
+     * sistema de farmacia dado.
+     *
+     * @param sistema instancia central del sistema
+     */
     public MenuRecetas(SistemaFarmacia sistema) {
         this.sistema = sistema;
     }
 
+    /**
+     * Lanza el bucle interactivo del menú de recetas.
+     * <p>
+     * Continúa mostrando opciones hasta que el usuario
+     * elige la opción {@code 0} (Volver).
+     */
     public void mostrar() {
         boolean salir = false;
         while (!salir) {
@@ -284,10 +306,6 @@ public class MenuRecetas {
 
         receta.setEstado(EstadoReceta.DISPENSADA);
         System.out.println("  Receta dispensada correctamente.");
-        System.out.println("  [FACTURACION] Los cargos han sido registrados en el sistema.");
-        if (receta.isCronica()) {
-            System.out.println("  [CRONICA] Se ha programado la reposicion automatica del tratamiento.");
-        }
         Consola.pausar();
     }
 

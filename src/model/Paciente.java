@@ -1,60 +1,138 @@
 package model;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Paciente implements Serializable {
+/**
+ * Representa a un paciente atendido por la farmacia
+ * hospitalaria.
+ * <p>
+ * Extiende {@link Persona} añadiendo datos clínicos:
+ * fecha de nacimiento, DNI, lista de alergias y lista
+ * de enfermedades crónicas.
+ */
+public class Paciente extends Persona {
     private static final long serialVersionUID = 1L;
 
-    private int id;
-    private String nombre;
-    private String apellidos;
+    /** Fecha de nacimiento del paciente. */
     private LocalDate fechaNacimiento;
+
+    /** Documento Nacional de Identidad del paciente. */
     private String dni;
+
+    /** Lista de alergias conocidas del paciente. */
     private List<String> alergias;
+
+    /**
+     * Lista de enfermedades crónicas diagnosticadas
+     * al paciente.
+     */
     private List<String> enfermedadesCronicas;
 
-    public Paciente(int id, String nombre, String apellidos, LocalDate fechaNacimiento, String dni) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellidos = apellidos;
+    /**
+     * Crea un nuevo {@code Paciente} con los datos de
+     * identificación.
+     * <p>
+     * Las listas de alergias y enfermedades crónicas
+     * se inicializan vacías.
+     *
+     * @param id              identificador único asignado por el sistema
+     * @param nombre          nombre de pila
+     * @param apellidos       apellidos
+     * @param fechaNacimiento fecha de nacimiento
+     * @param dni             DNI del paciente
+     */
+    public Paciente(int id, String nombre, String apellidos,
+                    LocalDate fechaNacimiento, String dni) {
+        super(id, nombre, apellidos);
         this.fechaNacimiento = fechaNacimiento;
         this.dni = dni;
         this.alergias = new ArrayList<>();
         this.enfermedadesCronicas = new ArrayList<>();
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getApellidos() { return apellidos; }
-    public void setApellidos(String apellidos) { this.apellidos = apellidos; }
-
+    /**
+     * Devuelve la fecha de nacimiento de este paciente.
+     *
+     * @return la fecha de nacimiento
+     */
     public LocalDate getFechaNacimiento() { return fechaNacimiento; }
-    public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
-    public String getDni() { return dni; }
-    public void setDni(String dni) { this.dni = dni; }
-
-    public List<String> getAlergias() { return alergias; }
-    public void setAlergias(List<String> alergias) { this.alergias = alergias; }
-
-    public List<String> getEnfermedadesCronicas() { return enfermedadesCronicas; }
-    public void setEnfermedadesCronicas(List<String> enfermedadesCronicas) { this.enfermedadesCronicas = enfermedadesCronicas; }
-
-    public String getNombreCompleto() {
-        return nombre + " " + apellidos;
+    /**
+     * Establece la fecha de nacimiento de este paciente.
+     *
+     * @param fechaNacimiento la nueva fecha de nacimiento
+     */
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
+    /**
+     * Devuelve el DNI de este paciente.
+     *
+     * @return el DNI
+     */
+    public String getDni() { return dni; }
+
+    /**
+     * Establece el DNI de este paciente.
+     *
+     * @param dni el nuevo DNI
+     */
+    public void setDni(String dni) { this.dni = dni; }
+
+    /**
+     * Devuelve la lista de alergias de este paciente.
+     *
+     * @return lista de alergias; puede estar vacía pero
+     *         nunca es {@code null}
+     */
+    public List<String> getAlergias() { return alergias; }
+
+    /**
+     * Establece la lista de alergias de este paciente.
+     *
+     * @param alergias la nueva lista de alergias
+     */
+    public void setAlergias(List<String> alergias) {
+        this.alergias = alergias;
+    }
+
+    /**
+     * Devuelve la lista de enfermedades crónicas de este
+     * paciente.
+     *
+     * @return lista de enfermedades crónicas; puede estar
+     *         vacía pero nunca es {@code null}
+     */
+    public List<String> getEnfermedadesCronicas() {
+        return enfermedadesCronicas;
+    }
+
+    /**
+     * Establece la lista de enfermedades crónicas de este
+     * paciente.
+     *
+     * @param enfermedadesCronicas la nueva lista de
+     *                             enfermedades crónicas
+     */
+    public void setEnfermedadesCronicas(
+            List<String> enfermedadesCronicas) {
+        this.enfermedadesCronicas = enfermedadesCronicas;
+    }
+
+    /**
+     * Devuelve una representación textual del paciente con
+     * formato tabular para su visualización en consola.
+     *
+     * @return cadena con id, nombre completo, DNI, fecha de
+     *         nacimiento, alergias y enfermedades crónicas
+     */
     @Override
     public String toString() {
         return String.format("[%d] %-30s | DNI: %-9s | Nac.: %s | Alergias: %s | Enf.Crónicas: %s",
-                id, getNombreCompleto(), dni, fechaNacimiento,
+                getId(), getNombreCompleto(), dni, fechaNacimiento,
                 alergias.isEmpty() ? "Ninguna" : String.join(", ", alergias),
                 enfermedadesCronicas.isEmpty() ? "Ninguna" : String.join(", ", enfermedadesCronicas));
     }

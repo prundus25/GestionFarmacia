@@ -1,0 +1,58 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Personal de Farmacia" as PF
+actor "Farmacéutico" as F
+actor "Médico" as M
+actor "Comité Farmacoterapéutico" as CF
+actor "Paciente" as P
+
+rectangle "Sistema de Gestión de Farmacia Hospitalaria" {
+    (Control de Inventario) as UC1
+    (Recepción y Clasificación) as UC2
+    (Verificar Caducidad) as UC3
+    (Generar Alertas) as UC4
+    (Realizar Orden de Reposición) as UC11
+
+    (Dispensación de Recetas) as UC5
+    (Validar Prescripción) as UC6
+    (Registrar Dispensación) as UC7
+
+    (Gestionar Medicamento No Disponible) as UC8
+    (Solicitar Autorización Especial) as UC9
+    (Notificar Alternativa a Médico) as UC12
+    (Programar Reposición Automática) as UC10
+    (Notificar Reposición a Paciente) as UC13
+
+    ' --- Relaciones de Inventario ---
+    PF -- UC1
+    PF -- UC4
+    PF -- UC11
+
+    UC1 ..> UC2 : <<include>>
+    UC1 ..> UC3 : <<include>>
+
+    ' --- Relaciones de Dispensación ---
+    M -- UC5 : Prescribe
+    F -- UC5 : Gestiona
+    
+    UC5 ..> UC6 : <<include>>
+    UC5 ..> UC7 : <<include>>
+
+    ' Extensión: Solo si no hay stock
+    UC8 ..> UC5 : <<extend>>
+    UC8 ..> UC12 : <<include>>
+    UC12 -- M
+
+    ' Extensión: Solo si es alto costo / restringido
+    ' Ahora depende de la Dispensación/Validación, no del stock
+    UC9 ..> UC5 : <<extend>>
+    UC9 -- CF
+
+    ' --- Reposición automática ---
+    PF -- UC10
+    UC10 ..> UC13 : <<include>>
+    UC13 -- P
+}
+@enduml

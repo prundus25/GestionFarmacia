@@ -1,0 +1,516 @@
+FICHAS DESCRIPTIVAS - CASOS DE USO
+Sistema de Gestión de Farmacia Hospitalaria
+============================================
+Algunas notas sobre las decisiones tomadas:
+
+- UC2 y UC3 tienen como actor "Sistema" o "incluido desde UC1/UC4" porque son relaciones <<include>>/<<extend>>,
+no casos de uso que el Personal inicia directamente.
+
+- UC8 tiene dos actores: el Personal tramita la autorización en el sistema, pero el Comité es quien la decide externamente.
+
+- Las fichas de <<include>> (UC2, UC5, UC6, UC7) y <<extend>> (UC3, UC8, UC12) están escritas de forma independiente pero
+con la referencia cruzada al UC padre, tal como exige la coherencia entre modelos que pide el doc.
+
+══════════════════════════════════════════════════════════════
+UC1 - Gestionar Inventario de Medicamentos
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Gestionar Inventario de Medicamentos
+
+Actor/es: Personal de Farmacia
+
+Descripción:
+    El Personal de Farmacia accede al módulo de inventario para
+    realizar operaciones sobre el catálogo de medicamentos del
+    sistema: consultar, añadir, editar o eliminar medicamentos.
+
+Precondiciones:
+    - El sistema está en ejecución y los datos han sido cargados.
+    - El usuario ha accedido al menú principal.
+
+Flujo principal:
+    1. El Personal de Farmacia selecciona "Inventario de
+       Medicamentos" en el menú principal.
+    2. El sistema muestra el submenú de gestión de inventario.
+    3. El Personal selecciona una de las opciones disponibles
+       (listar, buscar, añadir, editar, eliminar).
+    4. El sistema ejecuta la operación solicitada.
+       [include UC2 - Consultar Medicamentos]
+    5. El Personal puede repetir el paso 3 hasta seleccionar
+       "Volver".
+    6. El sistema regresa al menú principal.
+
+Flujos alternativos:
+    - Si el Personal añade un medicamento con stock igual o
+      inferior al stock mínimo, el sistema genera automáticamente
+      una alerta de STOCK_MINIMO.
+      [extend UC3 - Generar Alerta Automática]
+    - Si el Personal añade un medicamento con fecha de caducidad
+      en menos de 30 días, el sistema genera automáticamente una
+      alerta de CADUCIDAD.
+      [extend UC3 - Generar Alerta Automática]
+    - Si se intenta eliminar un medicamento que no existe, el
+      sistema muestra un mensaje de error y vuelve al submenú.
+
+Postcondiciones:
+    - Los cambios realizados sobre el inventario quedan reflejados
+      en el sistema.
+    - Si se generaron alertas, quedan registradas como activas.
+    - Los datos se persisten al salir del programa.
+
+
+══════════════════════════════════════════════════════════════
+UC2 - Consultar Medicamentos
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Consultar Medicamentos
+
+Actor/es: Personal de Farmacia (incluido desde UC1)
+
+Descripción:
+    El sistema permite consultar el catálogo de medicamentos
+    disponibles, ya sea listando todos o filtrando por nombre o
+    categoría. Está incluido en la gestión del inventario.
+
+Precondiciones:
+    - El usuario se encuentra en el submenú de inventario (UC1).
+
+Flujo principal:
+    1. El Personal selecciona "Listar todos", "Buscar por nombre"
+       o "Buscar por categoría".
+    2. Si se busca por nombre, el sistema solicita el texto a
+       buscar y muestra los medicamentos cuyo nombre lo contiene.
+    3. Si se busca por categoría, el sistema muestra las
+       categorías disponibles, el Personal selecciona una y el
+       sistema lista los medicamentos de esa categoría.
+    4. Si se selecciona "Listar todos", el sistema muestra todos
+       los medicamentos registrados.
+    5. El Personal pulsa Enter para continuar.
+
+Flujos alternativos:
+    - Si no se encuentra ningún medicamento con el criterio
+      indicado, el sistema muestra un mensaje informativo.
+    - Si no hay medicamentos registrados, el sistema muestra
+      el mensaje correspondiente.
+
+Postcondiciones:
+    - No se modifica ningún dato del sistema.
+
+
+══════════════════════════════════════════════════════════════
+UC3 - Generar Alerta Automática
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Generar Alerta Automática
+
+Actor/es: Sistema (disparado desde UC1)
+
+Descripción:
+    El sistema detecta que un medicamento se encuentra en una
+    situación de riesgo (stock por debajo del mínimo o fecha de
+    caducidad próxima) y genera una alerta activa de forma
+    automática para informar al Personal.
+
+Precondiciones:
+    - Se acaba de añadir un medicamento con stock ≤ stock mínimo,
+      o con fecha de caducidad en menos de 30 días.
+    - O bien, se está dispensando una receta y el stock restante
+      queda por debajo del mínimo.
+    - No existe ya una alerta activa del mismo tipo para ese
+      medicamento.
+
+Flujo principal:
+    1. El sistema comprueba las condiciones del medicamento
+       afectado.
+    2. El sistema verifica que no exista ya una alerta activa del
+       mismo tipo para ese medicamento.
+    3. El sistema crea un objeto Alerta con el tipo correspondiente
+       (STOCK_MINIMO o CADUCIDAD), el medicamento afectado y la
+       fecha actual.
+    4. La alerta queda registrada como activa en el sistema.
+    5. El sistema muestra un aviso por consola al Personal.
+
+Flujos alternativos:
+    - Si ya existe una alerta activa del mismo tipo para ese
+      medicamento, no se crea una alerta duplicada.
+
+Postcondiciones:
+    - La alerta queda registrada como activa y es visible en
+      el módulo de alertas (UC11).
+
+
+══════════════════════════════════════════════════════════════
+UC4 - Gestionar Recetas Médicas
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Gestionar Recetas Médicas
+
+Actor/es: Personal de Farmacia
+
+Descripción:
+    El Personal de Farmacia accede al módulo de recetas para
+    crear nuevas prescripciones, dispensarlas, autorizarlas o
+    cancelarlas, así como consultar el historial.
+
+Precondiciones:
+    - El sistema está en ejecución con datos cargados.
+    - Existen pacientes y médicos registrados en el sistema.
+
+Flujo principal:
+    1. El Personal selecciona "Gestión de Recetas" en el menú
+       principal.
+    2. El sistema muestra el submenú de recetas.
+    3. El Personal selecciona una de las opciones disponibles
+       (listar, filtrar, historial, nueva, dispensar, autorizar,
+       cancelar, ver detalle).
+    4. El sistema ejecuta la operación seleccionada.
+       [include UC5 - Crear Receta]
+       [include UC6 - Dispensar Receta]
+       [include UC7 - Cancelar Receta]
+    5. El Personal puede repetir el paso 3 hasta seleccionar
+       "Volver".
+    6. El sistema regresa al menú principal.
+
+Flujos alternativos:
+    - Si la receta creada contiene medicamentos de uso restringido,
+      el estado pasa a PENDIENTE_AUTORIZACION y se notifica al
+      Comité Farmacoterapéutico.
+      [extend UC8 - Autorizar Receta Restringida]
+
+Postcondiciones:
+    - Las operaciones realizadas quedan reflejadas en el estado
+      de las recetas del sistema.
+
+
+══════════════════════════════════════════════════════════════
+UC5 - Crear Receta
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Crear Receta
+
+Actor/es: Personal de Farmacia (incluido desde UC4)
+
+Descripción:
+    El Personal registra una nueva receta médica asociando un
+    paciente, un médico y una o varias líneas de medicamentos
+    con su posología. Indica también si la receta es crónica.
+
+Precondiciones:
+    - Existe al menos un paciente y un médico registrados.
+    - Existe al menos un medicamento en el inventario.
+
+Flujo principal:
+    1. El Personal selecciona "Nueva receta".
+    2. El sistema solicita el ID del paciente. El Personal lo
+       introduce y el sistema muestra sus alergias (si las tiene).
+    3. El sistema solicita el ID del médico prescriptor.
+    4. El Personal añade medicamentos uno a uno, indicando para
+       cada uno: dosis, frecuencia, duración en días y cantidad.
+    5. El Personal indica 0 para terminar de añadir medicamentos.
+    6. El Personal indica si la receta es crónica (s/n).
+    7. El sistema crea la receta con estado PENDIENTE y le asigna
+       un ID único.
+    8. El sistema muestra el ID de la receta creada.
+
+Flujos alternativos:
+    - Si el paciente o el médico no se encuentran, el sistema
+      muestra un error y cancela la operación.
+    - Si no se añade ningún medicamento, la receta no se crea.
+    - Si algún medicamento es de uso restringido, la receta pasa
+      a estado PENDIENTE_AUTORIZACION y se notifica al Comité.
+      [extend UC8 - Autorizar Receta Restringida]
+
+Postcondiciones:
+    - La receta queda registrada en estado PENDIENTE o
+      PENDIENTE_AUTORIZACION según corresponda.
+
+
+══════════════════════════════════════════════════════════════
+UC6 - Dispensar Receta
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Dispensar Receta
+
+Actor/es: Personal de Farmacia (incluido desde UC4)
+
+Descripción:
+    El Personal entrega físicamente los medicamentos de una
+    receta al paciente. El sistema descuenta el stock del
+    inventario y marca la receta como DISPENSADA.
+
+Precondiciones:
+    - Existe una receta registrada en estado PENDIENTE.
+    - Todos los medicamentos de la receta tienen stock suficiente.
+
+Flujo principal:
+    1. El Personal selecciona "Dispensar receta" e introduce el
+       ID de la receta.
+    2. El sistema verifica que la receta existe y está en estado
+       PENDIENTE.
+    3. El sistema comprueba que hay stock suficiente para cada
+       medicamento de la receta.
+    4. El sistema descuenta del stock de cada medicamento la
+       cantidad indicada en la línea de receta.
+    5. El sistema cambia el estado de la receta a DISPENSADA.
+    6. El sistema muestra confirmación de la dispensación.
+
+Flujos alternativos:
+    - Si la receta no existe, el sistema muestra un error.
+    - Si la receta está en estado DISPENSADA o CANCELADA, el
+      sistema muestra un error y no realiza ninguna acción.
+    - Si la receta está en estado PENDIENTE_AUTORIZACION, el
+      sistema informa de que requiere autorización previa.
+    - Si el stock de algún medicamento es insuficiente, el
+      sistema indica cuál es y no dispensa la receta.
+    - Si tras descontar el stock algún medicamento queda por
+      debajo del stock mínimo, el sistema genera automáticamente
+      una alerta STOCK_MINIMO (si no existía ya).
+      [extend UC3 - Generar Alerta Automática]
+
+Postcondiciones:
+    - El stock de los medicamentos de la receta queda reducido.
+    - La receta queda en estado DISPENSADA.
+    - Si corresponde, existe una nueva alerta STOCK_MINIMO activa.
+
+
+══════════════════════════════════════════════════════════════
+UC7 - Cancelar Receta
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Cancelar Receta
+
+Actor/es: Personal de Farmacia (incluido desde UC4)
+
+Descripción:
+    El Personal cancela una receta médica que no va a ser
+    dispensada. La cancelación es posible desde los estados
+    PENDIENTE y PENDIENTE_AUTORIZACION.
+
+Precondiciones:
+    - Existe una receta en estado PENDIENTE o
+      PENDIENTE_AUTORIZACION.
+
+Flujo principal:
+    1. El Personal selecciona "Cancelar receta" e introduce el
+       ID de la receta.
+    2. El sistema verifica que la receta existe.
+    3. El sistema verifica que la receta no está ya cancelada
+       ni dispensada.
+    4. El sistema cambia el estado de la receta a CANCELADA.
+    5. El sistema muestra confirmación de la cancelación.
+
+Flujos alternativos:
+    - Si la receta no existe, el sistema muestra un error.
+    - Si la receta ya está en estado CANCELADA, el sistema
+      informa de ello y no realiza ninguna acción.
+    - Si la receta ya está en estado DISPENSADA, el sistema
+      informa de que no se puede cancelar una receta ya
+      dispensada.
+
+Postcondiciones:
+    - La receta queda en estado CANCELADA.
+    - El stock del inventario no se ve afectado.
+
+
+══════════════════════════════════════════════════════════════
+UC8 - Autorizar Receta Restringida
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Autorizar Receta Restringida
+
+Actor/es: Personal de Farmacia, Comité Farmacoterapéutico
+
+Descripción:
+    Cuando una receta contiene medicamentos de uso restringido,
+    el Comité Farmacoterapéutico debe autorizar la prescripción
+    antes de que pueda ser dispensada. El Personal de Farmacia
+    tramita la autorización en el sistema.
+
+Precondiciones:
+    - Existe una receta en estado PENDIENTE_AUTORIZACION.
+    - El Comité ha revisado y aprobado la prescripción fuera
+      del sistema.
+
+Flujo principal:
+    1. El Personal selecciona "Autorizar receta (comité)" e
+       introduce el ID de la receta.
+    2. El sistema verifica que la receta existe y que su estado
+       es PENDIENTE_AUTORIZACION.
+    3. El sistema cambia el estado de la receta a PENDIENTE.
+    4. El sistema confirma que la receta puede ser dispensada.
+
+Flujos alternativos:
+    - Si la receta no existe, el sistema muestra un error.
+    - Si la receta no está en estado PENDIENTE_AUTORIZACION, el
+      sistema informa de que no requiere autorización.
+
+Postcondiciones:
+    - La receta queda en estado PENDIENTE y puede ser dispensada
+      mediante UC6.
+
+
+══════════════════════════════════════════════════════════════
+UC9 - Gestionar Pacientes
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Gestionar Pacientes
+
+Actor/es: Personal de Farmacia
+
+Descripción:
+    El Personal mantiene el registro de pacientes del hospital:
+    puede consultar, añadir, editar (datos personales, alergias)
+    y dar de baja a pacientes.
+
+Precondiciones:
+    - El sistema está en ejecución con datos cargados.
+
+Flujo principal:
+    1. El Personal selecciona "Gestión de Pacientes" en el menú
+       principal.
+    2. El sistema muestra el submenú de pacientes.
+    3. El Personal selecciona una operación (listar, ver detalle,
+       añadir, editar, eliminar).
+    4. El sistema ejecuta la operación solicitada.
+    5. El Personal puede repetir el paso 3 hasta seleccionar
+       "Volver".
+    6. El sistema regresa al menú principal.
+
+Flujos alternativos:
+    - Si se busca un paciente por ID y no existe, el sistema
+      muestra un mensaje de error.
+    - Si se intenta eliminar un paciente, el sistema solicita
+      confirmación antes de proceder.
+    - Si se cancela la eliminación, el sistema no realiza
+      ninguna acción.
+
+Postcondiciones:
+    - Los cambios realizados sobre los pacientes quedan
+      registrados en el sistema.
+
+
+══════════════════════════════════════════════════════════════
+UC10 - Gestionar Médicos
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Gestionar Médicos
+
+Actor/es: Personal de Farmacia
+
+Descripción:
+    El Personal mantiene el registro de médicos del hospital:
+    puede consultar, añadir, editar (especialidad, número de
+    colegiado) y dar de baja a médicos.
+
+Precondiciones:
+    - El sistema está en ejecución con datos cargados.
+
+Flujo principal:
+    1. El Personal selecciona "Gestión de Médicos" en el menú
+       principal.
+    2. El sistema muestra el submenú de médicos.
+    3. El Personal selecciona una operación (listar, ver detalle,
+       añadir, editar, eliminar).
+    4. El sistema ejecuta la operación solicitada.
+    5. El Personal puede repetir el paso 3 hasta seleccionar
+       "Volver".
+    6. El sistema regresa al menú principal.
+
+Flujos alternativos:
+    - Si se busca un médico por ID y no existe, el sistema
+      muestra un mensaje de error.
+    - Si se intenta eliminar un médico, el sistema solicita
+      confirmación antes de proceder.
+    - Si se cancela la eliminación, el sistema no realiza
+      ninguna acción.
+
+Postcondiciones:
+    - Los cambios realizados sobre los médicos quedan
+      registrados en el sistema.
+
+
+══════════════════════════════════════════════════════════════
+UC11 - Gestionar Alertas y Órdenes
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Gestionar Alertas y Órdenes
+
+Actor/es: Personal de Farmacia
+
+Descripción:
+    El Personal consulta las alertas activas del sistema
+    (caducidad y stock mínimo), las puede marcar como resueltas
+    y gestiona las órdenes de reposición de stock.
+
+Precondiciones:
+    - El sistema está en ejecución con datos cargados.
+
+Flujo principal:
+    1. El Personal selecciona "Alertas y Reposiciones" en el
+       menú principal.
+    2. El sistema muestra el submenú de alertas.
+    3. El Personal selecciona una operación (ver activas, ver
+       todas, marcar resuelta, generar orden, ver órdenes,
+       aprobar orden, cancelar orden).
+    4. El sistema ejecuta la operación solicitada.
+    5. El Personal puede repetir el paso 3 hasta seleccionar
+       "Volver".
+    6. El sistema regresa al menú principal.
+
+Flujos alternativos:
+    - Si existen alertas de STOCK_MINIMO activas y el Personal
+      solicita generar una orden de reposición, se ejecuta el
+      flujo extendido.
+      [extend UC12 - Generar Orden de Reposición]
+    - Si no hay alertas activas de STOCK_MINIMO, el sistema
+      informa de que no es posible generar una orden de
+      reposición en ese momento.
+
+Postcondiciones:
+    - Las alertas marcadas como resueltas pasan a estado
+      resuelta = true.
+    - Las órdenes de reposición aprobadas actualizan el stock
+      del inventario.
+
+
+══════════════════════════════════════════════════════════════
+UC12 - Generar Orden de Reposición
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Generar Orden de Reposición
+
+Actor/es: Personal de Farmacia (extendido desde UC11)
+
+Descripción:
+    El sistema crea automáticamente una orden de reposición
+    agrupando todos los medicamentos con alertas de STOCK_MINIMO
+    activas. La cantidad solicitada para cada medicamento es el
+    doble de su stock mínimo. La orden queda en estado PENDIENTE
+    hasta ser aprobada o cancelada.
+
+Precondiciones:
+    - Existen alertas de tipo STOCK_MINIMO activas en el sistema.
+
+Flujo principal:
+    1. El Personal selecciona "Generar orden de reposición".
+    2. El sistema recorre todas las alertas activas de tipo
+       STOCK_MINIMO.
+    3. El sistema crea una línea de orden (LineaOrden) por cada
+       medicamento afectado, con una cantidad igual al doble de
+       su stock mínimo.
+    4. El sistema crea la OrdenReposicion con todas las líneas
+       y la registra en estado PENDIENTE.
+    5. El sistema muestra el ID de la orden y el listado de
+       medicamentos incluidos.
+
+Flujos alternativos:
+    - Si no hay alertas de STOCK_MINIMO activas, el sistema
+      muestra un mensaje informativo y no crea ninguna orden.
+    - El Personal puede aprobar la orden (el sistema suma el
+      stock de cada medicamento) o cancelarla desde el mismo
+      submenú de alertas.
+
+Postcondiciones:
+    - Existe una nueva OrdenReposicion en estado PENDIENTE.
+    - Si la orden se aprueba posteriormente (UC11), el stock
+      de cada medicamento queda actualizado.

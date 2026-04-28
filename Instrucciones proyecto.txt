@@ -1,0 +1,119 @@
+PROYECTO-RETO: PROGRAMACIÓN y ENTORNOS DE DESARROLLO - 1º DAM
+1. Descripción del proyecto o reto
+El presente reto consiste en el análisis, modelado e implementación de un sistema software
+para la gestión de distintas áreas de un hospital.
+El hospital ficticio Nuevo Obispo Polanco de Teruel necesita desarrollar un sistema informático que
+permita gestionar diferentes procesos internos como:
+● gestión clínica de pacientes
+● hospitalización
+● urgencias y triaje
+● farmacia hospitalaria
+● inventarios y suministros
+● gestión médica y asistencial
+Cada grupo de estudiantes será responsable de una de estas áreas, para la cual deberá:
+1. Analizar el enunciado del problema
+2. Modelar el sistema mediante UML
+3. Diseñar la estructura de clases
+4. Implementar el sistema en Java
+5. Documentar el proceso
+2. Módulos implicados y estimación horaria
+● Programación
+● Entornos de Desarrollo
+Resultados de aprendizaje trabajados
+Programación
+● RA5
+Realiza operaciones de entrada y salida de información utilizando procedimientos específicos
+del lenguaje y librerías de clases.
+
+● RA6
+Escribe programas que manipulan información utilizando tipos avanzados de datos.
+● RA7
+Desarrolla programas aplicando características avanzadas de los lenguajes orientados a
+objetos.
+Entornos de Desarrollo
+● RA5
+Genera diagramas de clases empleando herramientas específicas.
+● RA6
+Genera diagramas de comportamiento empleando herramientas específicas.
+(Estos RA aparecen definidos en el currículo oficial del ciclo DAM).
+Estimación temporal
+Duración del reto: 16 de marzo a 3 de mayo (5 semanas efectivas)
+Dedicación aproximada:60 horas
+3. Nivel de adquisición de competencias
+Las competencias trabajadas se corresponden con los resultados de aprendizaje establecidos en el
+currículo oficial del ciclo.
+El reto contribuye al desarrollo de competencias técnicas del ciclo DAM, entre ellas:
+● análisis de requisitos de software
+● diseño de aplicaciones orientadas a objetos
+● modelado mediante UML
+● desarrollo de software en Java
+● documentación técnica de proyectos
+4. Procedimiento, criterios y evidencias de evaluación
+Tal y como muestra la tabla, aunque solo se tenga pendiente uno de los dos módulos, la realización
+del proyecto es obligatoria. Aquellos alumnos/as que NO realicen el proyecto-reto, obtendrán
+una calificación EN LOS DOS módulos de NO APTO.
+Dentro de cada módulo la ponderación de cada uno de los resultados de aprendizaje adquiridos es:
+PROGRAMACIÓN RESULTADO DE APRENDIZAJE PONDERACIÓN
+
+R.A 5: Realiza operaciones de entrada y salida de
+información, utilizando procedimientos específicos
+del lenguaje y librerías de clases
+35 %
+R.A 6: Escribe programas que manipulen
+información seleccionando y utilizando tipos
+avanzados de datos.
+40 %
+7. Desarrolla programas aplicando características
+avanzadas de los lenguajes orientados a objetos y
+del entorno de programación
+25 %
+ENTORNOS DE
+DESARROLLO
+R.A 5: Genera diagramas de clases valorando su
+importancia en el desarrollo de aplicaciones y
+empleando herramientas específicas.
+43 %
+R.A 6: Genera diagramas de comportamiento
+valorando su importancia en el desarrollo de
+aplicaciones y empleando herramientas
+específicas.
+57 %
+IMPORTANTE: La realización del proyecto-reto NO exime de la realización de un posible examen/es
+en cualquiera (o ambos) módulos. La existencia o no de estos exámenes se notificará debidamente y
+con la suficiente antelación al alumnado que curse cualquiera (o ambos) de los dos módulos.
+Rúbricas de evaluación
+Se adjuntan las rúbricas de evaluación para cada uno de los módulos
+Documentación a entregar
+Además de los documentos que se solicitan en el enunciado será necesario entregar un apartado
+que explique qué parte ha realizado cada alumno, cómo lo han integrado y un anexo con todas las
+comunicaciones que se hayan realizado para la coordinación del grupo.
+5. Competencias transversales y empleabilidad
+Se trabajan las siguientes competencias transversales::
+● trabajo en equipo
+● planificación del trabajo
+● comunicación técnica
+● resolución de problemas
+● toma de decisiones en diseño de software
+Todas estas habilidades son demandadas actualmente y valoradas como muy importantes en los
+puestos de trabajo habituales en los que suelen emplear a los alumnos de DAM.
+
+6. Secuencia de acciones e hitos
+Fase Horas
+aproximadas
+Análisis del problema 6 h
+Modelado UML 12 h
+Diseño de clases 8 h
+Implementación en Java 20 h
+Pruebas y mejora del sistema 8 h
+Documentación y defensa 6 h
+Total aproximado: 60 horas
+7. Procedimiento para la recuperación
+Loa alumnos que no superen este reto, tendrán que recuperarlos directamente en los exámenes
+finales de junio
+8. Recursos necesarios
+Para llevar a cabo el proyecto se ha de usar un IDE de programación
+Y para los diagramas se puede usar cualquier herramienta, aunque se aconseja usar PlantUML por
+su facilidad de uso.
+9. Evaluación del proyecto y mejora
+Una vez terminado, el equipo docente debe evaluar el propio diseño del reto y proponer cambios
+para futuras ediciones

@@ -1,0 +1,195 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =====================================================
+' INTERFACE
+' =====================================================
+
+interface Serializable << java.io >> {
+}
+
+' =====================================================
+' ENUMERACIONES
+' =====================================================
+
+enum CategoriaMedicamento {
+    ANALGESICO
+    ANTIBIOTICO
+    ANTIINFLAMATORIO
+    ANTIHIPERTENSIVO
+    ANTICOAGULANTE
+    ANTIDIABETICO
+    PSICOFARMACOS
+    ONCOLOGICO
+    CARDIOVASCULAR
+    RESPIRATORIO
+    GASTROINTESTINAL
+    OTRO
+}
+
+enum EstadoReceta {
+    PENDIENTE
+    PENDIENTE_AUTORIZACION
+    DISPENSADA
+    CANCELADA
+}
+
+enum EstadoOrden {
+    PENDIENTE
+    APROBADA
+    CANCELADA
+}
+
+enum TipoAlerta {
+    CADUCIDAD
+    STOCK_MINIMO
+}
+
+' =====================================================
+' JERARQUÍA PERSONA (clase abstracta + herencia)
+' =====================================================
+
+abstract class Persona {
+    # id : int
+    # nombre : String
+    # apellidos : String
+    + getNombreCompleto() : String
+}
+
+class Medico {
+    - especialidad : String
+    - numeroColegiado : String
+    + toString() : String
+}
+
+class Paciente {
+    - fechaNacimiento : LocalDate
+    - dni : String
+    - alergias : List<String>
+    - enfermedadesCronicas : List<String>
+    + toString() : String
+}
+
+Persona        ..|> Serializable
+Medico         --|> Persona
+Paciente       --|> Persona
+
+' =====================================================
+' MEDICAMENTO
+' =====================================================
+
+class Medicamento {
+    - id : int
+    - nombre : String
+    - stock : int
+    - stockMinimo : int
+    - fechaCaducidad : LocalDate
+    - precioUnitario : double
+    - restringido : boolean
+    + toString() : String
+}
+
+Medicamento    ..|> Serializable
+Medicamento    --> CategoriaMedicamento : categoria
+
+' =====================================================
+' RECETA  (composición con LineaReceta)
+' LineaReceta actúa como clase asociativa entre
+' Receta y Medicamento: añade atributos propios
+' (dosis, frecuencia, cantidad) a la relación.
+' =====================================================
+
+class Receta {
+    - id : int
+    - fecha : LocalDate
+    - cronica : boolean
+    + toString() : String
+}
+
+class LineaReceta << (A,orchid) asociativa >> {
+    - dosis : String
+    - frecuencia : String
+    - duracionDias : int
+    - cantidad : int
+}
+
+Receta         ..|> Serializable
+LineaReceta    ..|> Serializable
+
+Receta         --> EstadoReceta  : estado
+Receta         --> Paciente      : paciente
+Receta         --> Medico        : medico
+Receta "1"     *--  "1..*" LineaReceta : lineas
+LineaReceta    -->  Medicamento  : medicamento
+
+' =====================================================
+' ORDEN DE REPOSICIÓN  (composición con LineaOrden)
+' LineaOrden actúa como clase asociativa entre
+' OrdenReposicion y Medicamento.
+' =====================================================
+
+class OrdenReposicion {
+    - id : int
+    - fecha : LocalDate
+    + toString() : String
+}
+
+class LineaOrden << (A,orchid) asociativa >> {
+    - cantidadSolicitada : int
+}
+
+OrdenReposicion ..|> Serializable
+LineaOrden      ..|> Serializable
+
+OrdenReposicion --> EstadoOrden  : estado
+OrdenReposicion "1" *-- "1..*" LineaOrden : lineas
+LineaOrden      --> Medicamento  : medicamento
+
+' =====================================================
+' ALERTA
+' =====================================================
+
+class Alerta {
+    - id : int
+    - fecha : LocalDate
+    - resuelta : boolean
+    + toString() : String
+}
+
+Alerta         ..|> Serializable
+Alerta         --> TipoAlerta  : tipo
+Alerta         --> Medicamento : medicamento
+
+' =====================================================
+' SISTEMA FARMACIA  (núcleo del programa)
+' Agrega todas las entidades del dominio.
+' =====================================================
+
+class SistemaFarmacia {
+    - nextIdMedicamento : int
+    - nextIdPaciente : int
+    - nextIdMedico : int
+    - nextIdReceta : int
+    - nextIdAlerta : int
+    - nextIdOrden : int
+    + generarAlertasIniciales() : void
+    + buscarMedicamentoPorId(id : int) : Medicamento
+    + buscarPacientePorId(id : int) : Paciente
+    + buscarMedicoPorId(id : int) : Medico
+    + buscarRecetaPorId(id : int) : Receta
+    + buscarOrdenPorId(id : int) : OrdenReposicion
+    + existeAlertaActiva(id : int, tipo : TipoAlerta) : boolean
+    + guardar() : void
+    + cargar() : SistemaFarmacia
+}
+
+SistemaFarmacia ..|> Serializable
+
+SistemaFarmacia "1" o-- "0..*" Medicamento      : gestiona
+SistemaFarmacia "1" o-- "0..*" Paciente         : gestiona
+SistemaFarmacia "1" o-- "0..*" Medico           : gestiona
+SistemaFarmacia "1" o-- "0..*" Receta           : gestiona
+SistemaFarmacia "1" o-- "0..*" Alerta           : gestiona
+SistemaFarmacia "1" o-- "0..*" OrdenReposicion  : gestiona
+
+@enduml

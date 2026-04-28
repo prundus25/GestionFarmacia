@@ -1,0 +1,40 @@
+@startuml
+title Proceso de Dispensación de Medicamentos
+
+start
+:Recibir Receta Médica;
+:Validar Prescripción;
+
+if (¿Es segura y correcta?) then (no)
+  :Notificar Error a Médico;
+  stop
+else (sí)
+  :Verificar Stock en Inventario;
+  
+  if (¿Medicamento Disponible?) then (no)
+    :Buscar Alternativa Terapéutica;
+    :Notificar Alternativa a Médico;
+    stop
+  else (sí)
+    if (¿Es de Alto Costo / Restringido?) then (sí)
+      :Solicitar Autorización al Comité;
+      if (¿Autorizado?) then (no)
+        :Informar al Médico y Paciente;
+        stop
+      else (sí)
+      endif
+    else (no)
+    endif
+    
+    fork
+      :Entregar Medicamento al Paciente;
+    fork again
+      :Registrar Dispensación en Sistema;
+      :Actualizar Stock en Inventario;
+    end fork
+  endif
+endif
+
+:Cerrar Proceso de Dispensación;
+stop
+@enduml

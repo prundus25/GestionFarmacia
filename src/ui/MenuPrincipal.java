@@ -2,14 +2,35 @@ package ui;
 
 import sistema.SistemaFarmacia;
 
+/**
+ * Menú principal de la aplicación.
+ * <p>
+ * Muestra el menú raíz y delega en los submenús de
+ * inventario, recetas, pacientes, médicos y alertas
+ * según la opción elegida por el usuario. También
+ * informa del número de alertas activas en cada
+ * iteración del bucle principal.
+ */
 public class MenuPrincipal {
 
     private SistemaFarmacia sistema;
 
+    /**
+     * Crea un nuevo {@code MenuPrincipal} asociado al
+     * sistema de farmacia dado.
+     *
+     * @param sistema instancia central del sistema
+     */
     public MenuPrincipal(SistemaFarmacia sistema) {
         this.sistema = sistema;
     }
 
+    /**
+     * Lanza el bucle interactivo del menú principal.
+     * <p>
+     * Continúa mostrando opciones hasta que el usuario
+     * elige la opción {@code 0} (Salir).
+     */
     public void iniciar() {
         System.out.println("============================================");
         System.out.println("  FARMACIA HOSPITALARIA - SISTEMA DE GESTION");

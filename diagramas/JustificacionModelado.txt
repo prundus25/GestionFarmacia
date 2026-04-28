@@ -1,0 +1,110 @@
+JUSTIFICACIÓN DE DECISIONES DE MODELADO
+Diagrama de Clases - Sistema de Gestión de Farmacia Hospitalaria
+================================================================
+
+
+1. CLASE ABSTRACTA PERSONA Y HERENCIA
+--------------------------------------
+Médico y Paciente comparten tres atributos idénticos (id, nombre,
+apellidos) y el método getNombreCompleto(). Para evitar duplicar
+ese código se introduce la clase abstracta Persona que los
+centraliza.
+
+Persona se declara abstracta porque nunca se crea un objeto
+"Persona" directamente en el sistema: siempre será un Médico o
+un Paciente concreto. La abstracción refleja esta realidad y
+prohíbe instanciarla por error.
+
+Alternativa descartada: duplicar los tres atributos y el método
+en cada subclase. Se rechaza porque viola el principio DRY y
+dificulta el mantenimiento.
+
+
+2. CLASES ASOCIATIVAS: LineaReceta Y LineaOrden
+------------------------------------------------
+La relación entre Receta y Medicamento no es una simple
+asociación: cada vez que un medicamento aparece en una receta
+hay datos adicionales propios de esa relación (dosis, frecuencia,
+duración, cantidad). Esos atributos no pertenecen ni a Receta ni
+a Medicamento por separado, sino al vínculo entre ambos.
+
+El mismo razonamiento se aplica a LineaOrden: la relación entre
+OrdenReposicion y Medicamento incluye un atributo propio
+(cantidadSolicitada).
+
+Ambas se modelan como clases asociativas. En el diagrama se
+marcan con el estereotipo «asociativa» para reflejar su
+naturaleza.
+
+
+3. COMPOSICIÓN PARA LineaReceta Y LineaOrden
+---------------------------------------------
+LineaReceta pertenece exclusivamente a una Receta: no tiene
+sentido fuera de ella y se crea y destruye junto con la receta
+que la contiene. Lo mismo ocurre con LineaOrden respecto a
+OrdenReposicion.
+
+Por ello la relación es composición (rombo sólido) con
+multiplicidad 1 a 1..*: una Receta/Orden tiene al menos una
+línea y cada línea pertenece solo a esa Receta/Orden.
+
+Alternativa descartada: agregación. La agregación implicaría que
+las líneas pueden existir independientemente del contenedor, lo
+cual no ocurre en este modelo.
+
+
+4. AGREGACIÓN PARA SistemaFarmacia
+------------------------------------
+SistemaFarmacia contiene todas las colecciones de entidades
+(medicamentos, pacientes, médicos, recetas, alertas, órdenes)
+mediante ArrayList. Las entidades existen conceptualmente
+con independencia del sistema gestor (un Medicamento o un
+Paciente no deja de existir porque el sistema cambie), por lo
+que la relación es agregación (rombo vacío) y no composición.
+
+Multiplicidad: 1 SistemaFarmacia agrega 0..* de cada entidad,
+ya que al arrancar el sistema puede no tener datos todavía.
+
+
+5. INTERFAZ Serializable Y REALIZACIÓN
+----------------------------------------
+Todas las clases de dominio deben poder guardarse en el fichero
+de persistencia (data/farmacia.dat) mediante serialización Java.
+Para ello deben implementar java.io.Serializable.
+
+En el diagrama se representa como una interfaz con realización
+(..|>) para cada clase que la implementa. En el caso de Medico
+y Paciente la realización es heredada de Persona, por lo que se
+muestra la realización en Persona y no se repite en las subclases.
+
+Alternativa descartada: omitir Serializable del diagrama. Se
+incluye porque forma parte del contrato de diseño y el doc exige
+representar las interfaces utilizadas.
+
+
+6. ENUMERACIONES COMO TIPOS DE ATRIBUTO
+-----------------------------------------
+EstadoReceta, EstadoOrden, TipoAlerta y CategoriaMedicamento se
+modelan como enumeraciones (enum) en lugar de constantes String
+o enteros. Esto garantiza que solo se usen valores válidos,
+mejora la legibilidad del código y hace que el diagrama refleje
+exactamente la implementación en Java.
+
+La relación desde la clase que usa el enum hasta el enum se
+representa como asociación con nombre del rol (p.ej. Receta -->
+EstadoReceta : estado), indicando que el enum actúa como tipo
+del atributo correspondiente.
+
+
+7. GETTERS, SETTERS Y serialVersionUID
+----------------------------------------
+Los atributos privados con acceso mediante getters y setters no
+se listan individualmente en el diagrama para no sobrecargarlo,
+tal como recomienda el propio documento de entregables
+("Se priorizará la claridad del modelo frente a la cantidad de
+elementos"). Solo se muestran los métodos con lógica relevante.
+
+El atributo serialVersionUID, aunque presente en el código para
+evitar problemas de compatibilidad al serializar, tampoco se
+incluye en el diagrama por ser un detalle de implementación
+técnica sin valor semántico en el modelo de dominio.

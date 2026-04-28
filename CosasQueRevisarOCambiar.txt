@@ -4,26 +4,56 @@ como en este artículo: https://www.oracle.com/technical-resources/articles/java
 
 2. Por qué no se ha realizado una clase Persona de la que hereden los medicos y pacientes?
 
-3. Quitar editarMedicamento() - MenuInventario ???
+3. Qué piensas sobre quitar el método editarMedicamento() de la clase MenuInventario ? Crees que es necesario para la funcionalidad correcta
+del programa? por lo que yo estoy leyendo las partes que podrían ser interessantes mantener son las de cambiar el stock, el stock minimo y precio,
+pero cosas como cambiar fecha de caducidad o el nombre de un medicamento que ya exite almacenado en el inventario no tendría mucho sentido, o si?
 
 4. por qué en Consola has hecho: int valor = Integer.parseInt(scanner.nextLine().trim()); en vez de int valor = scanner.nextInt() ??
 
-5. Quitar métodos buscar de MenuInvetario ???
+5. Qué piensas sobre quitar los métodos buscar por nombre y por categoria en MenuInventario? por lo que he visto esos métodos solo servirían
+para que el personal encargado buscara dentro del inventario pero aparte de eso no sirven para nada más verdad? había pensado en borrarlos y
+mantener solo listarTodos para verlos todos a la vez y ya, qué te parece?
 
 6. Por qué se ha decidido que el límite de caducidad (LocalDate limiteCaducidad = hoy.plusDays(30);) sean 30 días? alguna razón especial?
 Según lo que veo, se asignan 30 días a todos los medicamentos nuevos?
 
-7. Por qué has decidido no poner static a métodos que podrían ser static?? por ejemplo, en SistemaFarmacia existe buscarMedicamentoPorId(), que se usa en otros otros menús,
-y lo que hacen es crear un objeto sistema, pero si el método fuera static podrían hacer SistemaFarmacia.buscarMedicamentoPorId().
-Alguna razón especial para ello? Es mejor no hacerlo static y crear un objeto sistema en cada menú?
-Supongo que la pregunta es: Por qué cada menú gestiona un objeto SistemaFarmacia en vez de usar estáticamente los métodos de SistemaFarmacia?? No sería lo mismo? Es peor hacerlo static?
+7. Por qué has decidido no poner static a métodos que podrían ser static?? por ejemplo, en SistemaFarmacia existe buscarMedicamentoPorId(),
+que se usa en otros otros menús, y lo que hacen es crear un objeto sistema, pero si el método fuera static podrían hacer
+SistemaFarmacia.buscarMedicamentoPorId(). Alguna razón especial para ello? Es mejor no hacerlo static y crear un objeto sistema en cada menú?
+Supongo que la pregunta final es: Por qué cada menú gestiona un objeto SistemaFarmacia en vez de usar estáticamente los métodos de SistemaFarmacia??
+No sería lo mismo? Es peor hacerlo static?
 
 ------
-8. La línea System.out.println("  [FACTURACION] Los cargos han sido registrados en el sistema."); en el método dispensarRecetas() de MenuRecetas verdaderamente no significa nada no?
-Es decir, el tema de la facturación no se registra de ninguna forma en el sistema, o si?
+8. La línea System.out.println("  [FACTURACION] Los cargos han sido registrados en el sistema."); en el método dispensarRecetas() de MenuRecetas
+verdaderamente no significa nada no? Es decir, el tema de la facturación no se registra de ninguna forma en el sistema, o si?
 
 9. Relacionado con una frase que veo en el mismo método, explícame cómo has hecho la reposición automática para los tratamientos crónicos.
 Es decir, explícame el flujo en el programa que hace posible y efectiva esa reposición automática.
 ------
 
 10. Para qué sirve private static final long serialVersionUID = 1L; ??
+
+------------
+
+He incluido en el directorio raíz del proyecto dos archivos txt nuevos (entregables doc completo e instrucciones proyecto) donde se detallan los
+entregables y las instrucciones del proyecto. Es un proyecto conjunto con la asignatura de entornos de desarrollo por lo que también hay que
+realizar diagramas sobre el enunciado. He creado una carpeta diagramas donde he pegado todo lo que tenía hecho hasta ahora pero con este nuevo
+programa hecho por ti todo eso ya no me sirve y no coincide. Necesito que según lo que indican las instrucciones y los entregables, me actualices
+los scripts uml para que los diagramas concuerden con el proyecto actual y todo tenga coherencia. En cuanto a los diagramas de comportamiento,
+he elegido hacer diagrama de actividad y de estados, no sé si es la mejor opción ya me dirás tú. Revísalo todo y luego, sin borrar lo que ya tengo,
+haz nuevos archivos (como por ejemplo CasosDeUso_Corregido o CasosDeUso_Final llámalo como quieras dentro de que empiece igual que el archivo que
+ya tengo) donde generes los scripts uml necesarios para cumplir con los requisitos.
+
+
+----------------
+Cosa a revisar / tener en cuenta en la parte de programación según IA:
+⚠️ Único punto a revisar
+El requisito dice: "Almacenamiento en ficheros de texto y de objetos". El CSV de texto solo se usa la primera vez como datos de ejemplo.
+A partir de ahí, todo va al .dat. Técnicamente cumple (ambos tipos de fichero se usan), pero si el profesor espera que los cambios también
+se reflejen en CSV, no sería así.
+
+En la práctica esto es lo más habitual en sistemas con serialización y debería estar bien, pero vale la pena mencionarlo.
+
+Conclusión: el programa cumple todos los requisitos de programación. El único aspecto donde podría haber ambigüedad es la lectura de CSV solo
+en la primera ejecución, pero esto encaja perfectamente con lo que describe el doc: "Carga automática desde un fichero de algunos de los datos
+al iniciar".

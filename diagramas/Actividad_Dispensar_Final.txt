@@ -1,0 +1,58 @@
+@startuml
+title Dispensar Receta Médica
+
+start
+
+:Introducir ID de receta;
+:Buscar receta en el sistema;
+
+if (¿Receta encontrada?) then (no)
+    :Mostrar error: receta no encontrada;
+    stop
+else (sí)
+    if (¿Estado = DISPENSADA?) then (sí)
+        :Mostrar error: ya fue dispensada;
+        stop
+    elseif (¿Estado = CANCELADA?) then (sí)
+        :Mostrar error: receta cancelada;
+        stop
+    elseif (¿Estado = PENDIENTE_AUTORIZACION?) then (sí)
+        :Mostrar error: pendiente de autorización del comité;
+        stop
+    else (Estado = PENDIENTE)
+    endif
+
+    :Verificar stock para cada LineaReceta;
+
+    if (¿Stock suficiente en todos los medicamentos?) then (no)
+        :Mostrar medicamento con stock insuficiente\n(disponible vs. necesario);
+        stop
+    else (sí)
+        :Descontar stock de cada medicamento\nsegún cantidad de cada LineaReceta;
+
+        fork
+            ' Rama 1: actualizar estado de la receta
+            :Cambiar estado Receta → DISPENSADA;
+        fork again
+            ' Rama 2: comprobar alertas de stock mínimo
+            if (¿Stock ≤ stockMínimo en algún medicamento?) then (sí)
+                if (¿Ya existe alerta STOCK_MINIMO activa?) then (no)
+                    :Crear Alerta de tipo STOCK_MINIMO;
+                    :Mostrar aviso de stock mínimo al usuario;
+                else (sí)
+                endif
+            else (no)
+            endif
+        end fork
+
+        :Mostrar confirmación de dispensación;
+
+        if (¿Receta es crónica?) then (sí)
+            :Mostrar aviso de reposición\nautomática de tratamiento crónico;
+        else (no)
+        endif
+    endif
+endif
+
+stop
+@enduml

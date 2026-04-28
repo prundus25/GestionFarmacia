@@ -6,14 +6,32 @@ import sistema.SistemaFarmacia;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Menú de gestión de pacientes.
+ * <p>
+ * Permite listar, ver detalle, añadir, editar y
+ * eliminar pacientes del sistema.
+ */
 public class MenuPacientes {
 
     private SistemaFarmacia sistema;
 
+    /**
+     * Crea un nuevo {@code MenuPacientes} asociado al
+     * sistema de farmacia dado.
+     *
+     * @param sistema instancia central del sistema
+     */
     public MenuPacientes(SistemaFarmacia sistema) {
         this.sistema = sistema;
     }
 
+    /**
+     * Lanza el bucle interactivo del menú de pacientes.
+     * <p>
+     * Continúa mostrando opciones hasta que el usuario
+     * elige la opción {@code 0} (Volver).
+     */
     public void mostrar() {
         boolean salir = false;
         while (!salir) {

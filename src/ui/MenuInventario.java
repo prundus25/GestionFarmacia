@@ -7,18 +7,36 @@ import model.enums.TipoAlerta;
 import sistema.SistemaFarmacia;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
+/**
+ * Menú de gestión del inventario de medicamentos.
+ * <p>
+ * Permite listar, buscar, ver detalle, añadir, editar
+ * y eliminar medicamentos. Al añadir un medicamento
+ * también genera las alertas pertinentes si el stock
+ * inicial es bajo o la fecha de caducidad es próxima.
+ */
 public class MenuInventario {
 
     private SistemaFarmacia sistema;
 
+    /**
+     * Crea un nuevo {@code MenuInventario} asociado al
+     * sistema de farmacia dado.
+     *
+     * @param sistema instancia central del sistema
+     */
     public MenuInventario(SistemaFarmacia sistema) {
         this.sistema = sistema;
     }
 
+    /**
+     * Lanza el bucle interactivo del menú de inventario.
+     * <p>
+     * Continúa mostrando opciones hasta que el usuario
+     * elige la opción {@code 0} (Volver).
+     */
     public void mostrar() {
         boolean salir = false;
         while (!salir) {
@@ -184,12 +202,6 @@ public class MenuInventario {
 
         System.out.println("  Editando: " + m.getNombre() + " (deja en blanco para no cambiar)");
 
-        System.out.print("  Nombre [" + m.getNombre() + "]: ");
-        String nombre = Consola.scanner.nextLine().trim();
-        if (!nombre.isEmpty()) {
-            m.setNombre(nombre);
-        }
-
         System.out.print("  Stock [" + m.getStock() + "]: ");
         String stockStr = Consola.scanner.nextLine().trim();
         if (!stockStr.isEmpty()) {
@@ -207,16 +219,6 @@ public class MenuInventario {
                 m.setStockMinimo(Integer.parseInt(stockMinStr));
             } catch (NumberFormatException e) {
                 System.out.println("  Valor invalido, no se cambio el stock minimo.");
-            }
-        }
-
-        System.out.print("  Fecha caducidad [" + m.getFechaCaducidad() + "] (dd/MM/yyyy): ");
-        String fechaStr = Consola.scanner.nextLine().trim();
-        if (!fechaStr.isEmpty()) {
-            try {
-                m.setFechaCaducidad(LocalDate.parse(fechaStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-            } catch (DateTimeParseException e) {
-                System.out.println("  Formato incorrecto, no se cambio la fecha.");
             }
         }
 

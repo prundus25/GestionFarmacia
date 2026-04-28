@@ -11,14 +11,34 @@ import sistema.SistemaFarmacia;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Menú de gestión de alertas y órdenes de reposición.
+ * <p>
+ * Permite ver alertas activas o históricas, marcarlas
+ * como resueltas, generar órdenes de reposición a
+ * partir de alertas de stock mínimo activas, y aprobar
+ * o cancelar dichas órdenes.
+ */
 public class MenuAlertas {
 
     private SistemaFarmacia sistema;
 
+    /**
+     * Crea un nuevo {@code MenuAlertas} asociado al
+     * sistema de farmacia dado.
+     *
+     * @param sistema instancia central del sistema
+     */
     public MenuAlertas(SistemaFarmacia sistema) {
         this.sistema = sistema;
     }
 
+    /**
+     * Lanza el bucle interactivo del menú de alertas.
+     * <p>
+     * Continúa mostrando opciones hasta que el usuario
+     * elige la opción {@code 0} (Volver).
+     */
     public void mostrar() {
         boolean salir = false;
         while (!salir) {

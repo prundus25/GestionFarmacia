@@ -1,0 +1,191 @@
+PROYECTO-RETO: PROGRAMACIÓN y ENTORNOS DE DESARROLLO - 1º DAM
+Entregables para Entornos de Desarrollo
+Se presentarán los siguientes diagramas y documentos:
+1. Diagrama de casos de uso
+Se deberá realizar un diagrama de casos de uso que represente la funcionalidad principal del
+módulo asignado.
+El diagrama debe incluir:
+● Actores que interactúan con el sistema
+● Casos de uso principales
+● Relaciones entre actores y casos de uso
+● Relaciones <<include>> y <<extend>> cuando proceda
+● Agrupación en límites del sistema
+El objetivo es representar qué funcionalidades ofrece el sistema a los distintos actores, sin
+detallar todavía aspectos internos de implementación.
+Ficha descriptiva de los casos de uso:
+Para cada caso de uso del diagrama, se deberá incluir una ficha descriptiva que documente su
+comportamiento.
+Cada ficha deberá incluir al menos:
+● Nombre del caso de uso
+● Actor o actores
+● Descripción
+● Precondiciones
+● Flujo principal
+● Flujos alternativos
+● Postcondiciones
+Las fichas deben permitir entender cómo se ejecuta cada funcionalidad del sistema representada
+en el diagrama.
+
+2. Diagrama de clases
+Se deberá realizar un diagrama de clases que modele la estructura del dominio del módulo
+asignado.
+El diagrama debe incluir:
+● Clases
+● Atributos
+● Métodos
+● Relaciones entre clases
+● Multiplicidades
+Además, se deberán utilizar correctamente los siguientes elementos de UML:
+● Clases asociativas
+● Clases abstractas
+● Interfaces
+● Herencia
+● Agregación o composición
+El objetivo es modelar las entidades principales del sistema y sus relaciones, a partir de la
+información proporcionada en el enunciado.
+Justificación de decisiones de modelado
+En aquellos casos donde:
+● existan varias alternativas de modelado posibles, o
+● la elección realizada no resulte evidente a partir del diagrama,
+se deberá incluir una breve justificación explicando la decisión tomada.
+Esta justificación debe centrarse en:
+● decisiones de diseño relevantes,
+● elección entre distintas relaciones o estructuras,
+● uso de herencia, interfaces o clases asociativas.
+
+No es necesario justificar elementos que resulten claros o directos a partir del propio diagrama.
+Recomendaciones
+● No se deben introducir elementos que no puedan justificarse a partir del enunciado.
+● Se priorizará la claridad del modelo frente a la cantidad de elementos.
+● Los nombres de clases, métodos y atributos deben ser coherentes y significativos.
+● Los diagramas deben ser legibles y no excesivamente sobrecargados.
+3. Diagramas de comportamiento.
+Se podrán utilizar los siguientes diagramas UML de comportamiento:
+● Diagrama de actividad → para representar flujos de trabajo o procesos del sistema.
+● Diagrama de estados → para representar los cambios de estado de una entidad del
+sistema.
+● Diagrama de secuencia → para representar la interacción entre actores y componentes
+del sistema en orden temporal.
+No es necesario realizar todos los tipos de diagramas. Cada grupo deberá elegir los más
+adecuados para representar el comportamiento del sistema en su módulo.
+Cada grupo deberá incluir al menos dos diagramas de comportamiento, elegidos entre los
+anteriores.
+Los diagramas deben modelar procesos relevantes del sistema, por ejemplo:
+● el flujo de atención a un paciente
+● el proceso de triaje en urgencias
+● la dispensación de medicamentos
+● la asignación de camas
+● la gestión de pedidos de inventario
+● la asignación de consultas médicas
+Los diagramas han de representar procesos significativos del sistema y no simplemente ejemplos
+genéricos.
+Dependiendo del tipo de diagrama elegido, deberán aparecer los siguientes elementos:
+En diagramas de actividad
+
+● nodo inicial y nodo final
+● actividades o acciones
+● decisiones
+● flujos de control
+● posibles procesos paralelos
+En diagramas de estados
+● estados de la entidad
+● transiciones
+● eventos que provocan los cambios de estado
+En diagramas de secuencia
+● actores o participantes
+● líneas de vida
+● mensajes entre participantes
+● orden temporal de las interacciones
+Justificación de decisiones de modelado
+En caso de que existan varias formas posibles de representar un proceso, o cuando la elección
+del tipo de diagrama no resulte evidente, se deberá incluir una breve justificación explicando la
+decisión tomada.
+4. Entrega de la documentación
+Los diagramas y documentación deberán entregarse de la siguiente manera:
+En el documento principal del proyecto
+● Todos los Diagramas en imagen
+● Fichas descriptivas de los casos de uso
+● Cada diagrama deberá estar correctamente titulado y comentado.
+En los anexos
+Se deberá incluir el código fuente PlantUML (o archivos fuente de los diagramas usados)
+correspondiente a todos los diagramas.
+5. Coherencia entre modelos y código
+
+Todos los artefactos del proyecto (diagramas UML, fichas de casos de uso y código del
+programa) deben mantener coherencia entre sí.
+Esto implica que:
+● Los actores y casos de uso del diagrama de casos de uso deben corresponderse con las
+funcionalidades implementadas en la aplicación.
+● Las clases, atributos, métodos y relaciones representadas en el diagrama de clases deben
+reflejarse de forma consistente en la estructura del código.
+● Los diagramas de comportamiento deben representar procesos que realmente existen en el
+sistema y que puedan identificarse en la lógica de la aplicación.
+● Las fichas descriptivas de los casos de uso deben corresponderse con la funcionalidad
+implementada.
+Asimismo, los distintos diagramas UML deben ser coherentes entre sí. Por ejemplo:
+● Las entidades que aparecen en los diagramas de comportamiento deberían corresponderse
+con clases definidas en el diagrama de clases. Especificamente los atributos, métodos y
+relaciones no sólo deben corresponder, sino llamarse igual.
+● Los procesos representados en los diagramas de comportamiento deberían corresponderse
+con casos de uso definidos en el diagrama de casos de uso.
+● Los actores de los casos de uso deben participar de forma coherente en los procesos
+modelados.
+Actualización de los diagramas
+Durante la fase de desarrollo es posible que el diseño inicial evolucione o que se introduzcan
+modificaciones en la implementación.
+En ese caso:
+Cualquier cambio realizado en la codificación deberá reflejarse también en los
+diagramas y documentación correspondientes.
+Esto significa que:
+● Si se añade o elimina una clase en el código, el diagrama de clases debe actualizarse para
+que quede perfectamente coherente.
+● Si se modifica el comportamiento de una funcionalidad, deberán actualizarse los diagramas
+de comportamiento y/o fichas de casos de uso correspondientes.
+● Si se introduce una nueva funcionalidad relevante, deberá reflejarse también en el diagrama
+de casos de uso.
+
+Los diagramas deben representar el estado final del sistema implementado, no únicamente el
+diseño inicial.
+La falta de coherencia entre el modelo UML y la implementación podrá afectar de manera
+importante a la evaluación del proyecto.
+
+Entregables para Programación
+IMPLEMENTACIÓN DEL PROGRAMA EN JAVA
+- El programa tendrá que ser funcional. Es decir, deberá funcionar correctamente y realizar
+las acciones necesarias para cumplir con los requisitos. Dependiendo de cada proyecto,
+podrían ser, por ejemplo:
+● Registro de pacientes, material, médicos, inventario, personal, diagnósticos…
+● Recopilación de antecedentes médicos (enfermedades, alergias, medicación, etc.),
+historiales médicos, pedidos…
+● Consultas necesarias para cumplir con los requisitos.
+● Posibilidad de modificar los datos que puedan ser susceptibles de ser modificados.
+● Actualizaciones de stock, bajas de pacientes, etc.
+● Notificación al área de facturación (simulada, por ejemplo, con un mensaje por
+consola).
+- El programa deberá permitir navegar hacia las diferentes opciones a través de menús y
+submenús
+● Interfaz de consola con menús claros y navegación entre opciones.
+● Submenús para pacientes, médicos, historial, consultas, etc.
+● Validación de entradas del usuario (evitar errores por datos mal ingresados).
+● Búsqueda de pacientes, productos, disponibilidad de camas, …
+- Diseño orientado a objetos
+● Uso de clases independientes.
+● Herencia, clases abstractas (si las hubiera) e interfaces (si las hubiera).
+● Atributos privados con los getters y setters necesarios.
+● Métodos bien definidos para las acciones clave del sistema.
+
+● Separación de responsabilidades entre clases.
+● Uso de estructuras como listas, mapas y/conjuntos para almacenar datos.
+- Persistencia de datos
+● Almacenamiento de la información en ficheros de texto y de objetos.
+● Carga automática desde un fichero de algunos de los datos (por ejemplo, datos de
+pacientes/médicos, etc. que estén guardados en un fichero de texto) al iniciar el
+programa.
+● Opción de guardar los cambios cuando se modifica la información.
+- Calidad del código
+● Código bien estructurado, indentado y con comentarios explicativos.
+● Nombres descriptivos para clases, métodos y variables.
+● Manejo de errores con excepciones y validaciones de entrada.
+● Evitar duplicación de código (uso de funciones reutilizables).
+●
+● El programa no deberá abortar bajo ningún concepto.

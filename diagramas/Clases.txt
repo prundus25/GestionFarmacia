@@ -1,0 +1,126 @@
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+
+' --- Entidades de Apoyo ---
+class Fecha {
+    - dia: int
+    - mes: int
+    - anio: int
+    + validar(): boolean
+}
+
+' --- Interfaces y Clases Abstractas ---
+abstract class Persona {
+    # id: String
+    # nombre: String
+    # email: String
+}
+
+interface IAutorizable {
+    + solicitarAutorizacion(): Boolean
+}
+
+abstract class Medicamento {
+    - idMedicamento: String
+    - nombre: String
+    - principioActivo: String
+    - stockMinimo: Integer
+    + verificarStock(): Boolean
+}
+
+' --- Jerarquía de Medicamentos ---
+class MedicamentoEstandar extends Medicamento {
+    + calcularPrecio(): Double
+}
+
+class MedicamentoRestringido extends Medicamento implements IAutorizable {
+    - costo: Double
+    - motivoRestriccion: String
+    + solicitarAutorizacion(): Boolean
+}
+
+' --- Actores y Comité ---
+abstract class Empleado extends Persona {
+    - legajo: String
+}
+
+class Farmaceutico extends Empleado {
+    + validarReceta(r: Receta): Boolean
+    + registrarDispensacion(r: Receta)
+}
+
+class Medico extends Empleado {
+    - especialidad: String
+    + prescribir(p: Paciente): Receta
+}
+
+class PersonalFarmacia extends Empleado {
+    + actualizarInventario()
+    + gestionarAlertas()
+}
+
+class Paciente extends Persona {
+    - historialAlergias: List<String>
+    - esCronico: Boolean
+}
+
+class ComiteFarmacoterapeutico {
+    - nombreComite: String
+    - solicitudesPendientes: List<String>
+    + recibirSolicitud(idReceta: String)
+    + evaluarSolicitud(idReceta: String): Boolean
+}
+
+' --- Gestión de Recetas ---
+class Receta {
+    - idReceta: String
+    - fecha: Fecha
+    - estado: String
+    + marcarComoValidada()
+}
+
+class LineaReceta {
+    - dosis: String
+    - frecuencia: String
+}
+
+' --- Bloque de Inventario y Alertas ---
+class Inventario {
+    - ultimaActualizacion: Fecha
+    + verificarCaducidades()
+    + dispararAlerta(m: Medicamento)
+}
+
+class Lote {
+    - idLote: String
+    - fechaCaducidad: Fecha
+    - cantidadDisponible: Integer
+}
+
+class Alerta {
+    - tipo: String
+    - mensaje: String
+    - fechaGeneracion: Fecha
+    + notificar()
+}
+
+' --- RELACIONES FINALES ---
+
+' Flujo de Receta
+Paciente "1" -- "0..*" Receta : posee >
+Medico "1" -- "0..*" Receta : emite >
+Farmaceutico "1" -- "0..*" Receta : procesa >
+Receta "1" *-- "1..*" LineaReceta
+LineaReceta "*" -- "1" Medicamento : referencia >
+
+' Flujo de Inventario y Alertas (RECUPERADO)
+Inventario "1" o-- "*" Lote : agrupa >
+Lote "*" -- "1" Medicamento : pertenece a >
+Inventario "1" -- "*" Alerta : dispara >
+PersonalFarmacia "1" -- "*" Alerta : gestiona >
+
+' Flujo de Autorización
+MedicamentoRestringido "n" -- "1" ComiteFarmacoterapeutico : requiere aprobación de >
+
+@enduml

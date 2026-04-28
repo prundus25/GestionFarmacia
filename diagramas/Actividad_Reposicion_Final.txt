@@ -1,0 +1,50 @@
+@startuml
+title Gestión de Alertas y Proceso de Reposición de Stock
+
+start
+
+' --- Generación automática de alerta ---
+:El sistema descuenta stock al dispensar una receta;
+
+if (¿Stock del medicamento ≤ stockMínimo?) then (sí)
+    if (¿Ya existe Alerta STOCK_MINIMO activa\npara ese medicamento?) then (no)
+        :Crear Alerta de tipo STOCK_MINIMO;
+    else (sí)
+        :No se duplica la alerta;
+    endif
+else (no)
+endif
+
+' --- Personal revisa alertas ---
+:Personal de Farmacia accede a\n"Gestionar Alertas y Órdenes";
+:Consultar alertas activas (no resueltas);
+
+if (¿Hay alertas de STOCK_MINIMO activas?) then (no)
+    :Mostrar mensaje: no hay alertas de stock\npara generar una orden;
+    stop
+else (sí)
+    :Seleccionar "Generar Orden de Reposición";
+    :Sistema recopila todas las alertas\nde tipo STOCK_MINIMO no resueltas;
+    :Crear una LineaOrden por cada\nmedicamento con stock bajo;
+    :Crear OrdenReposicion en estado PENDIENTE;
+    :Mostrar resumen de la orden generada;
+endif
+
+' --- Gestión de la orden ---
+:Personal de Farmacia consulta órdenes pendientes;
+
+if (¿Acción sobre la orden?) then (Aprobar)
+    :Sumar cantidadSolicitada al stock\nde cada medicamento de la orden;
+    :Cambiar estado OrdenReposicion → APROBADA;
+    :Mostrar confirmación;
+else (Cancelar)
+    :Cambiar estado OrdenReposicion → CANCELADA;
+    :Mostrar confirmación;
+endif
+
+' --- Resolver alertas manualmente ---
+:Personal puede marcar alertas\nindividualmente como resueltas;
+:Alerta.resuelta = true;
+
+stop
+@enduml
