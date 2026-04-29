@@ -1,8 +1,11 @@
 package ui;
 
 import model.Alerta;
+import model.LineaOrden;
 import model.Medicamento;
+import model.OrdenReposicion;
 import model.enums.CategoriaMedicamento;
+import model.enums.EstadoOrden;
 import model.enums.TipoAlerta;
 import sistema.SistemaFarmacia;
 
@@ -48,11 +51,12 @@ public class MenuInventario {
             System.out.println("  5. Añadir medicamento");
             System.out.println("  6. Editar medicamento");
             System.out.println("  7. Eliminar medicamento");
+            System.out.println("  8. Gestionar alternativas");
             System.out.println("  0. Volver");
             System.out.println("======================================");
             System.out.print("  Opcion: ");
 
-            int opcion = Consola.leerEntero(0, 7);
+            int opcion = Consola.leerEntero(0, 8);
 
             switch (opcion) {
                 case 1 -> listarTodos();
@@ -62,6 +66,7 @@ public class MenuInventario {
                 case 5 -> añadirMedicamento();
                 case 6 -> editarMedicamento();
                 case 7 -> eliminarMedicamento();
+                case 8 -> gestionarAlternativas();
                 case 0 -> salir = true;
             }
         }
@@ -135,6 +140,17 @@ public class MenuInventario {
         System.out.println("  Caducidad:    " + m.getFechaCaducidad());
         System.out.println("  Precio:       " + m.getPrecioUnitario() + " EUR");
         System.out.println("  Restringido:  " + (m.isRestringido() ? "SI" : "NO"));
+        if (!m.getAlternativas().isEmpty()) {
+            System.out.println("  Alternativas:");
+            for (int altId : m.getAlternativas()) {
+                Medicamento alt = sistema.buscarMedicamentoPorId(altId);
+                if (alt != null) {
+                    System.out.println("    [" + alt.getId() + "] " + alt.getNombre());
+                }
+            }
+        } else {
+            System.out.println("  Alternativas: ninguna registrada");
+        }
         Consola.pausar();
     }
 
@@ -253,6 +269,35 @@ public class MenuInventario {
             return;
         }
 
+        // Bloqueo duro: no se puede eliminar si hay una orden de reposicion pendiente
+        for (OrdenReposicion o : sistema.getOrdenes()) {
+            if (o.getEstado() == EstadoOrden.PENDIENTE) {
+                for (LineaOrden l : o.getLineas()) {
+                    if (l.getMedicamento().getId() == id) {
+                        System.out.println("  No se puede eliminar '" + m.getNombre()
+                                + "': existe una orden de reposicion pendiente (ID orden: "
+                                + o.getId() + ").");
+                        System.out.println("  Cancela o confirma la orden antes de eliminar.");
+                        Consola.pausar();
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Aviso con confirmacion: alerta de stock minimo activa
+        boolean tieneAlertaStock = sistema.existeAlertaActiva(id, TipoAlerta.STOCK_MINIMO);
+        if (tieneAlertaStock) {
+            System.out.println("  [AVISO] Este medicamento tiene una alerta de stock minimo activa.");
+            System.out.print("  ¿Seguro que quieres eliminarlo de todas formas? (s/n): ");
+            String aviso = Consola.scanner.nextLine().trim();
+            if (!aviso.equalsIgnoreCase("s")) {
+                System.out.println("  Cancelado.");
+                Consola.pausar();
+                return;
+            }
+        }
+
         System.out.print("  ¿Seguro que quieres eliminar '" + m.getNombre() + "'? (s/n): ");
         String conf = Consola.scanner.nextLine().trim();
         if (!conf.equalsIgnoreCase("s")) {
@@ -274,5 +319,50 @@ public class MenuInventario {
         }
         System.out.print("  Elige categoria (numero): ");
         return categorias[Consola.leerEntero(1, categorias.length) - 1];
+    }
+
+    private void gestionarAlternativas() {
+        System.out.print("  ID del medicamento: ");
+        int id = Consola.leerEnteroPositivo();
+        Medicamento m = sistema.buscarMedicamentoPorId(id);
+        if (m == null) {
+            System.out.println("  Medicamento no encontrado.");
+            Consola.pausar();
+            return;
+        }
+
+        System.out.println("  Medicamento: " + m.getNombre());
+        System.out.println("  1. Añadir alternativa");
+        System.out.println("  2. Eliminar alternativa");
+        System.out.println("  0. Volver");
+        System.out.print("  Opcion: ");
+        int op = Consola.leerEntero(0, 2);
+
+        if (op == 0) return;
+
+        System.out.print("  ID del medicamento alternativo: ");
+        int idAlt = Consola.leerEnteroPositivo();
+        Medicamento alt = sistema.buscarMedicamentoPorId(idAlt);
+        if (alt == null) {
+            System.out.println("  Medicamento alternativo no encontrado.");
+            Consola.pausar();
+            return;
+        }
+        if (id == idAlt) {
+            System.out.println("  Un medicamento no puede ser alternativa de si mismo.");
+            Consola.pausar();
+            return;
+        }
+
+        if (op == 1) {
+            sistema.añadirAlternativa(id, idAlt);
+            System.out.println("  Alternativa añadida: " + m.getNombre()
+                    + " <-> " + alt.getNombre());
+        } else {
+            sistema.eliminarAlternativa(id, idAlt);
+            System.out.println("  Alternativa eliminada: " + m.getNombre()
+                    + " <-> " + alt.getNombre());
+        }
+        Consola.pausar();
     }
 }

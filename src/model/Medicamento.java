@@ -3,6 +3,8 @@ package model;
 import model.enums.CategoriaMedicamento;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Representa un medicamento del inventario de la farmacia
@@ -23,6 +25,7 @@ public class Medicamento implements Serializable {
     private LocalDate fechaCaducidad;
     private double precioUnitario;
     private boolean restringido;
+    private List<Integer> alternativas = new ArrayList<>();
 
     /**
      * Crea un nuevo Medicamento con todos sus
@@ -185,6 +188,14 @@ public class Medicamento implements Serializable {
     public void setRestringido(boolean restringido) {
         this.restringido = restringido;
     }
+
+    /**
+     * Devuelve la lista de IDs de medicamentos alternativos
+     * a este.
+     *
+     * @return lista mutable de IDs de alternativas
+     */
+    public List<Integer> getAlternativas() { return alternativas; }
 
     /**
      * Devuelve una representación textual del medicamento

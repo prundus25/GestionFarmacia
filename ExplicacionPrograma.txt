@@ -100,7 +100,8 @@ se metieran directamente en Receta habría que usar listas paralelas (una lista 
 medicamentos, otra de dosis, otra de frecuencias...), lo que es propenso a errores
 y muy difícil de mantener. Al extraer esos datos a una clase LineaReceta, cada
 "renglón" de la receta es un objeto independiente con sus propios atributos bien
-agrupados. El mismo razonamiento aplica a LineaOrden: una orden de reposición puede
+agrupados.
+El mismo razonamiento aplica a LineaOrden: una orden de reposición puede
 incluir varios medicamentos distintos, cada uno con su propia cantidad solicitada.
 Este patrón —cabecera/línea— es el estándar habitual para representar documentos con
 múltiples ítems: pedidos, facturas, recetas. También es lo que hace que el diagrama

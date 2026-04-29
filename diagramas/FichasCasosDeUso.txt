@@ -8,8 +8,8 @@ no casos de uso que el Personal inicia directamente.
 
 - UC8 tiene dos actores: el Personal tramita la autorización en el sistema, pero el Comité es quien la decide externamente.
 
-- Las fichas de <<include>> (UC2, UC5, UC6, UC7) y <<extend>> (UC3, UC8, UC12) están escritas de forma independiente pero
-con la referencia cruzada al UC padre, tal como exige la coherencia entre modelos que pide el doc.
+- Las fichas de <<include>> (UC2, UC5, UC6, UC7) y <<extend>> (UC3, UC8, UC12, UC13, UC14, UC15) están escritas de forma
+independiente pero con la referencia cruzada al UC padre, tal como exige la coherencia entre modelos que pide el doc.
 
 ══════════════════════════════════════════════════════════════
 UC1 - Gestionar Inventario de Medicamentos
@@ -49,6 +49,15 @@ Flujos alternativos:
       en menos de 30 días, el sistema genera automáticamente una
       alerta de CADUCIDAD.
       [extend UC3 - Generar Alerta Automática]
+    - Si el Personal accede a la gestión de alternativas
+      terapéuticas de un medicamento, se ejecuta el flujo
+      extendido.
+      [extend UC15 - Gestionar Alternativas de Medicamento]
+    - Si se intenta eliminar un medicamento con una orden de
+      reposición pendiente, el sistema bloquea la operación.
+    - Si se intenta eliminar un medicamento con alerta de
+      STOCK_MINIMO activa, el sistema muestra un aviso y pide
+      confirmación adicional.
     - Si se intenta eliminar un medicamento que no existe, el
       sistema muestra un mensaje de error y vuelve al submenú.
 
@@ -451,7 +460,8 @@ Flujo principal:
     2. El sistema muestra el submenú de alertas.
     3. El Personal selecciona una operación (ver activas, ver
        todas, marcar resuelta, generar orden, ver órdenes,
-       aprobar orden, cancelar orden).
+       confirmar recepción, cancelar orden, retirar stock
+       caducado).
     4. El sistema ejecuta la operación solicitada.
     5. El Personal puede repetir el paso 3 hasta seleccionar
        "Volver".
@@ -462,6 +472,12 @@ Flujos alternativos:
       solicita generar una orden de reposición, se ejecuta el
       flujo extendido.
       [extend UC12 - Generar Orden de Reposición]
+    - Si el Personal confirma la recepción de una orden
+      pendiente, se ejecuta el flujo extendido.
+      [extend UC13 - Confirmar Recepción de Reposición]
+    - Si el Personal retira el stock de un medicamento caducado,
+      se ejecuta el flujo extendido.
+      [extend UC14 - Retirar Stock Caducado]
     - Si no hay alertas activas de STOCK_MINIMO, el sistema
       informa de que no es posible generar una orden de
       reposición en ese momento.
@@ -469,8 +485,9 @@ Flujos alternativos:
 Postcondiciones:
     - Las alertas marcadas como resueltas pasan a estado
       resuelta = true.
-    - Las órdenes de reposición aprobadas actualizan el stock
-      del inventario.
+    - Las órdenes de reposición confirmadas actualizan el stock
+      del inventario y resuelven automáticamente las alertas
+      STOCK_MINIMO correspondientes.
 
 
 ══════════════════════════════════════════════════════════════
@@ -512,5 +529,147 @@ Flujos alternativos:
 
 Postcondiciones:
     - Existe una nueva OrdenReposicion en estado PENDIENTE.
-    - Si la orden se aprueba posteriormente (UC11), el stock
+    - Si la orden se confirma posteriormente (UC13), el stock
       de cada medicamento queda actualizado.
+
+
+══════════════════════════════════════════════════════════════
+UC13 - Confirmar Recepción de Reposición
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Confirmar Recepción de Reposición
+
+Actor/es: Personal de Farmacia (extendido desde UC11)
+
+Descripción:
+    El Personal registra la llegada física de una orden de
+    reposición. El sistema suma las cantidades recibidas al
+    stock de cada medicamento incluido en la orden y resuelve
+    automáticamente las alertas STOCK_MINIMO que queden
+    abastecidas.
+
+Precondiciones:
+    - Existe al menos una OrdenReposicion en estado PENDIENTE.
+
+Flujo principal:
+    1. El Personal selecciona "Confirmar recepción de
+       reposición".
+    2. El sistema lista las órdenes en estado PENDIENTE.
+    3. El Personal introduce el ID de la orden recibida.
+    4. El sistema verifica que la orden existe y está en estado
+       PENDIENTE.
+    5. Para cada línea de la orden, el sistema suma la cantidad
+       solicitada al stock actual del medicamento.
+    6. Si el nuevo stock supera el stock mínimo, el sistema
+       resuelve automáticamente la alerta STOCK_MINIMO activa
+       de ese medicamento (si la hay).
+    7. El sistema cambia el estado de la orden a APROBADA.
+    8. El sistema muestra confirmación de la recepción.
+
+Flujos alternativos:
+    - Si no hay órdenes pendientes, el sistema lo indica y
+      regresa al submenú.
+    - Si el ID introducido no corresponde a ninguna orden
+      pendiente, el sistema muestra un error.
+
+Postcondiciones:
+    - El stock de los medicamentos de la orden queda
+      incrementado.
+    - La orden pasa a estado APROBADA.
+    - Las alertas STOCK_MINIMO cuyo medicamento ha recuperado
+      stock suficiente quedan resueltas automáticamente.
+
+
+══════════════════════════════════════════════════════════════
+UC14 - Retirar Stock Caducado
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Retirar Stock Caducado
+
+Actor/es: Personal de Farmacia (extendido desde UC11)
+
+Descripción:
+    El Personal retira del uso el stock de un medicamento
+    caducado poniendo su cantidad a cero. El medicamento
+    no se elimina del inventario. Si el medicamento tenía
+    stock, el sistema genera automáticamente una alerta
+    STOCK_MINIMO para que se pueda gestionar la reposición.
+
+Precondiciones:
+    - Existe al menos una alerta activa de tipo CADUCIDAD.
+
+Flujo principal:
+    1. El Personal selecciona "Retirar stock de medicamento
+       caducado".
+    2. El sistema lista las alertas activas de tipo CADUCIDAD.
+    3. El Personal introduce el ID de la alerta del medicamento
+       a retirar.
+    4. El sistema localiza el medicamento correspondiente.
+    5. El sistema guarda el stock anterior y lo pone a cero.
+    6. El sistema marca la alerta de CADUCIDAD como resuelta.
+    7. Si el stock anterior era mayor que cero y no existe ya
+       una alerta STOCK_MINIMO activa para ese medicamento, el
+       sistema la crea automáticamente.
+    8. El sistema muestra confirmación e indica que se puede
+       usar la opción 4 para generar una orden de reposición.
+
+Flujos alternativos:
+    - Si no hay alertas de caducidad activas, el sistema lo
+      indica y regresa al submenú.
+    - Si el ID de alerta no corresponde a una alerta de
+      caducidad activa, el sistema muestra un error.
+
+Postcondiciones:
+    - El stock del medicamento queda a cero.
+    - La alerta de CADUCIDAD queda resuelta.
+    - Si procedía, existe una nueva alerta STOCK_MINIMO activa.
+    - El medicamento permanece en el inventario.
+
+
+══════════════════════════════════════════════════════════════
+UC15 - Gestionar Alternativas de Medicamento
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Gestionar Alternativas de Medicamento
+
+Actor/es: Personal de Farmacia (extendido desde UC1)
+
+Descripción:
+    El Personal registra o elimina relaciones de equivalencia
+    terapéutica entre medicamentos. Cuando se intenta dispensar
+    una receta con stock insuficiente, el sistema muestra los
+    medicamentos alternativos registrados para informar al
+    médico prescriptor.
+
+Precondiciones:
+    - Existen al menos dos medicamentos en el inventario.
+
+Flujo principal:
+    1. El Personal selecciona "Gestionar alternativas" dentro
+       del submenú de inventario.
+    2. El sistema solicita el ID del medicamento base.
+    3. El sistema muestra el submenú de alternativas:
+       1. Añadir alternativa
+       2. Eliminar alternativa
+       0. Volver
+    4a. Si se elige añadir: el sistema solicita el ID del
+        medicamento alternativo y registra la relación de
+        forma bidireccional (A es alternativa de B y viceversa).
+    4b. Si se elige eliminar: el sistema solicita el ID del
+        medicamento alternativo y elimina la relación en
+        ambas direcciones.
+    5. El sistema confirma la operación realizada.
+
+Flujos alternativos:
+    - Si el medicamento base o el alternativo no existen, el
+      sistema muestra un error.
+    - Si se intenta registrar un medicamento como alternativa
+      de sí mismo, el sistema muestra un error.
+    - Si el Personal elige la opción 0, regresa al submenú de
+      inventario sin realizar ninguna acción.
+
+Postcondiciones:
+    - La relación de alternativa queda registrada (o eliminada)
+      de forma bidireccional en ambos medicamentos.
+    - Al intentar dispensar una receta con stock insuficiente,
+      el sistema muestra las alternativas disponibles.

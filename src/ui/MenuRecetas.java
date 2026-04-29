@@ -7,6 +7,7 @@ import sistema.SistemaFarmacia;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Menú de gestión de recetas médicas.
@@ -281,6 +282,16 @@ public class MenuRecetas {
                 System.out.println("  Stock insuficiente para: " + m.getNombre()
                         + " (disponible: " + m.getStock()
                         + ", necesario: " + linea.getCantidad() + ")");
+                List<Integer> alts = m.getAlternativas();
+                if (!alts.isEmpty()) {
+                    System.out.println("  Alternativas disponibles (informe al medico):");
+                    for (int altId : alts) {
+                        Medicamento alt = sistema.buscarMedicamentoPorId(altId);
+                        if (alt != null) {
+                            System.out.println("    " + alt);
+                        }
+                    }
+                }
                 Consola.pausar();
                 return;
             }

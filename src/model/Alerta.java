@@ -128,14 +128,16 @@ public class Alerta implements Serializable {
     public String toString() {
         String detalle;
         if (tipo == TipoAlerta.CADUCIDAD) {
-            detalle = "Caduca el: " + medicamento.getFechaCaducidad();
+            detalle = "Caduca el: " + medicamento.getFechaCaducidad()
+                    + " | Stock: " + medicamento.getStock()
+                    + " (mín: " + medicamento.getStockMinimo() + ")";
         } else {
             detalle = "Stock actual: " + medicamento.getStock()
                     + " (mín: " + medicamento.getStockMinimo() + ")";
         }
         return String.format(
-                "[%d] %-14s | %-25s | %s | %s | %s",
-                id, tipo, medicamento.getNombre(),
+                "[%d] %-14s | [Med.%d] %-21s | %s | %s | %s",
+                id, tipo, medicamento.getId(), medicamento.getNombre(),
                 detalle, fecha,
                 resuelta ? "RESUELTA" : "ACTIVA");
     }

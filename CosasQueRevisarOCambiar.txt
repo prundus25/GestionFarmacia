@@ -33,6 +33,18 @@ Es decir, explícame el flujo en el programa que hace posible y efectiva esa rep
 
 10. Para qué sirve private static final long serialVersionUID = 1L; ??
 
+11. En la gestión de alertas, cada vez que se muestre una alerta, que incluya el ID del medicamento afectado en la alerta.
+
+12. En el método gestionarAlternativas de MenuInventario veo que en el submenú solo hay dos opciones añadir o eliminar alternativa, coméntame,
+no sería útil añadir una opción de volver como en otros menús por si el usuario se ha equivocado al entrar en ese menú?
+Ya que estás revisa todos los menús del programa a ver si hace falta alguna opción de volver que te hayas dejado.
+
+13. Cuándo es que se genera una alerta de STOCK_MINIMO?? veo que por ejemplo esta alerta:
+[3] STOCK_MINIMO   | Doxorrubicina 50mg        | Stock actual: 6 (mín: 3) | 2026-04-29 | ACTIVA
+se ha generado cuando el stock actual está cerca del mínimo pero no sé cuál es el valor de stock a partir del cual se lanza esa alerta.
+Coméntame eso y también si ese valor cambia con cada medicamento o si es igual para todos. Es decir, si la alerta para algunos medicamentos
+se lanza cuando hay menos de 5 UDs por encima del mínimo y para otros se lanza acuando hay menos de 10 UDs por encima del mínimo, o si es para todos igual.
+
 ------------
 
 He incluido en el directorio raíz del proyecto dos archivos txt nuevos (entregables doc completo e instrucciones proyecto) donde se detallan los

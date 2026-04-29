@@ -27,6 +27,11 @@ rectangle "Sistema de Gestión de Farmacia Hospitalaria" {
     ' --- Alertas y Reposición ---
     (Gestionar Alertas\ny Órdenes) as UC11
     (Generar Orden de\nReposición) as UC12
+    (Confirmar Recepción\nde Reposición) as UC13
+    (Retirar Stock\nCaducado) as UC14
+
+    ' --- Alternativas ---
+    (Gestionar Alternativas\nde Medicamento) as UC15
 
     ' === Relaciones actor principal ===
     PF -- UC1
@@ -40,6 +45,8 @@ rectangle "Sistema de Gestión de Farmacia Hospitalaria" {
     UC1 ..> UC2 : <<include>>
     ' La alerta se genera de forma condicional al añadir o editar
     UC3 ..> UC1 : <<extend>>
+    ' Gestionar alternativas es opcional dentro de la gestión de inventario
+    UC15 ..> UC1 : <<extend>>
 
     ' === Recetas ===
     UC4 ..> UC5 : <<include>>
@@ -52,5 +59,9 @@ rectangle "Sistema de Gestión de Farmacia Hospitalaria" {
     ' === Alertas y Reposición ===
     ' Solo se genera una orden cuando existen alertas de STOCK_MINIMO activas
     UC12 ..> UC11 : <<extend>>
+    ' Confirmar recepción actualiza el stock al recibir la mercancía
+    UC13 ..> UC11 : <<extend>>
+    ' Retirar stock caducado pone el stock a 0 y genera alerta de reposición
+    UC14 ..> UC11 : <<extend>>
 }
 @enduml

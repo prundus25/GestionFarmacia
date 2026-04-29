@@ -100,10 +100,43 @@ public class SistemaFarmacia implements Serializable {
     public boolean eliminarMedicamento(int id) {
         Medicamento m = buscarMedicamentoPorId(id);
         if (m != null) {
+            // Eliminar este ID de las listas de alternativas del resto
+            for (Medicamento otro : medicamentos) {
+                otro.getAlternativas().remove(Integer.valueOf(id));
+            }
             medicamentos.remove(m);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Registra una relación de alternativa entre dos
+     * medicamentos en ambos sentidos.
+     *
+     * @param idA identificador del primer medicamento
+     * @param idB identificador del segundo medicamento
+     */
+    public void añadirAlternativa(int idA, int idB) {
+        Medicamento a = buscarMedicamentoPorId(idA);
+        Medicamento b = buscarMedicamentoPorId(idB);
+        if (a == null || b == null || idA == idB) return;
+        if (!a.getAlternativas().contains(idB)) a.getAlternativas().add(idB);
+        if (!b.getAlternativas().contains(idA)) b.getAlternativas().add(idA);
+    }
+
+    /**
+     * Elimina la relación de alternativa entre dos
+     * medicamentos en ambos sentidos.
+     *
+     * @param idA identificador del primer medicamento
+     * @param idB identificador del segundo medicamento
+     */
+    public void eliminarAlternativa(int idA, int idB) {
+        Medicamento a = buscarMedicamentoPorId(idA);
+        Medicamento b = buscarMedicamentoPorId(idB);
+        if (a != null) a.getAlternativas().remove(Integer.valueOf(idB));
+        if (b != null) b.getAlternativas().remove(Integer.valueOf(idA));
     }
 
     // ==================== PACIENTES ====================
