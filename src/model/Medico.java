@@ -2,22 +2,19 @@ package model;
 
 /**
  * Representa a un médico del hospital.
- * <p>
- * Extiende {@link Persona} añadiendo la especialidad
+ * 
+ * Extiende Persona añadiendo la especialidad
  * médica y el número de colegiado, que identifican
  * al facultativo en el sistema.
  */
 public class Medico extends Persona {
     private static final long serialVersionUID = 1L;
 
-    /** Especialidad médica del facultativo. */
     private String especialidad;
-
-    /** Número de colegiado del facultativo. */
     private String numeroColegiado;
 
     /**
-     * Crea un nuevo {@code Medico} con todos sus atributos.
+     * Crea un nuevo Medico con todos sus atributos.
      *
      * @param id              identificador único asignado por el sistema
      * @param nombre          nombre de pila

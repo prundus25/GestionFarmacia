@@ -3,20 +3,17 @@ package model;
 import java.io.Serializable;
 
 /**
- * Línea de detalle de una {@link OrdenReposicion} que
- * indica el {@link Medicamento} y la cantidad solicitada.
+ * Línea de detalle de una OrdenReposicion que
+ * indica el Medicamento y la cantidad solicitada.
  */
 public class LineaOrden implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Medicamento incluido en esta línea de la orden. */
     private Medicamento medicamento;
-
-    /** Número de unidades solicitadas para reposición. */
     private int cantidadSolicitada;
 
     /**
-     * Crea una nueva {@code LineaOrden}.
+     * Crea una nueva LineaOrden.
      *
      * @param medicamento       medicamento a reponer
      * @param cantidadSolicitada unidades solicitadas

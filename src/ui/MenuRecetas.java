@@ -10,20 +10,18 @@ import java.util.ArrayList;
 
 /**
  * Menú de gestión de recetas médicas.
- * <p>
  * Permite listar, crear, dispensar, autorizar y
  * cancelar recetas, así como consultar el historial
  * por paciente. La creación fija automáticamente el
- * estado a {@link model.enums.EstadoReceta#PENDIENTE_AUTORIZACION}
- * cuando la receta incluye medicamentos de uso
- * restringido.
+ * estado a PENDIENTE_AUTORIZACION cuando la receta
+ * incluye medicamentos de uso restringido.
  */
 public class MenuRecetas {
 
     private SistemaFarmacia sistema;
 
     /**
-     * Crea un nuevo {@code MenuRecetas} asociado al
+     * Crea un nuevo MenuRecetas asociado al
      * sistema de farmacia dado.
      *
      * @param sistema instancia central del sistema
@@ -34,9 +32,8 @@ public class MenuRecetas {
 
     /**
      * Lanza el bucle interactivo del menú de recetas.
-     * <p>
      * Continúa mostrando opciones hasta que el usuario
-     * elige la opción {@code 0} (Volver).
+     * elige la opción 0 (Volver).
      */
     public void mostrar() {
         boolean salir = false;

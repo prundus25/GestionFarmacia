@@ -57,3 +57,16 @@ En la práctica esto es lo más habitual en sistemas con serialización y deber�
 Conclusión: el programa cumple todos los requisitos de programación. El único aspecto donde podría haber ambigüedad es la lectura de CSV solo
 en la primera ejecución, pero esto encaja perfectamente con lo que describe el doc: "Carga automática desde un fichero de algunos de los datos
 al iniciar".
+
+--------------------
+
+Ahora quiero que me crees un nuevo txt en el directorio raíz del proyecto donde expliques cómo funciona el programa de forma clara y no demasiado complicada  (ignora los diagramas, eso es para otra asignatura.). Piensa que se lo estás explicando a otros compañeros que tienen un conocimiento de programación parecido al mío, juniors/principiantes pero con algo de idea.
+De forma ordenada explica qué hace el programa y sus posibilidades, como se relacionan las clases entre ellas, los flujos, etc. No lo hagas innecesariamente extenso, tiene que ser conciso y con la extensión justa para dar una explicación clara de lo que te estoy pidiendo pero sin que sea muy muy largo.
+
+Menciona también el tema de los datos, que se guardan en un .dat, pero si no existen, se cargan los datos de muestra de los .csv, y justifica también brevemente por qué has usado .csv para esto.
+
+Por otra parte, cuando llegues a los enums, explica también qué son y para qué sirven, ya que no se han explicado en clase.
+
+Hazlo con un lenguaje/forma de explicar o redactar similar a la de la documentación/comentarios que has generado pues se entienden bien. 
+
+Justifica también por qué has decidido diseñar el programa como lo has hecho (en cuanto a clases elegidas, estructura de directorios/archivos, etc).

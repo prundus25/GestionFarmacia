@@ -8,33 +8,27 @@ import java.util.Scanner;
 /**
  * Utilidades estáticas de entrada/salida por consola
  * compartidas por todos los menús de la aplicación.
- * <p>
+ * 
  * Todos los métodos de lectura muestran un mensaje de
  * error y repiten la solicitud hasta recibir un valor
  * válido, evitando el problema de caracteres residuales
  * en el buffer al utilizar siempre
- * {@link Scanner#nextLine()} en lugar de
- * {@link Scanner#nextInt()} o similares.
+ * nextLine() en lugar de nextInt() o similares.
  */
 public class Consola {
 
-    /**
-     * {@code Scanner} compartido por todos los menús para
-     * leer la entrada estándar.
-     */
     public static final Scanner scanner = new Scanner(System.in);
 
     /**
      * Lee un número entero introducido por el usuario
-     * cuyo valor esté en el rango {@code [min, max]}
+     * cuyo valor esté en el rango [min, max]
      * (ambos inclusive).
-     * <p>
      * Repite la solicitud hasta recibir un valor válido.
      *
      * @param min valor mínimo aceptado (inclusive)
      * @param max valor máximo aceptado (inclusive)
      * @return el entero leído, garantizadamente en
-     *         {@code [min, max]}
+     * [min, max]
      */
     public static int leerEntero(int min, int max) {
         while (true) {
@@ -51,13 +45,11 @@ public class Consola {
     }
 
     /**
-     * Lee un número entero no negativo ({@code >= 0})
-     * introducido por el usuario.
-     * <p>
+     * Lee un número entero no negativo introducido por el usuario.
+     * 
      * Repite la solicitud hasta recibir un valor válido.
      *
-     * @return el entero leído, garantizadamente
-     *         {@code >= 0}
+     * @return el entero leído, garantizadamente >= 0
      */
     public static int leerEnteroPositivo() {
         while (true) {
@@ -75,12 +67,12 @@ public class Consola {
 
     /**
      * Lee un número decimal introducido por el usuario.
-     * <p>
+     * 
      * Acepta tanto el punto como la coma como separador
      * decimal. Repite la solicitud hasta recibir un valor
      * válido.
      *
-     * @return el valor {@code double} leído
+     * @return el valor double leído
      */
     public static double leerDecimal() {
         while (true) {
@@ -94,13 +86,13 @@ public class Consola {
     }
 
     /**
-     * Lee una fecha en formato {@code dd/MM/yyyy}
+     * Lee una fecha en formato dd/MM/yyyy
      * introducida por el usuario.
-     * <p>
+     * 
      * Repite la solicitud hasta recibir una cadena con
      * el formato correcto.
      *
-     * @return el {@link LocalDate} correspondiente a la
+     * @return el LocalDate correspondiente a la
      *         fecha introducida
      */
     public static LocalDate leerFecha() {

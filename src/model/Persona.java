@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Clase base abstracta que representa a una persona
  * del sistema (médico o paciente).
- * <p>
+ * 
  * Proporciona los atributos comunes de identificación
  * (identificador único, nombre y apellidos) y los
  * métodos de acceso correspondientes. No puede
@@ -14,17 +14,12 @@ import java.io.Serializable;
 public abstract class Persona implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Identificador único de la persona en el sistema. */
     private int id;
-
-    /** Nombre de pila de la persona. */
     private String nombre;
-
-    /** Apellidos de la persona. */
     private String apellidos;
 
     /**
-     * Crea una nueva {@code Persona} con los datos básicos
+     * Crea una nueva Persona con los datos básicos
      * de identificación.
      *
      * @param id        identificador único asignado por el sistema

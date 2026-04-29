@@ -7,33 +7,23 @@ import java.util.List;
 /**
  * Representa a un paciente atendido por la farmacia
  * hospitalaria.
- * <p>
- * Extiende {@link Persona} añadiendo datos clínicos:
+ * 
+ * Extiende Persona añadiendo datos clínicos:
  * fecha de nacimiento, DNI, lista de alergias y lista
  * de enfermedades crónicas.
  */
 public class Paciente extends Persona {
     private static final long serialVersionUID = 1L;
 
-    /** Fecha de nacimiento del paciente. */
     private LocalDate fechaNacimiento;
-
-    /** Documento Nacional de Identidad del paciente. */
     private String dni;
-
-    /** Lista de alergias conocidas del paciente. */
     private List<String> alergias;
-
-    /**
-     * Lista de enfermedades crónicas diagnosticadas
-     * al paciente.
-     */
     private List<String> enfermedadesCronicas;
 
     /**
-     * Crea un nuevo {@code Paciente} con los datos de
+     * Crea un nuevo Paciente con los datos de
      * identificación.
-     * <p>
+     * 
      * Las listas de alergias y enfermedades crónicas
      * se inicializan vacías.
      *
@@ -86,7 +76,7 @@ public class Paciente extends Persona {
      * Devuelve la lista de alergias de este paciente.
      *
      * @return lista de alergias; puede estar vacía pero
-     *         nunca es {@code null}
+     *         nunca es null
      */
     public List<String> getAlergias() { return alergias; }
 
@@ -104,7 +94,7 @@ public class Paciente extends Persona {
      * paciente.
      *
      * @return lista de enfermedades crónicas; puede estar
-     *         vacía pero nunca es {@code null}
+     *         vacía pero nunca es null
      */
     public List<String> getEnfermedadesCronicas() {
         return enfermedadesCronicas;

@@ -7,32 +7,24 @@ import java.util.List;
 
 /**
  * Representa una orden de reposición de medicamentos.
- * <p>
- * Agrupa un conjunto de {@link LineaOrden líneas} que
+ * 
+ * Agrupa un conjunto de LineaOrden líneas que
  * detallan los medicamentos y las cantidades solicitadas.
  * Al crearse, el estado se fija automáticamente a
- * {@link EstadoOrden#PENDIENTE}. Cuando se aprueba, el
- * stock de cada medicamento se incrementa con la cantidad
- * de su línea correspondiente.
+ * PENDIENTE. Cuando se aprueba, el stock de cada medicamento
+ * se incrementa con la cantidad de su línea correspondiente.
  */
 public class OrdenReposicion implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Identificador único de la orden en el sistema. */
     private int id;
-
-    /** Fecha de creación de la orden. */
     private LocalDate fecha;
-
-    /** Líneas de medicamentos incluidas en la orden. */
     private List<LineaOrden> lineas;
-
-    /** Estado actual dentro del ciclo de vida. */
     private EstadoOrden estado;
 
     /**
-     * Crea una nueva {@code OrdenReposicion} con estado
-     * inicial {@link EstadoOrden#PENDIENTE}.
+     * Crea una nueva OrdenReposicion con estado
+     * inicial PENDIENTE.
      *
      * @param id     identificador único asignado por el sistema
      * @param fecha  fecha de creación de la orden

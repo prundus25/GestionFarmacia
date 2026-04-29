@@ -3,9 +3,9 @@ package model;
 import java.io.Serializable;
 
 /**
- * Línea de detalle de una {@link Receta} que asocia un
- * {@link Medicamento} con su posología.
- * <p>
+ * Línea de detalle de una Receta que asocia un
+ * Medicamento con su posología.
+ * 
  * Cada línea especifica la dosis, la frecuencia de
  * administración, la duración del tratamiento y la
  * cantidad de unidades a dispensar.
@@ -13,26 +13,14 @@ import java.io.Serializable;
 public class LineaReceta implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Medicamento prescrito en esta línea. */
     private Medicamento medicamento;
-
-    /** Dosis por toma (por ejemplo, {@code "500mg"}). */
     private String dosis;
-
-    /**
-     * Frecuencia de administración
-     * (por ejemplo, {@code "cada 8 horas"}).
-     */
     private String frecuencia;
-
-    /** Duración del tratamiento en días. */
     private int duracionDias;
-
-    /** Número de unidades a dispensar al paciente. */
     private int cantidad;
 
     /**
-     * Crea una nueva {@code LineaReceta} con todos sus
+     * Crea una nueva LineaReceta con todos sus
      * atributos de posología.
      *
      * @param medicamento  medicamento prescrito
@@ -70,7 +58,7 @@ public class LineaReceta implements Serializable {
     /**
      * Devuelve la dosis por toma de esta línea.
      *
-     * @return la dosis (por ejemplo, {@code "500mg"})
+     * @return la dosis (por ejemplo, "500mg")
      */
     public String getDosis() { return dosis; }
 
@@ -85,8 +73,7 @@ public class LineaReceta implements Serializable {
      * Devuelve la frecuencia de administración de esta
      * línea.
      *
-     * @return la frecuencia (por ejemplo,
-     *         {@code "cada 8 horas"})
+     * @return la frecuencia (por ejemplo, "cada 8 horas")
      */
     public String getFrecuencia() { return frecuencia; }
 

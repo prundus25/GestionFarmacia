@@ -7,7 +7,7 @@ import java.time.LocalDate;
 /**
  * Representa un medicamento del inventario de la farmacia
  * hospitalaria.
- * <p>
+ * 
  * Almacena los datos de identificación, clasificación,
  * control de stock, caducidad, precio y posible restricción
  * de dispensación.
@@ -15,39 +15,17 @@ import java.time.LocalDate;
 public class Medicamento implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Identificador único del medicamento en el sistema. */
     private int id;
-
-    /** Nombre comercial o genérico del medicamento. */
     private String nombre;
-
-    /** Categoría terapéutica a la que pertenece. */
     private CategoriaMedicamento categoria;
-
-    /** Unidades disponibles actualmente en el almacén. */
     private int stock;
-
-    /**
-     * Umbral mínimo de stock por debajo del cual se
-     * genera una alerta de reposición.
-     */
     private int stockMinimo;
-
-    /** Fecha a partir de la cual el medicamento caduca. */
     private LocalDate fechaCaducidad;
-
-    /** Precio por unidad en euros. */
     private double precioUnitario;
-
-    /**
-     * Indica si el medicamento es de uso restringido y
-     * requiere autorización del Comité Farmacoterapéutico
-     * para ser dispensado.
-     */
     private boolean restringido;
 
     /**
-     * Crea un nuevo {@code Medicamento} con todos sus
+     * Crea un nuevo Medicamento con todos sus
      * atributos.
      *
      * @param id             identificador único asignado
@@ -58,7 +36,7 @@ public class Medicamento implements Serializable {
      * @param stockMinimo    umbral mínimo de stock
      * @param fechaCaducidad fecha de caducidad
      * @param precioUnitario precio por unidad en euros
-     * @param restringido    {@code true} si requiere
+     * @param restringido    true si requiere
      *                       autorización para dispensarse
      */
     public Medicamento(int id, String nombre,
@@ -193,15 +171,15 @@ public class Medicamento implements Serializable {
     /**
      * Indica si este medicamento es de uso restringido.
      *
-     * @return {@code true} si requiere autorización para
-     *         dispensarse; {@code false} en caso contrario
+     * @return true si requiere autorización para
+     *         dispensarse; false en caso contrario
      */
     public boolean isRestringido() { return restringido; }
 
     /**
      * Establece si este medicamento es de uso restringido.
      *
-     * @param restringido {@code true} para marcar el
+     * @param restringido true para marcar el
      *                    medicamento como restringido
      */
     public void setRestringido(boolean restringido) {

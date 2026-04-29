@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 /**
  * Menú de gestión de alertas y órdenes de reposición.
- * <p>
  * Permite ver alertas activas o históricas, marcarlas
  * como resueltas, generar órdenes de reposición a
  * partir de alertas de stock mínimo activas, y aprobar
@@ -24,7 +23,7 @@ public class MenuAlertas {
     private SistemaFarmacia sistema;
 
     /**
-     * Crea un nuevo {@code MenuAlertas} asociado al
+     * Crea un nuevo MenuAlertas asociado al
      * sistema de farmacia dado.
      *
      * @param sistema instancia central del sistema
@@ -35,9 +34,8 @@ public class MenuAlertas {
 
     /**
      * Lanza el bucle interactivo del menú de alertas.
-     * <p>
      * Continúa mostrando opciones hasta que el usuario
-     * elige la opción {@code 0} (Volver).
+     * elige la opción 0 (Volver).
      */
     public void mostrar() {
         boolean salir = false;

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 /**
  * Menú de gestión de médicos.
- * <p>
  * Permite listar, ver detalle, añadir, editar y
  * eliminar médicos del sistema.
  */
@@ -16,7 +15,7 @@ public class MenuMedicos {
     private SistemaFarmacia sistema;
 
     /**
-     * Crea un nuevo {@code MenuMedicos} asociado al
+     * Crea un nuevo MenuMedicos asociado al
      * sistema de farmacia dado.
      *
      * @param sistema instancia central del sistema
@@ -27,9 +26,8 @@ public class MenuMedicos {
 
     /**
      * Lanza el bucle interactivo del menú de médicos.
-     * <p>
      * Continúa mostrando opciones hasta que el usuario
-     * elige la opción {@code 0} (Volver).
+     * elige la opción 0 (Volver).
      */
     public void mostrar() {
         boolean salir = false;

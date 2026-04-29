@@ -8,54 +8,34 @@ import java.util.List;
 /**
  * Representa una receta médica emitida dentro del sistema
  * de la farmacia hospitalaria.
- * <p>
- * Vincula a un {@link Paciente} con un {@link Medico} y
+ * 
+ * Vincula a un Paciente con un Medico y
  * contiene las líneas de medicamentos prescritos. Al
  * crearse, el estado se fija automáticamente a
- * {@link EstadoReceta#PENDIENTE}; si algún medicamento
+ * PENDIENTE si algún medicamento
  * prescrito es de uso restringido, el menú cambia el
- * estado a {@link EstadoReceta#PENDIENTE_AUTORIZACION}
- * antes de persistir la receta.
+ * estado a PENDIENTE_AUTORIZACION antes de persistir la receta.
  */
 public class Receta implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Identificador único de la receta en el sistema. */
     private int id;
-
-    /** Paciente al que va dirigida la receta. */
     private Paciente paciente;
-
-    /** Médico que ha emitido la receta. */
     private Medico medico;
-
-    /**
-     * Líneas de medicamentos prescritos en esta receta.
-     */
     private List<LineaReceta> lineas;
-
-    /** Fecha de emisión de la receta. */
     private LocalDate fecha;
-
-    /** Estado actual dentro del ciclo de vida. */
     private EstadoReceta estado;
-
-    /**
-     * Indica si la receta es crónica y puede renovarse
-     * periódicamente.
-     */
     private boolean cronica;
 
     /**
-     * Crea una nueva {@code Receta} con estado inicial
-     * {@link EstadoReceta#PENDIENTE}.
+     * Crea una nueva Receta con estado inicial PENDIENTE.
      *
      * @param id       identificador único asignado por el sistema
      * @param paciente paciente al que se prescribe
      * @param medico   médico que emite la receta
      * @param lineas   líneas de medicamentos prescritos
      * @param fecha    fecha de emisión
-     * @param cronica  {@code true} si la receta es crónica
+     * @param cronica  true si la receta es crónica
      */
     public Receta(int id, Paciente paciente, Medico medico,
                   List<LineaReceta> lineas,
@@ -163,15 +143,15 @@ public class Receta implements Serializable {
     /**
      * Indica si esta receta es crónica.
      *
-     * @return {@code true} si la receta es crónica;
-     *         {@code false} en caso contrario
+     * @return true si la receta es crónica;
+     *         false en caso contrario
      */
     public boolean isCronica() { return cronica; }
 
     /**
      * Establece si esta receta es crónica.
      *
-     * @param cronica {@code true} para marcarla como
+     * @param cronica true para marcarla como
      *                crónica
      */
     public void setCronica(boolean cronica) {

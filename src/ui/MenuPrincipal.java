@@ -4,7 +4,6 @@ import sistema.SistemaFarmacia;
 
 /**
  * Menú principal de la aplicación.
- * <p>
  * Muestra el menú raíz y delega en los submenús de
  * inventario, recetas, pacientes, médicos y alertas
  * según la opción elegida por el usuario. También
@@ -16,7 +15,7 @@ public class MenuPrincipal {
     private SistemaFarmacia sistema;
 
     /**
-     * Crea un nuevo {@code MenuPrincipal} asociado al
+     * Crea un nuevo MenuPrincipal asociado al
      * sistema de farmacia dado.
      *
      * @param sistema instancia central del sistema
@@ -27,9 +26,8 @@ public class MenuPrincipal {
 
     /**
      * Lanza el bucle interactivo del menú principal.
-     * <p>
      * Continúa mostrando opciones hasta que el usuario
-     * elige la opción {@code 0} (Salir).
+     * elige la opción 0 (Salir).
      */
     public void iniciar() {
         System.out.println("============================================");

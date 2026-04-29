@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 /**
  * Menú de gestión del inventario de medicamentos.
- * <p>
  * Permite listar, buscar, ver detalle, añadir, editar
  * y eliminar medicamentos. Al añadir un medicamento
  * también genera las alertas pertinentes si el stock
@@ -22,7 +21,7 @@ public class MenuInventario {
     private SistemaFarmacia sistema;
 
     /**
-     * Crea un nuevo {@code MenuInventario} asociado al
+     * Crea un nuevo MenuInventario asociado al
      * sistema de farmacia dado.
      *
      * @param sistema instancia central del sistema
@@ -33,9 +32,9 @@ public class MenuInventario {
 
     /**
      * Lanza el bucle interactivo del menú de inventario.
-     * <p>
+     * 
      * Continúa mostrando opciones hasta que el usuario
-     * elige la opción {@code 0} (Volver).
+     * elige la opción 0 (Volver).
      */
     public void mostrar() {
         boolean salir = false;

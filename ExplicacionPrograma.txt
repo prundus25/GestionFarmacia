@@ -1,0 +1,278 @@
+========================================================
+  FARMACIA HOSPITALARIA - EXPLICACIÓN DEL PROGRAMA
+========================================================
+
+Este documento explica cómo está construido el programa, qué hace,
+cómo se relacionan sus partes y por qué se ha diseñado así.
+
+--------------------------------------------------------
+1. QUÉ HACE EL PROGRAMA
+--------------------------------------------------------
+
+Es una aplicación de consola (sin interfaz gráfica) para gestionar
+una farmacia hospitalaria. Permite:
+
+  - Mantener un inventario de medicamentos (añadir, editar, buscar, eliminar).
+  - Registrar pacientes y médicos del hospital.
+  - Crear y tramitar recetas médicas: emitirlas, dispensarlas y cancelarlas.
+  - Detectar automáticamente situaciones que requieren atención (alertas):
+    medicamentos a punto de caducar o con stock bajo.
+  - Gestionar órdenes de reposición de stock.
+
+Todo funciona mediante menús en consola donde el usuario introduce
+números para navegar entre opciones.
+
+--------------------------------------------------------
+2. ESTRUCTURA DE ARCHIVOS Y DIRECTORIOS
+--------------------------------------------------------
+
+La organización del proyecto es la siguiente:
+
+  src/               Código fuente Java
+    Main.java          Punto de entrada del programa
+    model/             Clases que representan los datos
+      enums/           Tipos enumerados (ver sección 4)
+    sistema/           Lógica central de datos (CRUD)
+    ui/                Menús de consola
+  data/              Datos persistidos
+    farmacia.dat       Estado guardado (binario)
+    medicamentos.csv   Datos de ejemplo
+    pacientes.csv      Datos de ejemplo
+    medicos.csv        Datos de ejemplo
+  bin/               Clases compiladas (.class)
+
+¿Por qué esta separación en carpetas?
+Agrupar las clases por responsabilidad (modelo, sistema, interfaz) facilita
+entender dónde está cada cosa y evita que todo quede mezclado en un solo paquete.
+Es la misma idea detrás del patrón MVC que se usa en proyectos más grandes:
+los datos van separados de la lógica y de la presentación.
+
+--------------------------------------------------------
+3. CLASES DEL MODELO (carpeta model/)
+--------------------------------------------------------
+
+Las clases del modelo representan las entidades reales de la farmacia.
+Cada una encapsula sus datos y expone getters y setters para acceder a ellos.
+
+  Persona (abstracta)
+    Clase base que no puede instanciarse directamente. Contiene los datos
+    comunes a médicos y pacientes: id, nombre y apellidos.
+    ¿Por qué abstracta? Porque en la vida real nadie es solo "una persona"
+    sin más — o es médico o es paciente. La clase abstracta evita crear
+    objetos genéricos que no tendrían sentido.
+
+  Medico extends Persona
+    Añade especialidad y número de colegiado.
+
+  Paciente extends Persona
+    Añade fecha de nacimiento, DNI, lista de alergias y lista de enfermedades crónicas.
+
+  Medicamento
+    Representa un fármaco del inventario: nombre, categoría, stock actual,
+    stock mínimo, fecha de caducidad, precio y si es de uso restringido.
+
+  Receta
+    Vincula a un Paciente con un Medico y contiene una lista de LineaReceta
+    (los medicamentos prescritos). Tiene un estado (ver sección 4) y una
+    marca que indica si es crónica.
+
+  LineaReceta
+    Detalle de un medicamento dentro de una receta: qué medicamento, qué dosis,
+    con qué frecuencia, cuántos días y cuántas unidades a dispensar.
+
+  Alerta
+    Se genera automáticamente cuando un medicamento caduca pronto o tiene stock
+    bajo. Tiene un tipo (ver sección 4), el medicamento afectado, la fecha
+    y si ya ha sido resuelta.
+
+  OrdenReposicion
+    Agrupa varias LineaOrden para solicitar la reposición de varios medicamentos
+    a la vez. Tiene también un estado (ver sección 4).
+
+  LineaOrden
+    Detalle de un medicamento dentro de una orden de reposición: qué medicamento
+    y cuántas unidades se piden.
+
+¿Por qué existen LineaReceta y LineaOrden como clases separadas?
+Una receta no prescribe un único medicamento, sino que puede incluir varios, cada
+uno con su propia dosis, frecuencia, duración y unidades a dispensar. Si esos datos
+se metieran directamente en Receta habría que usar listas paralelas (una lista de
+medicamentos, otra de dosis, otra de frecuencias...), lo que es propenso a errores
+y muy difícil de mantener. Al extraer esos datos a una clase LineaReceta, cada
+"renglón" de la receta es un objeto independiente con sus propios atributos bien
+agrupados. El mismo razonamiento aplica a LineaOrden: una orden de reposición puede
+incluir varios medicamentos distintos, cada uno con su propia cantidad solicitada.
+Este patrón —cabecera/línea— es el estándar habitual para representar documentos con
+múltiples ítems: pedidos, facturas, recetas. También es lo que hace que el diagrama
+de relaciones tenga flechas hacia las líneas y no listas anidadas dentro de Receta
+u OrdenReposicion.
+
+Relaciones entre clases:
+  Receta ----------> Paciente (1 receta tiene 1 paciente)
+  Receta ----------> Medico   (1 receta tiene 1 médico)
+  Receta ----------> LineaReceta[]  (1 o más líneas)
+  LineaReceta -----> Medicamento
+  Alerta ----------> Medicamento
+  OrdenReposicion -> LineaOrden[]
+  LineaOrden ------> Medicamento
+
+Todas las clases del modelo implementan Serializable, que es lo que permite
+guardarlas en el fichero .dat (ver sección 6).
+
+--------------------------------------------------------
+4. ENUMS: QUÉ SON Y PARA QUÉ SIRVEN
+--------------------------------------------------------
+
+Un enum (abreviatura de "enumeration") es un tipo especial de clase Java que
+representa un conjunto fijo y cerrado de valores con nombre. En lugar de usar
+números mágicos (0, 1, 2...) o cadenas de texto ("PENDIENTE", "pendiente",
+"Pendiente"...) que son propensas a errores, se define el conjunto de valores
+posibles de una vez y para siempre.
+
+Ejemplo: si el estado de una receta solo puede ser PENDIENTE, DISPENSADA,
+CANCELADA o PENDIENTE_AUTORIZACION, declaramos:
+
+  public enum EstadoReceta {
+      PENDIENTE, DISPENSADA, CANCELADA,
+      PENDIENTE_AUTORIZACION
+  }
+
+A partir de ahí, el compilador nos impide asignar cualquier otro valor que no
+sea uno de esos cuatro. Esto hace el código más seguro y más legible.
+
+Los enums usados en el proyecto son:
+
+  CategoriaMedicamento
+    Clasificación terapéutica de un medicamento:
+    ANALGESICO, ANTIBIOTICO, ANTIINFLAMATORIO, ANTIHIPERTENSIVO,
+    ANTICOAGULANTE, ANTIDIABETICO, PSICOFARMACOS, ONCOLOGICO,
+    CARDIOVASCULAR, RESPIRATORIO, GASTROINTESTINAL, OTRO.
+
+  EstadoReceta
+    Ciclo de vida de una receta:
+    - PENDIENTE: creada, lista para dispensar.
+    - PENDIENTE_AUTORIZACION: contiene algún medicamento restringido y necesita
+      que el Comité Farmacoterapéutico la autorice primero.
+    - DISPENSADA: entregada al paciente.
+    - CANCELADA: anulada, no se puede dispensar.
+
+  EstadoOrden
+    Ciclo de vida de una orden de reposición:
+    - PENDIENTE: creada, esperando revisión.
+    - APROBADA: aprobada; el stock se incrementa.
+    - CANCELADA: anulada sin efecto sobre el stock.
+
+  TipoAlerta
+    Motivo de la alerta:
+    - CADUCIDAD: el medicamento caduca en menos de 30 días.
+    - STOCK_MINIMO: el stock ha bajado hasta el umbral mínimo configurado.
+
+--------------------------------------------------------
+5. SISTEMA DE MENÚS (carpeta ui/)
+--------------------------------------------------------
+
+La navegación se organiza en una jerarquía de menús. Todos reciben una
+referencia a SistemaFarmacia en su constructor para poder leer y modificar los datos.
+
+  MenuPrincipal
+    Es el menú raíz. Muestra las 5 secciones y, si hay alertas activas,
+    las avisa en pantalla antes de que el usuario elija nada. Delega en
+    los submenús según la opción elegida.
+
+  MenuInventario
+    Gestión completa de medicamentos: listar todos, buscar por nombre o
+    categoría, ver detalle, añadir, editar y eliminar. Al añadir un medicamento
+    también comprueba si ya debe generar alertas de caducidad o stock.
+
+  MenuRecetas
+    Permite crear nuevas recetas (eligiendo paciente, médico y líneas de
+    medicamentos), dispensarlas (descontando stock), autorizarlas desde el
+    comité si son de uso restringido, cancelarlas y ver el historial por paciente.
+
+  MenuPacientes / MenuMedicos
+    CRUD básico: listar, añadir, editar y eliminar pacientes o médicos.
+
+  MenuAlertas
+    Muestra alertas activas e históricas, permite marcarlas como resueltas,
+    crear órdenes de reposición a partir de alertas de stock mínimo, y aprobar
+    o cancelar dichas órdenes. Al aprobar una orden, el stock de cada
+    medicamento incluido se incrementa automáticamente.
+
+  Consola
+    Clase de utilidades compartida por todos los menús. Contiene el Scanner
+    único de la aplicación y métodos de lectura seguros (leerEntero, leerDecimal,
+    leerFecha...) que validan la entrada y repiten la pregunta si el usuario
+    escribe algo incorrecto. Usar un único Scanner evita problemas con el buffer
+    de entrada que se producirían si cada menú creara el suyo propio.
+
+--------------------------------------------------------
+6. NÚCLEO DE DATOS: SistemaFarmacia (carpeta sistema/)
+--------------------------------------------------------
+
+SistemaFarmacia es la clase central del programa. Es la única que conoce todos
+los datos: contiene seis listas (medicamentos, pacientes, médicos, recetas,
+alertas y órdenes) y seis contadores para asignar identificadores únicos
+automáticamente (así cada objeto nuevo recibe un id distinto sin que el usuario
+tenga que preocuparse de ello).
+
+Todos los menús trabajan sobre la misma instancia de SistemaFarmacia, que se
+crea una vez en Main y se pasa a cada menú en su constructor. De esta forma
+no hay datos duplicados ni problemas de sincronización.
+
+SistemaFarmacia también incluye los métodos de búsqueda (buscarMedicamentoPorId,
+buscarPacientePorId, etc.), la generación de alertas y la persistencia.
+
+--------------------------------------------------------
+7. PERSISTENCIA: .dat y .csv
+--------------------------------------------------------
+
+Cada vez que el usuario sale del programa, el estado completo de SistemaFarmacia
+(todas sus listas y contadores) se guarda en el fichero data/farmacia.dat mediante
+serialización Java: el objeto entero se convierte en bytes y se escribe en disco.
+Al arrancar, ese fichero se lee y el objeto se reconstruye exactamente tal como estaba.
+
+Si el fichero .dat no existe (primera ejecución) o no puede leerse, el programa
+carga datos de muestra desde tres ficheros CSV:
+
+  data/medicamentos.csv
+  data/pacientes.csv
+  data/medicos.csv
+
+¿Por qué CSV para los datos de ejemplo?
+El formato CSV (valores separados por comas) es un estándar sencillo y universal:
+puede editarse con cualquier editor de texto o con Excel, sin necesidad de ninguna
+librería especial. Para datos de muestra estáticos que solo se leen una vez tiene
+mucho más sentido que un formato binario o una base de datos, ya que es fácil de
+modificar manualmente si se quieren cambiar los datos iniciales del programa.
+
+--------------------------------------------------------
+8. FLUJO DE EJECUCIÓN
+--------------------------------------------------------
+
+  1. Main llama a SistemaFarmacia.cargar().
+       - Si existe data/farmacia.dat → lo carga.
+       - Si no existe              → carga los CSV.
+  2. Se llama a generarAlertasIniciales(), que revisa todos los medicamentos
+     y crea alertas si alguno caduca en menos de 30 días o tiene stock bajo.
+  3. Se lanza MenuPrincipal.iniciar(), que entra en un bucle hasta que el
+     usuario elija "Salir".
+  4. Al salir, Main llama a sistema.guardar(), que escribe el estado actual
+     en data/farmacia.dat.
+
+Flujo de una receta (ejemplo):
+  a. El usuario crea una receta en MenuRecetas.
+  b. Elige paciente, médico y uno o más medicamentos con su posología.
+  c. Si algún medicamento es restringido, el estado se fija a
+     PENDIENTE_AUTORIZACION automáticamente; si no, queda en PENDIENTE.
+  d. Desde el menú se puede autorizar la receta (pasa a PENDIENTE) o
+     dispensarla directamente si ya está en PENDIENTE (el stock se descuenta).
+
+Flujo de una alerta y su reposición (ejemplo):
+  a. Al arrancar (o al añadir un medicamento con stock bajo), se genera
+     una alerta de STOCK_MINIMO.
+  b. El usuario la ve en MenuAlertas y genera una orden de reposición.
+  c. La orden queda en PENDIENTE hasta que se aprueba.
+  d. Al aprobar la orden, el stock de cada medicamento incluido en ella
+     se incrementa con la cantidad solicitada y la alerta puede marcarse como resuelta.
+
+========================================================
