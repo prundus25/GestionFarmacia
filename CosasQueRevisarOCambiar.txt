@@ -45,17 +45,22 @@ se ha generado cuando el stock actual está cerca del mínimo pero no sé cuál 
 Coméntame eso y también si ese valor cambia con cada medicamento o si es igual para todos. Es decir, si la alerta para algunos medicamentos
 se lanza cuando hay menos de 5 UDs por encima del mínimo y para otros se lanza acuando hay menos de 10 UDs por encima del mínimo, o si es para todos igual.
 
-------------
+14. En el diagrama de estados de receta médica has puesto que una receta puede pasar de PENDIENTE a PENDIENTE_AUTORIZACIÓN, pero tenía entendido que esto no puede pasar.
+Es decir, si al crear la receta ya pasa automáticamente a uno de los dos estados, en el caso de PENDIENTE_AUTORIZACIÓN, tras ser autorizada, puede pasar a PENDIENTE, pero
+pasar desde pendiente a PENDIENTE_AUTORIZACIÓN debería poder ser? Es decir, si la comprobación de si necesita autorización ya se hizo al crear la receta, por qué podría pasar
+después desde pendiente a PENDIENTE_AUTORIZACIÓN?
 
-He incluido en el directorio raíz del proyecto dos archivos txt nuevos (entregables doc completo e instrucciones proyecto) donde se detallan los
-entregables y las instrucciones del proyecto. Es un proyecto conjunto con la asignatura de entornos de desarrollo por lo que también hay que
-realizar diagramas sobre el enunciado. He creado una carpeta diagramas donde he pegado todo lo que tenía hecho hasta ahora pero con este nuevo
-programa hecho por ti todo eso ya no me sirve y no coincide. Necesito que según lo que indican las instrucciones y los entregables, me actualices
-los scripts uml para que los diagramas concuerden con el proyecto actual y todo tenga coherencia. En cuanto a los diagramas de comportamiento,
-he elegido hacer diagrama de actividad y de estados, no sé si es la mejor opción ya me dirás tú. Revísalo todo y luego, sin borrar lo que ya tengo,
-haz nuevos archivos (como por ejemplo CasosDeUso_Corregido o CasosDeUso_Final llámalo como quieras dentro de que empiece igual que el archivo que
-ya tengo) donde generes los scripts uml necesarios para cumplir con los requisitos.
+15. Cuál sería la alternativa a usar enums? sería usar una clase con un array String que almacene todos los tipos y con un método de getTipo(String tipo) que devuelva el tipo
+solicitado? En ese caso habría que escribirlos a mano como Strings.
 
+16. ¿Añadirías la parte de "asegurándose de que no haya interacciones peligrosas entre medicamentos"? Es decir, añadir en cada medicamento una lista de interacciones peligrosas,
+al igual que hiciste con el de alternativas. ¿Sería pertinente dado el enunciado, o consideras que no haría falta añadirlo?
+
+17. Modificarías los tratamientos crónicos para implementar esto: "Para tratamientos crónicos, el sistema programa reposiciones automáticas y notifica al paciente." ?
+Cuál sería la forma más fácil de programar esas reposiciones automáticas? Entiendo que habría que hacer un cálculo de medicamentos consumidos cada día/mes y ver cuántos
+se necesitan cada mes según las recetas crónicas que hayan con ese medicamento.
+¿O quizás sería mejor implementar esto como un atributo a la receta que almacene cada
+cuánto tiempo se debe reponer, y que si se llega a ese día se genere un nuevo tipo de alerta de STOCK_CRONICO o algo así y luego se añada automáticamente a una orden de reposición?
 
 ----------------
 Cosa a revisar / tener en cuenta en la parte de programación según IA:
@@ -71,14 +76,3 @@ en la primera ejecución, pero esto encaja perfectamente con lo que describe el 
 al iniciar".
 
 --------------------
-
-Ahora quiero que me crees un nuevo txt en el directorio raíz del proyecto donde expliques cómo funciona el programa de forma clara y no demasiado complicada  (ignora los diagramas, eso es para otra asignatura.). Piensa que se lo estás explicando a otros compañeros que tienen un conocimiento de programación parecido al mío, juniors/principiantes pero con algo de idea.
-De forma ordenada explica qué hace el programa y sus posibilidades, como se relacionan las clases entre ellas, los flujos, etc. No lo hagas innecesariamente extenso, tiene que ser conciso y con la extensión justa para dar una explicación clara de lo que te estoy pidiendo pero sin que sea muy muy largo.
-
-Menciona también el tema de los datos, que se guardan en un .dat, pero si no existen, se cargan los datos de muestra de los .csv, y justifica también brevemente por qué has usado .csv para esto.
-
-Por otra parte, cuando llegues a los enums, explica también qué son y para qué sirven, ya que no se han explicado en clase.
-
-Hazlo con un lenguaje/forma de explicar o redactar similar a la de la documentación/comentarios que has generado pues se entienden bien. 
-
-Justifica también por qué has decidido diseñar el programa como lo has hecho (en cuanto a clases elegidas, estructura de directorios/archivos, etc).
