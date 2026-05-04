@@ -62,6 +62,8 @@ se necesitan cada mes según las recetas crónicas que hayan con ese medicamento
 ¿O quizás sería mejor implementar esto como un atributo a la receta que almacene cada
 cuánto tiempo se debe reponer, y que si se llega a ese día se genere un nuevo tipo de alerta de STOCK_CRONICO o algo así y luego se añada automáticamente a una orden de reposición?
 
+18. Borrar parte csv, pero mantener los archivos con los datos. Guardar y cargar datos según las explicaciones de IO de clase.
+
 ----------------
 Cosa a revisar / tener en cuenta en la parte de programación según IA:
 ⚠️ Único punto a revisar
