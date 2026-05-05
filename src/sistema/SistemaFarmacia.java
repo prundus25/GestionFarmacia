@@ -49,7 +49,7 @@ public class SistemaFarmacia implements Serializable {
         ordenes = new ArrayList<>();
     }
 
-    // ==================== MEDICAMENTOS ====================
+    // MEDICAMENTOS 
 
     /**
      * Añade un medicamento al inventario asignándole un
@@ -139,7 +139,7 @@ public class SistemaFarmacia implements Serializable {
         if (b != null) b.getAlternativas().remove(Integer.valueOf(idA));
     }
 
-    // ==================== PACIENTES ====================
+    // PACIENTES
 
     /**
      * Añade un paciente al sistema asignándole un
@@ -195,7 +195,7 @@ public class SistemaFarmacia implements Serializable {
         return false;
     }
 
-    // ==================== MÉDICOS ====================
+    // MÉDICOS
 
     /**
      * Añade un médico al sistema asignándole un
@@ -251,7 +251,7 @@ public class SistemaFarmacia implements Serializable {
         return false;
     }
 
-    // ==================== RECETAS ====================
+    // RECETAS
 
     /**
      * Añade una receta al sistema asignándole un
@@ -291,7 +291,7 @@ public class SistemaFarmacia implements Serializable {
         return null;
     }
 
-    // ==================== ALERTAS ====================
+    // ALERTAS
 
     /**
      * Añade una alerta al sistema asignándole un
@@ -355,7 +355,7 @@ public class SistemaFarmacia implements Serializable {
         return false;
     }
 
-    // ==================== ÓRDENES DE REPOSICIÓN ====================
+    // ÓRDENES DE REPOSICIÓN
 
     /**
      * Añade una orden de reposición al sistema asignándole
@@ -432,7 +432,7 @@ public class SistemaFarmacia implements Serializable {
         }
     }
 
-    // ==================== GUARDAR Y CARGAR ====================
+    // GUARDAR Y CARGAR
 
     /**
      * Serializa el estado completo del sistema al fichero
