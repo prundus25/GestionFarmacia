@@ -62,7 +62,8 @@ se necesitan cada mes según las recetas crónicas que hayan con ese medicamento
 ¿O quizás sería mejor implementar esto como un atributo a la receta que almacene cada
 cuánto tiempo se debe reponer, y que si se llega a ese día se genere un nuevo tipo de alerta de STOCK_CRONICO o algo así y luego se añada automáticamente a una orden de reposición?
 
-18. Borrar parte csv, pero mantener los archivos con los datos. Guardar y cargar datos según las explicaciones de IO de clase.
+18. Borrar todo lo que tenga que ver con csv del código, comentarios y diagramas si aparece ahí, pero almacenar los datos de los .csv en archivos .txt (en formato tabla)
+para poder visualizarlos. En vez de eso, guardarlos en un .dat como los datos principales.
 
 19. Revisar diagramas y concordancia con el código.
 

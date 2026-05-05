@@ -6,7 +6,6 @@ import model.enums.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Núcleo de datos del sistema de farmacia hospitalaria.
@@ -17,7 +16,7 @@ import java.util.Arrays;
  * necesarios para gestionarlas. Gestiona también la
  * persistencia mediante serialización Java al fichero
  * data/farmacia.dat y la carga inicial de datos
- * de muestra desde ficheros CSV.
+ * de muestra al detectar una primera ejecución.
  */
 public class SistemaFarmacia implements Serializable {
 
@@ -461,151 +460,236 @@ public class SistemaFarmacia implements Serializable {
     }
 
     /**
-     * Carga el sistema desde el fichero serializado
-     * data/farmacia.dat.
-     * 
-     * Si el fichero no existe (primera ejecución) o no
-     * puede leerse, crea un sistema nuevo con los datos
-     * de muestra de los CSV de la carpeta data/.
+     * Carga el sistema siguiendo esta estrategia:
+     * <ol>
+     *   <li>Si existe {@code data/farmacia.dat}, lo
+     *       deserializa y lo devuelve.</li>
+     *   <li>Si existe {@code data/datosIniciales.dat},
+     *       lo deserializa como punto de partida.</li>
+     *   <li>Si ninguno existe, genera los datos de ejemplo
+     *       en memoria, los serializa en
+     *       {@code data/datosIniciales.dat} para usos
+     *       posteriores y los devuelve.</li>
+     * </ol>
      *
-     * @return la instancia de SistemaFarmacia
-     *         restaurada o de ejemplo
+     * @return la instancia de SistemaFarmacia lista
+     *         para usar
      */
     public static SistemaFarmacia cargar() {
         File fichero = new File("data/farmacia.dat");
+        File inicial = new File("data/datosIniciales.dat");
 
-        if (!fichero.exists()) {
-            // Primera vez que se ejecuta el programa
-            System.out.println("Primera ejecucion: cargando datos de ejemplo...");
-            SistemaFarmacia s = new SistemaFarmacia();
-            s.cargarDatosEjemplo();
-            return s;
+        if (fichero.exists()) {
+            try {
+                FileInputStream fis = new FileInputStream(fichero);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                SistemaFarmacia sistema = (SistemaFarmacia) ois.readObject();
+                ois.close();
+                fis.close();
+                return sistema;
+            } catch (Exception e) {
+                System.out.println("Error al cargar los datos guardados: " + e.getMessage());
+                System.out.println("Intentando cargar datos iniciales...");
+            }
         }
 
-        try {
-            FileInputStream fis = new FileInputStream("data/farmacia.dat");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            SistemaFarmacia sistema = (SistemaFarmacia) ois.readObject();
-            ois.close();
-            fis.close();
-            return sistema;
-        } catch (Exception e) {
-            System.out.println("Error al cargar los datos guardados: " + e.getMessage());
-            System.out.println("Iniciando con datos de ejemplo...");
-            SistemaFarmacia s = new SistemaFarmacia();
-            s.cargarDatosEjemplo();
-            return s;
+        if (inicial.exists()) {
+            try {
+                System.out.println("Primera ejecucion: cargando datos iniciales...");
+                FileInputStream fis = new FileInputStream(inicial);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                SistemaFarmacia sistema = (SistemaFarmacia) ois.readObject();
+                ois.close();
+                fis.close();
+                return sistema;
+            } catch (Exception e) {
+                System.out.println("Error al cargar datos iniciales: " + e.getMessage());
+            }
         }
+
+        System.out.println("Primera ejecucion: generando datos de ejemplo...");
+        SistemaFarmacia s = new SistemaFarmacia();
+        s.cargarDatosEjemplo();
+        s.guardarDatosIniciales();
+        return s;
     }
 
-    // Lee los CSV de la carpeta data/ para tener datos de muestra la primera vez
     private void cargarDatosEjemplo() {
-        cargarMedicamentosCSV();
-        cargarPacientesCSV();
-        cargarMedicosCSV();
+        cargarMedicamentosIniciales();
+        cargarPacientesIniciales();
+        cargarMedicosIniciales();
     }
 
-    private void cargarMedicamentosCSV() {
-        File csv = new File("data/medicamentos.csv");
-        if (!csv.exists()) return;
+    private void cargarMedicamentosIniciales() {
+        medicamentos.add(new Medicamento( 1, "Paracetamol 500mg",    CategoriaMedicamento.ANALGESICO,        200, 30, LocalDate.of(2027,  6, 30),  0.15, false));
+        medicamentos.add(new Medicamento( 2, "Ibuprofeno 600mg",     CategoriaMedicamento.ANTIINFLAMATORIO,  150, 25, LocalDate.of(2027,  3, 15),  0.25, false));
+        medicamentos.add(new Medicamento( 3, "Amoxicilina 500mg",    CategoriaMedicamento.ANTIBIOTICO,        80, 15, LocalDate.of(2026,  8, 20),  0.45, false));
+        medicamentos.add(new Medicamento( 4, "Omeprazol 20mg",       CategoriaMedicamento.GASTROINTESTINAL,  120, 20, LocalDate.of(2027, 12,  1),  0.30, false));
+        medicamentos.add(new Medicamento( 5, "Enalapril 10mg",       CategoriaMedicamento.ANTIHIPERTENSIVO,  100, 20, LocalDate.of(2027,  9, 10),  0.20, false));
+        medicamentos.add(new Medicamento( 6, "Metformina 850mg",     CategoriaMedicamento.ANTIDIABETICO,      90, 15, LocalDate.of(2027,  5, 25),  0.35, false));
+        medicamentos.add(new Medicamento( 7, "Atorvastatina 20mg",   CategoriaMedicamento.CARDIOVASCULAR,     75, 10, LocalDate.of(2027, 11, 30),  0.55, false));
+        medicamentos.add(new Medicamento( 8, "Diazepam 5mg",         CategoriaMedicamento.PSICOFARMACOS,      40,  8, LocalDate.of(2026,  7,  1),  0.80,  true));
+        medicamentos.add(new Medicamento( 9, "Morfina 10mg",         CategoriaMedicamento.ANALGESICO,         20,  5, LocalDate.of(2026,  6, 15),  3.50,  true));
+        medicamentos.add(new Medicamento(10, "Warfarina 5mg",        CategoriaMedicamento.ANTICOAGULANTE,     60, 10, LocalDate.of(2027,  4, 20),  0.90,  true));
+        medicamentos.add(new Medicamento(11, "Salbutamol Inhalador", CategoriaMedicamento.RESPIRATORIO,       50, 10, LocalDate.of(2026, 12, 31),  4.20, false));
+        medicamentos.add(new Medicamento(12, "Loratadina 10mg",      CategoriaMedicamento.OTRO,              130, 20, LocalDate.of(2027,  8, 15),  0.18, false));
+        medicamentos.add(new Medicamento(13, "Clopidogrel 75mg",     CategoriaMedicamento.CARDIOVASCULAR,     65, 12, LocalDate.of(2027, 10,  5),  1.20, false));
+        medicamentos.add(new Medicamento(14, "Doxorrubicina 50mg",   CategoriaMedicamento.ONCOLOGICO,         10,  3, LocalDate.of(2026,  5, 10), 85.00,  true));
+        medicamentos.add(new Medicamento(15, "Azitromicina 500mg",   CategoriaMedicamento.ANTIBIOTICO,        45, 10, LocalDate.of(2026,  9, 30),  1.10, false));
+        medicamentos.add(new Medicamento(16, "Levotiroxina 50mcg",   CategoriaMedicamento.OTRO,               70, 15, LocalDate.of(2027,  7, 22),  0.28, false));
+        medicamentos.add(new Medicamento(17, "Furosemida 40mg",      CategoriaMedicamento.CARDIOVASCULAR,     55, 10, LocalDate.of(2027,  1, 15),  0.22, false));
+        medicamentos.add(new Medicamento(18, "Tramadol 100mg",       CategoriaMedicamento.ANALGESICO,         35,  8, LocalDate.of(2026,  5, 20),  1.60,  true));
+        nextIdMedicamento = 19;
+    }
 
+    private void cargarPacientesIniciales() {
+        Paciente p1 = new Paciente(1, "María",   "García López",      LocalDate.of(1978,  4, 12), "12345678A");
+        p1.getAlergias().add("Penicilina");
+        p1.getEnfermedadesCronicas().add("Hipertensión");
+        p1.getEnfermedadesCronicas().add("Diabetes tipo 2");
+        pacientes.add(p1);
+
+        Paciente p2 = new Paciente(2, "Juan",    "Martínez Ruiz",     LocalDate.of(1965,  9, 23), "23456789B");
+        p2.getEnfermedadesCronicas().add("Insuficiencia cardíaca");
+        pacientes.add(p2);
+
+        Paciente p3 = new Paciente(3, "Ana",     "Fernández Torres",  LocalDate.of(1990,  1,  5), "34567890C");
+        p3.getAlergias().add("Ibuprofeno");
+        p3.getAlergias().add("Aspirina");
+        pacientes.add(p3);
+
+        Paciente p4 = new Paciente(4, "Carlos",  "Pérez Sánchez",     LocalDate.of(1952, 11, 30), "45678901D");
+        p4.getEnfermedadesCronicas().add("Diabetes tipo 2");
+        p4.getEnfermedadesCronicas().add("EPOC");
+        pacientes.add(p4);
+
+        Paciente p5 = new Paciente(5, "Lucía",   "Ramírez Díaz",      LocalDate.of(2001,  7, 18), "56789012E");
+        pacientes.add(p5);
+
+        Paciente p6 = new Paciente(6, "Miguel",  "López González",    LocalDate.of(1973,  3,  7), "67890123F");
+        p6.getAlergias().add("Sulfonamidas");
+        p6.getEnfermedadesCronicas().add("Asma");
+        pacientes.add(p6);
+
+        Paciente p7 = new Paciente(7, "Elena",   "Jiménez Castro",    LocalDate.of(1987, 12, 14), "78901234G");
+        p7.getEnfermedadesCronicas().add("Hipotiroidismo");
+        pacientes.add(p7);
+
+        Paciente p8 = new Paciente(8, "Roberto", "Morales Vega",      LocalDate.of(1944,  6, 25), "89012345H");
+        p8.getEnfermedadesCronicas().add("Fibrilación auricular");
+        p8.getEnfermedadesCronicas().add("Hipertensión");
+        pacientes.add(p8);
+
+        nextIdPaciente = 9;
+    }
+
+    private void cargarMedicosIniciales() {
+        medicos.add(new Medico(1, "Pedro",  "Álvarez Moreno",  "Medicina Interna", "28-12345"));
+        medicos.add(new Medico(2, "Carmen", "Ruiz Blanco",     "Cardiología",      "28-23456"));
+        medicos.add(new Medico(3, "Javier", "Herrera Campos",  "Oncología",        "28-34567"));
+        medicos.add(new Medico(4, "Sofía",  "Navarro Prieto",  "Endocrinología",   "28-45678"));
+        medicos.add(new Medico(5, "Andrés", "Castillo Reyes",  "Neumología",       "28-56789"));
+        nextIdMedico = 6;
+    }
+
+    private void guardarDatosIniciales() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(csv));
-            br.readLine(); // saltar la primera línea (cabecera)
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                linea = linea.trim();
-                if (linea.isEmpty()) continue;
-
-                String[] partes = linea.split(";");
-                if (partes.length < 8) continue;
-
-                int id = Integer.parseInt(partes[0].trim());
-                String nombre = partes[1].trim();
-                CategoriaMedicamento categoria = CategoriaMedicamento.valueOf(partes[2].trim());
-                int stock = Integer.parseInt(partes[3].trim());
-                int stockMinimo = Integer.parseInt(partes[4].trim());
-                LocalDate fechaCaducidad = LocalDate.parse(partes[5].trim());
-                double precio = Double.parseDouble(partes[6].trim());
-                boolean restringido = Boolean.parseBoolean(partes[7].trim());
-
-                Medicamento m = new Medicamento(id, nombre, categoria, stock, stockMinimo,
-                        fechaCaducidad, precio, restringido);
-                medicamentos.add(m);
-
-                if (id >= nextIdMedicamento) {
-                    nextIdMedicamento = id + 1;
-                }
-            }
-            br.close();
-        } catch (Exception e) {
-            System.out.println("Error leyendo medicamentos.csv: " + e.getMessage());
+            File carpeta = new File("data");
+            if (!carpeta.exists()) carpeta.mkdir();
+            FileOutputStream fos = new FileOutputStream("data/datosIniciales.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            System.out.println("Error al guardar datos iniciales: " + e.getMessage());
         }
     }
 
-    private void cargarPacientesCSV() {
-        File csv = new File("data/pacientes.csv");
-        if (!csv.exists()) return;
+    /**
+     * Exporta el estado actual del inventario, los
+     * pacientes y los médicos a ficheros de texto en
+     * {@code data/} para su visualización.
+     *
+     * <p>Genera {@code medicamentos.txt},
+     * {@code pacientes.txt} y {@code medicos.txt}.
+     * Los ficheros se sobreescriben en cada llamada.
+     */
+    public void exportarTxt() {
+        File carpeta = new File("data");
+        if (!carpeta.exists()) carpeta.mkdir();
+        exportarMedicamentosTxt();
+        exportarPacientesTxt();
+        exportarMedicosTxt();
+    }
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(csv));
-            br.readLine(); // cabecera
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                linea = linea.trim();
-                if (linea.isEmpty()) continue;
-
-                String[] p = linea.split(";", -1);
-                if (p.length < 7) continue;
-
-                int id = Integer.parseInt(p[0].trim());
-                Paciente pac = new Paciente(id, p[1].trim(), p[2].trim(),
-                        LocalDate.parse(p[3].trim()), p[4].trim());
-
-                if (!p[5].trim().isEmpty()) {
-                    pac.setAlergias(new ArrayList<>(Arrays.asList(p[5].trim().split("\\|"))));
-                }
-                if (!p[6].trim().isEmpty()) {
-                    pac.setEnfermedadesCronicas(new ArrayList<>(Arrays.asList(p[6].trim().split("\\|"))));
-                }
-                pacientes.add(pac);
-
-                if (id >= nextIdPaciente) {
-                    nextIdPaciente = id + 1;
-                }
+    private void exportarMedicamentosTxt() {
+        try (PrintWriter pw = new PrintWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream("data/medicamentos.txt"), "UTF-8"))) {
+            pw.println("MEDICAMENTOS - ESTADO ACTUAL");
+            pw.println("============================");
+            pw.println();
+            pw.printf(" %-3s | %-24s | %-17s | %5s | %8s | %-10s | %8s | %s%n",
+                    "ID", "Nombre", "Categoría", "Stock", "StockMín",
+                    "Caducidad", "Precio €", "Restringido");
+            pw.println("-----+--------------------------+-------------------+-------+----------+------------+----------+------------");
+            for (Medicamento m : medicamentos) {
+                pw.printf(" %-3d | %-24s | %-17s | %5d | %8d | %s | %8.2f | %s%n",
+                        m.getId(), m.getNombre(), m.getCategoria(),
+                        m.getStock(), m.getStockMinimo(),
+                        m.getFechaCaducidad(),
+                        m.getPrecioUnitario(),
+                        m.isRestringido() ? "Sí" : "No");
             }
-            br.close();
-        } catch (Exception e) {
-            System.out.println("Error leyendo pacientes.csv: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error exportando medicamentos.txt: " + e.getMessage());
         }
     }
 
-    private void cargarMedicosCSV() {
-        File csv = new File("data/medicos.csv");
-        if (!csv.exists()) return;
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(csv));
-            br.readLine(); // cabecera
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                linea = linea.trim();
-                if (linea.isEmpty()) continue;
-
-                String[] p = linea.split(";", -1);
-                if (p.length < 5) continue;
-
-                int id = Integer.parseInt(p[0].trim());
-                Medico m = new Medico(id, p[1].trim(), p[2].trim(), p[3].trim(), p[4].trim());
-                medicos.add(m);
-
-                if (id >= nextIdMedico) {
-                    nextIdMedico = id + 1;
-                }
+    private void exportarPacientesTxt() {
+        try (PrintWriter pw = new PrintWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream("data/pacientes.txt"), "UTF-8"))) {
+            pw.println("PACIENTES - ESTADO ACTUAL");
+            pw.println("=========================");
+            pw.println();
+            pw.printf(" %-3s | %-28s | %-9s | %-10s | %-25s | %s%n",
+                    "ID", "Nombre completo", "DNI", "Nacimiento",
+                    "Alergias", "Enfermedades crónicas");
+            pw.println("-----+------------------------------+-----------+------------+---------------------------+--------------------------------------");
+            for (Paciente p : pacientes) {
+                String alergias = p.getAlergias().isEmpty()
+                        ? "Ninguna" : String.join(", ", p.getAlergias());
+                String enfs = p.getEnfermedadesCronicas().isEmpty()
+                        ? "Ninguna" : String.join(", ", p.getEnfermedadesCronicas());
+                pw.printf(" %-3d | %-28s | %-9s | %s | %-25s | %s%n",
+                        p.getId(), p.getNombreCompleto(),
+                        p.getDni(), p.getFechaNacimiento(),
+                        alergias, enfs);
             }
-            br.close();
-        } catch (Exception e) {
-            System.out.println("Error leyendo medicos.csv: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error exportando pacientes.txt: " + e.getMessage());
+        }
+    }
+
+    private void exportarMedicosTxt() {
+        try (PrintWriter pw = new PrintWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream("data/medicos.txt"), "UTF-8"))) {
+            pw.println("MÉDICOS - ESTADO ACTUAL");
+            pw.println("=======================");
+            pw.println();
+            pw.printf(" %-3s | %-28s | %-20s | %s%n",
+                    "ID", "Nombre completo", "Especialidad", "Nº Colegiado");
+            pw.println("-----+------------------------------+----------------------+--------------");
+            for (Medico m : medicos) {
+                pw.printf(" %-3d | %-28s | %-20s | %s%n",
+                        m.getId(), m.getNombreCompleto(),
+                        m.getEspecialidad(), m.getNumeroColegiado());
+            }
+        } catch (IOException e) {
+            System.out.println("Error exportando medicos.txt: " + e.getMessage());
         }
     }
 }

@@ -1,0 +1,13 @@
+PACIENTES - ESTADO ACTUAL
+=========================
+
+ ID  | Nombre completo              | DNI       | Nacimiento | Alergias                  | Enfermedades crónicas
+-----+------------------------------+-----------+------------+---------------------------+--------------------------------------
+ 1   | María García López           | 12345678A | 1978-04-12 | Penicilina                | Hipertensión, Diabetes tipo 2
+ 2   | Juan Martínez Ruiz           | 23456789B | 1965-09-23 | Ninguna                   | Insuficiencia cardíaca
+ 3   | Ana Fernández Torres         | 34567890C | 1990-01-05 | Ibuprofeno, Aspirina      | Ninguna
+ 4   | Carlos Pérez Sánchez         | 45678901D | 1952-11-30 | Ninguna                   | Diabetes tipo 2, EPOC
+ 5   | Lucía Ramírez Díaz           | 56789012E | 2001-07-18 | Ninguna                   | Ninguna
+ 6   | Miguel López González        | 67890123F | 1973-03-07 | Sulfonamidas              | Asma
+ 7   | Elena Jiménez Castro         | 78901234G | 1987-12-14 | Ninguna                   | Hipotiroidismo
+ 8   | Roberto Morales Vega         | 89012345H | 1944-06-25 | Ninguna                   | Fibrilación auricular, Hipertensión
