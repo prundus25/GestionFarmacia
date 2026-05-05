@@ -64,6 +64,8 @@ cuánto tiempo se debe reponer, y que si se llega a ese día se genere un nuevo 
 
 18. Borrar parte csv, pero mantener los archivos con los datos. Guardar y cargar datos según las explicaciones de IO de clase.
 
+19. Revisar diagramas y concordancia con el código.
+
 ----------------
 Cosa a revisar / tener en cuenta en la parte de programación según IA:
 ⚠️ Único punto a revisar
