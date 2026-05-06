@@ -128,10 +128,7 @@ public class LineaReceta implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format(
-                "  - %-25s | Dosis: %-8s | Frec.: %-15s"
-                + " | %d días | Cant.: %d",
-                medicamento.getNombre(), dosis, frecuencia,
-                duracionDias, cantidad);
+        return String.format("  - %-25s | Dosis: %-8s | Frec.: %-15s | %d días | Cant.: %d",
+                medicamento.getNombre(), dosis, frecuencia, duracionDias, cantidad);
     }
 }

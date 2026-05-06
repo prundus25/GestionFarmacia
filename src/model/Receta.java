@@ -167,11 +167,8 @@ public class Receta implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format(
-                "[%d] Paciente: %-25s | Médico: %-25s"
-                + " | Fecha: %s | Estado: %-25s | %s",
-                id, paciente.getNombreCompleto(),
-                "Dr/a. " + medico.getNombreCompleto(),
+        return String.format("[%d] Paciente: %-25s | Médico: Dr/a. %-25s | Fecha: %s | Estado: %-25s | %s",
+                id, paciente.getNombreCompleto(), medico.getNombreCompleto(),
                 fecha, estado, cronica ? "[CRÓNICA]" : "");
     }
 }

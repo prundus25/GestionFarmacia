@@ -107,8 +107,7 @@ public class OrdenReposicion implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format(
-                "[%d] Fecha: %s | Estado: %-10s | Líneas: %d",
+        return String.format("[%d] Fecha: %s | Estado: %-10s | Líneas: %d",
                 id, fecha, estado, lineas.size());
     }
 }

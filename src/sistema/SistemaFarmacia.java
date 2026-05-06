@@ -461,19 +461,12 @@ public class SistemaFarmacia implements Serializable {
 
     /**
      * Carga el sistema siguiendo esta estrategia:
-     * <ol>
-     *   <li>Si existe {@code data/farmacia.dat}, lo
-     *       deserializa y lo devuelve.</li>
-     *   <li>Si existe {@code data/datosIniciales.dat},
-     *       lo deserializa como punto de partida.</li>
-     *   <li>Si ninguno existe, genera los datos de ejemplo
-     *       en memoria, los serializa en
-     *       {@code data/datosIniciales.dat} para usos
-     *       posteriores y los devuelve.</li>
-     * </ol>
+     * Si existe data/farmacia.dat, lo deserializa y lo devuelve.
+     * Si existe data/datosIniciales.dat, lo deserializa como punto de partida.
+     * Si ninguno existe, genera los datos de ejemplo en memoria, que se serializarán en
+     * data/farmacia.dat, y los devuelve.
      *
-     * @return la instancia de SistemaFarmacia lista
-     *         para usar
+     * @return la instancia de SistemaFarmacia lista para usar
      */
     public static SistemaFarmacia cargar() {
         File fichero = new File("data/farmacia.dat");
@@ -510,7 +503,6 @@ public class SistemaFarmacia implements Serializable {
         System.out.println("Primera ejecucion: generando datos de ejemplo...");
         SistemaFarmacia s = new SistemaFarmacia();
         s.cargarDatosEjemplo();
-        s.guardarDatosIniciales();
         return s;
     }
 
@@ -590,106 +582,5 @@ public class SistemaFarmacia implements Serializable {
         medicos.add(new Medico(4, "Sofía",  "Navarro Prieto",  "Endocrinología",   "28-45678"));
         medicos.add(new Medico(5, "Andrés", "Castillo Reyes",  "Neumología",       "28-56789"));
         nextIdMedico = 6;
-    }
-
-    private void guardarDatosIniciales() {
-        try {
-            File carpeta = new File("data");
-            if (!carpeta.exists()) carpeta.mkdir();
-            FileOutputStream fos = new FileOutputStream("data/datosIniciales.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(this);
-            oos.close();
-            fos.close();
-        } catch (IOException e) {
-            System.out.println("Error al guardar datos iniciales: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Exporta el estado actual del inventario, los
-     * pacientes y los médicos a ficheros de texto en
-     * {@code data/} para su visualización.
-     *
-     * <p>Genera {@code medicamentos.txt},
-     * {@code pacientes.txt} y {@code medicos.txt}.
-     * Los ficheros se sobreescriben en cada llamada.
-     */
-    public void exportarTxt() {
-        File carpeta = new File("data");
-        if (!carpeta.exists()) carpeta.mkdir();
-        exportarMedicamentosTxt();
-        exportarPacientesTxt();
-        exportarMedicosTxt();
-    }
-
-    private void exportarMedicamentosTxt() {
-        try (PrintWriter pw = new PrintWriter(
-                new OutputStreamWriter(
-                        new FileOutputStream("data/medicamentos.txt"), "UTF-8"))) {
-            pw.println("MEDICAMENTOS - ESTADO ACTUAL");
-            pw.println("============================");
-            pw.println();
-            pw.printf(" %-3s | %-24s | %-17s | %5s | %8s | %-10s | %8s | %s%n",
-                    "ID", "Nombre", "Categoría", "Stock", "StockMín",
-                    "Caducidad", "Precio €", "Restringido");
-            pw.println("-----+--------------------------+-------------------+-------+----------+------------+----------+------------");
-            for (Medicamento m : medicamentos) {
-                pw.printf(" %-3d | %-24s | %-17s | %5d | %8d | %s | %8.2f | %s%n",
-                        m.getId(), m.getNombre(), m.getCategoria(),
-                        m.getStock(), m.getStockMinimo(),
-                        m.getFechaCaducidad(),
-                        m.getPrecioUnitario(),
-                        m.isRestringido() ? "Sí" : "No");
-            }
-        } catch (IOException e) {
-            System.out.println("Error exportando medicamentos.txt: " + e.getMessage());
-        }
-    }
-
-    private void exportarPacientesTxt() {
-        try (PrintWriter pw = new PrintWriter(
-                new OutputStreamWriter(
-                        new FileOutputStream("data/pacientes.txt"), "UTF-8"))) {
-            pw.println("PACIENTES - ESTADO ACTUAL");
-            pw.println("=========================");
-            pw.println();
-            pw.printf(" %-3s | %-28s | %-9s | %-10s | %-25s | %s%n",
-                    "ID", "Nombre completo", "DNI", "Nacimiento",
-                    "Alergias", "Enfermedades crónicas");
-            pw.println("-----+------------------------------+-----------+------------+---------------------------+--------------------------------------");
-            for (Paciente p : pacientes) {
-                String alergias = p.getAlergias().isEmpty()
-                        ? "Ninguna" : String.join(", ", p.getAlergias());
-                String enfs = p.getEnfermedadesCronicas().isEmpty()
-                        ? "Ninguna" : String.join(", ", p.getEnfermedadesCronicas());
-                pw.printf(" %-3d | %-28s | %-9s | %s | %-25s | %s%n",
-                        p.getId(), p.getNombreCompleto(),
-                        p.getDni(), p.getFechaNacimiento(),
-                        alergias, enfs);
-            }
-        } catch (IOException e) {
-            System.out.println("Error exportando pacientes.txt: " + e.getMessage());
-        }
-    }
-
-    private void exportarMedicosTxt() {
-        try (PrintWriter pw = new PrintWriter(
-                new OutputStreamWriter(
-                        new FileOutputStream("data/medicos.txt"), "UTF-8"))) {
-            pw.println("MÉDICOS - ESTADO ACTUAL");
-            pw.println("=======================");
-            pw.println();
-            pw.printf(" %-3s | %-28s | %-20s | %s%n",
-                    "ID", "Nombre completo", "Especialidad", "Nº Colegiado");
-            pw.println("-----+------------------------------+----------------------+--------------");
-            for (Medico m : medicos) {
-                pw.printf(" %-3d | %-28s | %-20s | %s%n",
-                        m.getId(), m.getNombreCompleto(),
-                        m.getEspecialidad(), m.getNumeroColegiado());
-            }
-        } catch (IOException e) {
-            System.out.println("Error exportando medicos.txt: " + e.getMessage());
-        }
     }
 }

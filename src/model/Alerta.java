@@ -135,8 +135,7 @@ public class Alerta implements Serializable {
             detalle = "Stock actual: " + medicamento.getStock()
                     + " (mín: " + medicamento.getStockMinimo() + ")";
         }
-        return String.format(
-                "[%d] %-14s | [Med.%d] %-21s | %s | %s | %s",
+        return String.format("[%d] %-14s | [Med.%d] %-21s | %s | %s | %s",
                 id, tipo, medicamento.getId(), medicamento.getNombre(),
                 detalle, fecha,
                 resuelta ? "RESUELTA" : "ACTIVA");

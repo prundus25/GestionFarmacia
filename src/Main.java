@@ -23,8 +23,6 @@ public class Main {
         // Guardamos todo antes de cerrar
         System.out.println("\nGuardando datos...");
         sistema.guardar();
-        sistema.exportarTxt();
         System.out.println("¡Hasta pronto!");
     }
 }
-

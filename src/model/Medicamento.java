@@ -206,11 +206,8 @@ public class Medicamento implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format(
-                "[%d] %-25s | %-20s | Stock: %3d (min: %2d)"
-                + " | Cad.: %s | €%.2f %s",
-                id, nombre, categoria, stock, stockMinimo,
-                fechaCaducidad, precioUnitario,
+        return String.format("[%d] %-25s | %-20s | Stock: %3d (min: %2d) | Cad.: %s | €%.2f %s",
+                id, nombre, categoria, stock, stockMinimo, fechaCaducidad, precioUnitario,
                 restringido ? "[RESTRINGIDO]" : "");
     }
 }
