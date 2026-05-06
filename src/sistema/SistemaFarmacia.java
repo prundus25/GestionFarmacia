@@ -536,40 +536,27 @@ public class SistemaFarmacia implements Serializable {
 
     private void cargarPacientesIniciales() {
         Paciente p1 = new Paciente(1, "María",   "García López",      LocalDate.of(1978,  4, 12), "12345678A");
-        p1.getAlergias().add("Penicilina");
-        p1.getEnfermedadesCronicas().add("Hipertensión");
-        p1.getEnfermedadesCronicas().add("Diabetes tipo 2");
         pacientes.add(p1);
 
         Paciente p2 = new Paciente(2, "Juan",    "Martínez Ruiz",     LocalDate.of(1965,  9, 23), "23456789B");
-        p2.getEnfermedadesCronicas().add("Insuficiencia cardíaca");
         pacientes.add(p2);
 
         Paciente p3 = new Paciente(3, "Ana",     "Fernández Torres",  LocalDate.of(1990,  1,  5), "34567890C");
-        p3.getAlergias().add("Ibuprofeno");
-        p3.getAlergias().add("Aspirina");
         pacientes.add(p3);
 
         Paciente p4 = new Paciente(4, "Carlos",  "Pérez Sánchez",     LocalDate.of(1952, 11, 30), "45678901D");
-        p4.getEnfermedadesCronicas().add("Diabetes tipo 2");
-        p4.getEnfermedadesCronicas().add("EPOC");
         pacientes.add(p4);
 
         Paciente p5 = new Paciente(5, "Lucía",   "Ramírez Díaz",      LocalDate.of(2001,  7, 18), "56789012E");
         pacientes.add(p5);
 
         Paciente p6 = new Paciente(6, "Miguel",  "López González",    LocalDate.of(1973,  3,  7), "67890123F");
-        p6.getAlergias().add("Sulfonamidas");
-        p6.getEnfermedadesCronicas().add("Asma");
         pacientes.add(p6);
 
         Paciente p7 = new Paciente(7, "Elena",   "Jiménez Castro",    LocalDate.of(1987, 12, 14), "78901234G");
-        p7.getEnfermedadesCronicas().add("Hipotiroidismo");
         pacientes.add(p7);
 
         Paciente p8 = new Paciente(8, "Roberto", "Morales Vega",      LocalDate.of(1944,  6, 25), "89012345H");
-        p8.getEnfermedadesCronicas().add("Fibrilación auricular");
-        p8.getEnfermedadesCronicas().add("Hipertensión");
         pacientes.add(p8);
 
         nextIdPaciente = 9;

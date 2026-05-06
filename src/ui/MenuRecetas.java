@@ -156,12 +156,6 @@ public class MenuRecetas {
             return;
         }
 
-        // Mostrar alergias del paciente para que el farmacéutico las tenga en cuenta
-        if (!paciente.getAlergias().isEmpty()) {
-            System.out.println("  [AVISO] Este paciente tiene alergias registradas: "
-                    + String.join(", ", paciente.getAlergias()));
-        }
-
         // Seleccionar médico
         System.out.print("  ID del medico: ");
         int idMedico = Consola.leerEnteroPositivo();
@@ -216,8 +210,7 @@ public class MenuRecetas {
         boolean cronica = Consola.scanner.nextLine().trim().equalsIgnoreCase("s");
 
         // Aviso genérico de interacciones
-        System.out.println("  [AVISO] Recuerde verificar manualmente posibles interacciones");
-        System.out.println("  entre los medicamentos prescritos.");
+        System.out.println("  [AVISO] Recuerde verificar manualmente posibles interacciones entre los medicamentos prescritos.");
 
         // Crear la receta
         Receta receta = new Receta(0, paciente, medico, lineas, LocalDate.now(), cronica);
@@ -233,8 +226,7 @@ public class MenuRecetas {
 
         if (tieneRestringidos) {
             receta.setEstado(EstadoReceta.PENDIENTE_AUTORIZACION);
-            System.out.println("  [AUTORIZACION REQUERIDA] La receta contiene medicamentos");
-            System.out.println("  de uso restringido. Se ha notificado al comite farmacoterapeutico.");
+            System.out.println("  [AUTORIZACION REQUERIDA] La receta contiene medicamentos de uso restringido. Se ha notificado al comite farmacoterapeutico.");
         }
 
         sistema.agregarReceta(receta);

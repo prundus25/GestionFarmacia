@@ -211,7 +211,7 @@ Precondiciones:
 Flujo principal:
     1. El Personal selecciona "Nueva receta".
     2. El sistema solicita el ID del paciente. El Personal lo
-       introduce y el sistema muestra sus alergias (si las tiene).
+       introduce.
     3. El sistema solicita el ID del médico prescriptor.
     4. El Personal añade medicamentos uno a uno, indicando para
        cada uno: dosis, frecuencia, duración en días y cantidad.
@@ -368,7 +368,7 @@ Actor/es: Personal de Farmacia
 
 Descripción:
     El Personal mantiene el registro de pacientes del hospital:
-    puede consultar, añadir, editar (datos personales, alergias)
+    puede consultar, añadir, editar (datos personales)
     y dar de baja a pacientes.
 
 Precondiciones:

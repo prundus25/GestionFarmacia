@@ -46,11 +46,6 @@ else (sí)
         end fork
 
         :Mostrar confirmación de dispensación;
-
-        if (¿Receta es crónica?) then (sí)
-            :Mostrar aviso de reposición\nautomática de tratamiento crónico;
-        else (no)
-        endif
     endif
 endif
 

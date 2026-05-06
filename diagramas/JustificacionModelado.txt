@@ -104,6 +104,15 @@ tal como recomienda el propio documento de entregables
 ("Se priorizará la claridad del modelo frente a la cantidad de
 elementos"). Solo se muestran los métodos con lógica relevante.
 
+Excepción: en SistemaFarmacia se incluyen explícitamente los
+métodos de inserción y eliminación (agregarMedicamento,
+eliminarMedicamento, agregarPaciente, etc.) y de gestión de
+alternativas (añadirAlternativa, eliminarAlternativa) porque no
+son simples setters: contienen lógica de negocio (comprobaciones
+de existencia, relaciones bidireccionales, generación de alertas)
+y representan las operaciones del sistema visibles desde la capa
+de presentación (menús).
+
 El atributo serialVersionUID, aunque presente en el código para
 evitar problemas de compatibilidad al serializar, tampoco se
 incluye en el diagrama por ser un detalle de implementación

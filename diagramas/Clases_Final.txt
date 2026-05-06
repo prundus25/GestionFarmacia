@@ -65,8 +65,6 @@ class Medico {
 class Paciente {
     - fechaNacimiento : LocalDate
     - dni : String
-    - alergias : List<String>
-    - enfermedadesCronicas : List<String>
     + toString() : String
 }
 
@@ -86,6 +84,7 @@ class Medicamento {
     - fechaCaducidad : LocalDate
     - precioUnitario : double
     - restringido : boolean
+    - alternativas : List<Integer>
     + toString() : String
 }
 
@@ -172,6 +171,15 @@ class SistemaFarmacia {
     - nextIdReceta : int
     - nextIdAlerta : int
     - nextIdOrden : int
+    + agregarMedicamento(m : Medicamento) : void
+    + eliminarMedicamento(id : int) : boolean
+    + añadirAlternativa(idA : int, idB : int) : void
+    + eliminarAlternativa(idA : int, idB : int) : void
+    + agregarPaciente(p : Paciente) : void
+    + agregarMedico(m : Medico) : void
+    + agregarReceta(r : Receta) : void
+    + agregarAlerta(a : Alerta) : void
+    + agregarOrden(o : OrdenReposicion) : void
     + generarAlertasIniciales() : void
     + buscarMedicamentoPorId(id : int) : Medicamento
     + buscarPacientePorId(id : int) : Paciente

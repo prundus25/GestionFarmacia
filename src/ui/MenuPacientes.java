@@ -86,8 +86,6 @@ public class MenuPacientes {
         System.out.println("  Nombre completo:  " + p.getNombreCompleto());
         System.out.println("  DNI:              " + p.getDni());
         System.out.println("  Fecha nacimiento: " + p.getFechaNacimiento());
-        System.out.println("  Alergias:         " + (p.getAlergias().isEmpty() ? "Ninguna" : String.join(", ", p.getAlergias())));
-        System.out.println("  Enf. cronicas:    " + (p.getEnfermedadesCronicas().isEmpty() ? "Ninguna" : String.join(", ", p.getEnfermedadesCronicas())));
         Consola.pausar();
     }
 
@@ -113,32 +111,6 @@ public class MenuPacientes {
         LocalDate fechaNacimiento = Consola.leerFecha();
 
         Paciente nuevo = new Paciente(0, nombre, apellidos, fechaNacimiento, dni);
-
-        System.out.print("  Alergias (separadas por comas, o Enter si no tiene): ");
-        String alergiasStr = Consola.scanner.nextLine().trim();
-        if (!alergiasStr.isEmpty()) {
-            String[] partes = alergiasStr.split(",");
-            ArrayList<String> alergias = new ArrayList<>();
-            for (String a : partes) {
-                if (!a.trim().isEmpty()) {
-                    alergias.add(a.trim());
-                }
-            }
-            nuevo.setAlergias(alergias);
-        }
-
-        System.out.print("  Enfermedades cronicas (separadas por comas, o Enter si no tiene): ");
-        String enfsStr = Consola.scanner.nextLine().trim();
-        if (!enfsStr.isEmpty()) {
-            String[] partes = enfsStr.split(",");
-            ArrayList<String> enfs = new ArrayList<>();
-            for (String e : partes) {
-                if (!e.trim().isEmpty()) {
-                    enfs.add(e.trim());
-                }
-            }
-            nuevo.setEnfermedadesCronicas(enfs);
-        }
 
         sistema.agregarPaciente(nuevo);
         System.out.println("  Paciente añadido con ID: " + nuevo.getId());
@@ -173,19 +145,6 @@ public class MenuPacientes {
         String dni = Consola.scanner.nextLine().trim();
         if (!dni.isEmpty()) {
             p.setDni(dni);
-        }
-
-        System.out.print("  Alergias [" + String.join(", ", p.getAlergias()) + "]: ");
-        String alergiasStr = Consola.scanner.nextLine().trim();
-        if (!alergiasStr.isEmpty()) {
-            String[] partes = alergiasStr.split(",");
-            ArrayList<String> alergias = new ArrayList<>();
-            for (String a : partes) {
-                if (!a.trim().isEmpty()) {
-                    alergias.add(a.trim());
-                }
-            }
-            p.setAlergias(alergias);
         }
 
         System.out.println("  Paciente actualizado.");

@@ -67,6 +67,11 @@ para poder visualizarlos. En vez de eso, guardarlos en un .dat como los datos pr
 
 19. Revisar diagramas y concordancia con el código.
 
+20. Quitar cosas que no se piden en el enunciado?
+Alergias del paciente
+Enfermedades crónicas del paciente
+Historial de recetas por paciente
+
 ----------------
 Cosa a revisar / tener en cuenta en la parte de programación según IA:
 ⚠️ Único punto a revisar

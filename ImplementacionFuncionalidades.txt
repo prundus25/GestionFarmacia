@@ -1,0 +1,70 @@
+IMPLEMENTACIÓN DE FUNCIONALIDADES — FARMACIA HOSPITALARIA
+==========================================================
+
+1. CONTROL DE INVENTARIO DE MEDICAMENTOS
+   El inventario se gestiona desde MenuInventario. Cada medicamento
+   (clase Medicamento) almacena nombre, categoría, stock, stock mínimo,
+   fecha de caducidad, precio y si es de uso restringido. SistemaFarmacia
+   mantiene la lista y asigna IDs correlativos. El personal puede añadir,
+   eliminar, editar y listar medicamentos, así como buscar por nombre o
+   categoría. La eliminación está protegida: si existe una orden de
+   reposición pendiente con ese medicamento, se bloquea; si hay una alerta
+   STOCK_MINIMO activa, se pide confirmación extra.
+
+2. VERIFICACIÓN DE FECHA DE CADUCIDAD Y ROTACIÓN DE STOCK
+   Al arrancar, SistemaFarmacia.generarAlertasIniciales() recorre todos los
+   medicamentos y genera una alerta CADUCIDAD si la fecha de caducidad es
+   anterior a 30 días desde hoy. El personal puede retirar el stock de un
+   medicamento caducado (opción 8 de MenuAlertas): el stock se pone a 0, la
+   alerta CADUCIDAD se marca resuelta y, si había stock, se genera
+   automáticamente una alerta STOCK_MINIMO para forzar la reposición.
+
+3. SEGUIMIENTO DE STOCK MÍNIMO Y ÓRDENES DE REPOSICIÓN
+   generarAlertasIniciales() también crea una alerta STOCK_MINIMO cuando el
+   stock actual es igual o inferior al stock mínimo configurado (umbral
+   individual por medicamento). Desde MenuAlertas el personal genera una
+   orden de reposición (OrdenReposicion con líneas LineaOrden) agrupando
+   todos los medicamentos con alerta STOCK_MINIMO activa. Al confirmar la
+   recepción, el sistema suma las cantidades al stock y resuelve
+   automáticamente las alertas STOCK_MINIMO cuyo medicamento haya recuperado
+   nivel suficiente.
+
+4. DISPENSACIÓN DE RECETAS
+   MenuRecetas.dispensarReceta() localiza la receta por ID, verifica que
+   esté en estado PENDIENTE y que haya stock suficiente para cada línea. Si
+   el stock es insuficiente, muestra las alternativas terapéuticas
+   registradas (campo List<Integer> alternativas en Medicamento, relación
+   bidireccional) para informar al médico. Si hay stock, descuenta las
+   unidades, registra la dispensación y actualiza el estado a DISPENSADA.
+
+5. VALIDACIÓN DE INTERACCIONES Y DOSIS
+   Al crear una receta (nuevaReceta) se muestra un aviso genérico indicando
+   que el personal debe verificar manualmente las posibles interacciones
+   entre los medicamentos prescritos. La detección automática de interacciones
+   no está implementada.
+
+6. MEDICAMENTOS DE USO RESTRINGIDO — AUTORIZACIÓN DEL COMITÉ
+   Al crear una receta, si algún medicamento tiene restringido = true el
+   estado inicial se fija automáticamente a PENDIENTE_AUTORIZACION en lugar
+   de PENDIENTE. Desde la opción 7 de MenuRecetas el comité farmacoterapéutico
+   la autoriza, pasando a PENDIENTE para poder dispensarla.
+
+7. ALTERNATIVAS TERAPÉUTICAS
+   Desde MenuInventario (opción "Gestionar alternativas") el personal puede
+   vincular medicamentos como alternativas entre sí. La relación es
+   bidireccional: añadir A→B añade también B→A. Se usa cuando al dispensar
+   no hay stock suficiente del medicamento prescrito.
+
+8. RECETAS CRÓNICAS Y REPOSICIÓN AUTOMÁTICA
+   Al crear una receta se indica si es crónica (campo booleano en Receta).
+   Al dispensarla, si es crónica el sistema genera automáticamente una nueva
+   receta con los mismos medicamentos y la fecha desplazada 30 días, en
+   estado PENDIENTE, simulando la reposición periódica automática.
+
+9. PERSISTENCIA — FICHEROS DE OBJETOS Y DE TEXTO
+   Al salir, Main llama a SistemaFarmacia.guardar(), que serializa el objeto
+   completo en data/farmacia.dat (fichero de objetos). Al arrancar, cargar()
+   lo deserializa; si no existe, carga data/datosIniciales.dat (generado
+   automáticamente la primera vez desde datos hardcodeados). Los ficheros
+   data/medicamentos.txt, data/pacientes.txt y data/medicos.txt contienen
+   los datos de ejemplo en formato tabla (ficheros de texto).
