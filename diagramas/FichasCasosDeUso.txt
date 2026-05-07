@@ -170,20 +170,20 @@ Flujo principal:
        principal.
     2. El sistema muestra el submenú de recetas.
     3. El Personal selecciona una de las opciones disponibles
-       (listar, filtrar, historial, nueva, dispensar, autorizar,
-       cancelar, ver detalle).
+       (listar, filtrar por estado, historial por paciente,
+       ver detalle, validar y reservar stock, dispensar,
+       comprobación semanal de crónicos).
     4. El sistema ejecuta la operación seleccionada.
-       [include UC5 - Crear Receta]
-       [include UC6 - Dispensar Receta]
-       [include UC7 - Cancelar Receta]
+       [include UC6 - Validar y Reservar Stock]
+       [include UC7 - Dispensar Receta]
+       [include UC16 - Comprobación Semanal de Crónicos]
     5. El Personal puede repetir el paso 3 hasta seleccionar
        "Volver".
     6. El sistema regresa al menú principal.
 
 Flujos alternativos:
-    - Si la receta creada contiene medicamentos de uso restringido,
-      el estado pasa a PENDIENTE_AUTORIZACION y se notifica al
-      Comité Farmacoterapéutico.
+    - Si la receta pasa a PENDIENTE_AUTORIZACION durante la
+      validación, el Comité Farmacoterapéutico debe autorizar.
       [extend UC8 - Autorizar Receta Restringida]
 
 Postcondiciones:
@@ -192,50 +192,65 @@ Postcondiciones:
 
 
 ══════════════════════════════════════════════════════════════
-UC5 - Crear Receta
+UC6 - Validar y Reservar Stock
 ══════════════════════════════════════════════════════════════
 
-Nombre del caso de uso: Crear Receta
+Nombre del caso de uso: Validar y Reservar Stock
 
 Actor/es: Personal de Farmacia (incluido desde UC4)
 
 Descripción:
-    El Personal registra una nueva receta médica asociando un
-    paciente, un médico y una o varias líneas de medicamentos
-    con su posología. Indica también si la receta es crónica.
+    El Personal valida una receta comprobando, en orden:
+    medicamentos restringidos, interacciones peligrosas, dosis
+    excesivas y disponibilidad de stock. Si todas las
+    comprobaciones pasan, el stock queda reservado para esa
+    receta y el estado cambia a STOCK_RESERVADO.
 
 Precondiciones:
-    - Existe al menos un paciente y un médico registrados.
-    - Existe al menos un medicamento en el inventario.
+    - Existe una receta en estado PENDIENTE_VALIDAR.
 
 Flujo principal:
-    1. El Personal selecciona "Nueva receta".
-    2. El sistema solicita el ID del paciente. El Personal lo
-       introduce.
-    3. El sistema solicita el ID del médico prescriptor.
-    4. El Personal añade medicamentos uno a uno, indicando para
-       cada uno: dosis, frecuencia, duración en días y cantidad.
-    5. El Personal indica 0 para terminar de añadir medicamentos.
-    6. El Personal indica si la receta es crónica (s/n).
-    7. El sistema crea la receta con estado PENDIENTE y le asigna
-       un ID único.
-    8. El sistema muestra el ID de la receta creada.
+    1. El Personal selecciona "Validar y reservar stock" e
+       introduce el ID de la receta.
+    2. El sistema verifica que la receta existe y está en
+       estado PENDIENTE_VALIDAR.
+    3. El sistema comprueba si alguna línea contiene un
+       medicamento restringido. Si es así, el estado pasa a
+       PENDIENTE_AUTORIZACION y la operación se detiene.
+       [extend UC8 - Autorizar Receta Restringida]
+    4. El sistema comprueba interacciones peligrosas entre los
+       medicamentos de la receta. Si las hay, el estado pasa a
+       PENDIENTE_MEDICO y la operación se detiene.
+    5. El sistema comprueba si alguna dosis supera el máximo
+       permitido del medicamento. Si es así, el estado pasa a
+       PENDIENTE_MEDICO y la operación se detiene.
+    6. El sistema verifica el stock disponible
+       (calcularStockDisponible) para cada línea.
+    7. Si el stock de todas las líneas es suficiente, el estado
+       cambia a STOCK_RESERVADO.
+    8. El sistema muestra confirmación.
 
 Flujos alternativos:
-    - Si el paciente o el médico no se encuentran, el sistema
-      muestra un error y cancela la operación.
-    - Si no se añade ningún medicamento, la receta no se crea.
-    - Si algún medicamento es de uso restringido, la receta pasa
-      a estado PENDIENTE_AUTORIZACION y se notifica al Comité.
-      [extend UC8 - Autorizar Receta Restringida]
+    - Si la receta no existe o su estado no es PENDIENTE_VALIDAR,
+      el sistema muestra un error.
+    - Si alguna línea no tiene stock pero existen alternativas
+      con stock disponible, el sistema muestra las alternativas,
+      informa al médico y cambia el estado a PENDIENTE_MEDICO.
+    - Si alguna línea no tiene stock ni alternativas, el estado
+      cambia a PENDIENTE_STOCK y el sistema genera una
+      OrdenReposicion por línea afectada (idRecetaOrigen =
+      receta.getId()). La receta avanzará automáticamente a
+      STOCK_RESERVADO cuando se confirme la recepción del pedido.
 
 Postcondiciones:
-    - La receta queda registrada en estado PENDIENTE o
-      PENDIENTE_AUTORIZACION según corresponda.
+    - La receta queda en STOCK_RESERVADO si todo es correcto.
+    - El stock reservado queda descontado de calcularStockDisponible
+      para otras recetas.
+    - Si correspondía, hay nuevas órdenes de reposición pendientes.
 
 
 ══════════════════════════════════════════════════════════════
-UC6 - Dispensar Receta
+UC7 - Dispensar Receta
 ══════════════════════════════════════════════════════════════
 
 Nombre del caso de uso: Dispensar Receta
@@ -243,82 +258,41 @@ Nombre del caso de uso: Dispensar Receta
 Actor/es: Personal de Farmacia (incluido desde UC4)
 
 Descripción:
-    El Personal entrega físicamente los medicamentos de una
-    receta al paciente. El sistema descuenta el stock del
-    inventario y marca la receta como DISPENSADA.
+    El Personal entrega físicamente los medicamentos al paciente.
+    El sistema descuenta el stock real del inventario y marca la
+    receta como DISPENSADA. Solo es posible desde STOCK_RESERVADO.
 
 Precondiciones:
-    - Existe una receta registrada en estado PENDIENTE.
-    - Todos los medicamentos de la receta tienen stock suficiente.
+    - Existe una receta en estado STOCK_RESERVADO.
 
 Flujo principal:
     1. El Personal selecciona "Dispensar receta" e introduce el
        ID de la receta.
     2. El sistema verifica que la receta existe y está en estado
-       PENDIENTE.
-    3. El sistema comprueba que hay stock suficiente para cada
-       medicamento de la receta.
-    4. El sistema descuenta del stock de cada medicamento la
+       STOCK_RESERVADO.
+    3. El sistema descuenta del stock de cada medicamento la
        cantidad indicada en la línea de receta.
-    5. El sistema cambia el estado de la receta a DISPENSADA.
+    4. El sistema cambia el estado de la receta a DISPENSADA y
+       registra la fecha de dispensación.
+    5. Si la receta es crónica, el sistema inicializa por línea
+       el seguimiento de reposiciones (cajasRestantes, duracionCaja,
+       fechaProximaReposicion).
     6. El sistema muestra confirmación de la dispensación.
 
 Flujos alternativos:
     - Si la receta no existe, el sistema muestra un error.
-    - Si la receta está en estado DISPENSADA o CANCELADA, el
-      sistema muestra un error y no realiza ninguna acción.
-    - Si la receta está en estado PENDIENTE_AUTORIZACION, el
-      sistema informa de que requiere autorización previa.
-    - Si el stock de algún medicamento es insuficiente, el
-      sistema indica cuál es y no dispensa la receta.
+    - Si la receta no está en STOCK_RESERVADO, el sistema informa
+       del estado actual y no realiza ninguna acción.
     - Si tras descontar el stock algún medicamento queda por
       debajo del stock mínimo, el sistema genera automáticamente
       una alerta STOCK_MINIMO (si no existía ya).
       [extend UC3 - Generar Alerta Automática]
 
 Postcondiciones:
-    - El stock de los medicamentos de la receta queda reducido.
+    - El stock de los medicamentos queda reducido.
     - La receta queda en estado DISPENSADA.
-    - Si corresponde, existe una nueva alerta STOCK_MINIMO activa.
-
-
-══════════════════════════════════════════════════════════════
-UC7 - Cancelar Receta
-══════════════════════════════════════════════════════════════
-
-Nombre del caso de uso: Cancelar Receta
-
-Actor/es: Personal de Farmacia (incluido desde UC4)
-
-Descripción:
-    El Personal cancela una receta médica que no va a ser
-    dispensada. La cancelación es posible desde los estados
-    PENDIENTE y PENDIENTE_AUTORIZACION.
-
-Precondiciones:
-    - Existe una receta en estado PENDIENTE o
-      PENDIENTE_AUTORIZACION.
-
-Flujo principal:
-    1. El Personal selecciona "Cancelar receta" e introduce el
-       ID de la receta.
-    2. El sistema verifica que la receta existe.
-    3. El sistema verifica que la receta no está ya cancelada
-       ni dispensada.
-    4. El sistema cambia el estado de la receta a CANCELADA.
-    5. El sistema muestra confirmación de la cancelación.
-
-Flujos alternativos:
-    - Si la receta no existe, el sistema muestra un error.
-    - Si la receta ya está en estado CANCELADA, el sistema
-      informa de ello y no realiza ninguna acción.
-    - Si la receta ya está en estado DISPENSADA, el sistema
-      informa de que no se puede cancelar una receta ya
-      dispensada.
-
-Postcondiciones:
-    - La receta queda en estado CANCELADA.
-    - El stock del inventario no se ve afectado.
+    - Si la receta es crónica, queda en seguimiento de
+      reposiciones periódicas.
 
 
 ══════════════════════════════════════════════════════════════
@@ -345,8 +319,8 @@ Flujo principal:
        introduce el ID de la receta.
     2. El sistema verifica que la receta existe y que su estado
        es PENDIENTE_AUTORIZACION.
-    3. El sistema cambia el estado de la receta a PENDIENTE.
-    4. El sistema confirma que la receta puede ser dispensada.
+    3. El sistema cambia el estado de la receta a PENDIENTE_VALIDAR.
+    4. El sistema confirma que la receta puede ser validada.
 
 Flujos alternativos:
     - Si la receta no existe, el sistema muestra un error.
@@ -354,8 +328,8 @@ Flujos alternativos:
       sistema informa de que no requiere autorización.
 
 Postcondiciones:
-    - La receta queda en estado PENDIENTE y puede ser dispensada
-      mediante UC6.
+    - La receta queda en estado PENDIENTE_VALIDAR y puede ser
+      validada mediante UC6.
 
 
 ══════════════════════════════════════════════════════════════
@@ -367,9 +341,10 @@ Nombre del caso de uso: Gestionar Pacientes
 Actor/es: Personal de Farmacia
 
 Descripción:
-    El Personal mantiene el registro de pacientes del hospital:
-    puede consultar, añadir, editar (datos personales)
-    y dar de baja a pacientes.
+    El Personal consulta el registro de pacientes del hospital:
+    puede listar todos los pacientes o ver el detalle de uno
+    concreto. Los datos de pacientes son gestionados externamente
+    al módulo de farmacia.
 
 Precondiciones:
     - El sistema está en ejecución con datos cargados.
@@ -378,8 +353,7 @@ Flujo principal:
     1. El Personal selecciona "Gestión de Pacientes" en el menú
        principal.
     2. El sistema muestra el submenú de pacientes.
-    3. El Personal selecciona una operación (listar, ver detalle,
-       añadir, editar, eliminar).
+    3. El Personal selecciona una operación (listar, ver detalle).
     4. El sistema ejecuta la operación solicitada.
     5. El Personal puede repetir el paso 3 hasta seleccionar
        "Volver".
@@ -388,14 +362,9 @@ Flujo principal:
 Flujos alternativos:
     - Si se busca un paciente por ID y no existe, el sistema
       muestra un mensaje de error.
-    - Si se intenta eliminar un paciente, el sistema solicita
-      confirmación antes de proceder.
-    - Si se cancela la eliminación, el sistema no realiza
-      ninguna acción.
 
 Postcondiciones:
-    - Los cambios realizados sobre los pacientes quedan
-      registrados en el sistema.
+    - No se modifica ningún dato del sistema.
 
 
 ══════════════════════════════════════════════════════════════
@@ -407,9 +376,10 @@ Nombre del caso de uso: Gestionar Médicos
 Actor/es: Personal de Farmacia
 
 Descripción:
-    El Personal mantiene el registro de médicos del hospital:
-    puede consultar, añadir, editar (especialidad, número de
-    colegiado) y dar de baja a médicos.
+    El Personal consulta el registro de médicos del hospital:
+    puede listar todos los médicos o ver el detalle de uno
+    concreto. Los datos de médicos son gestionados externamente
+    al módulo de farmacia.
 
 Precondiciones:
     - El sistema está en ejecución con datos cargados.
@@ -418,8 +388,7 @@ Flujo principal:
     1. El Personal selecciona "Gestión de Médicos" en el menú
        principal.
     2. El sistema muestra el submenú de médicos.
-    3. El Personal selecciona una operación (listar, ver detalle,
-       añadir, editar, eliminar).
+    3. El Personal selecciona una operación (listar, ver detalle).
     4. El sistema ejecuta la operación solicitada.
     5. El Personal puede repetir el paso 3 hasta seleccionar
        "Volver".
@@ -428,14 +397,9 @@ Flujo principal:
 Flujos alternativos:
     - Si se busca un médico por ID y no existe, el sistema
       muestra un mensaje de error.
-    - Si se intenta eliminar un médico, el sistema solicita
-      confirmación antes de proceder.
-    - Si se cancela la eliminación, el sistema no realiza
-      ninguna acción.
 
 Postcondiciones:
-    - Los cambios realizados sobre los médicos quedan
-      registrados en el sistema.
+    - No se modifica ningún dato del sistema.
 
 
 ══════════════════════════════════════════════════════════════
@@ -459,9 +423,8 @@ Flujo principal:
        menú principal.
     2. El sistema muestra el submenú de alertas.
     3. El Personal selecciona una operación (ver activas, ver
-       todas, marcar resuelta, generar orden, ver órdenes,
-       confirmar recepción, cancelar orden, retirar stock
-       caducado).
+       todas, generar orden, ver órdenes, confirmar recepción,
+       cancelar orden, retirar stock caducado).
     4. El sistema ejecuta la operación solicitada.
     5. El Personal puede repetir el paso 3 hasta seleccionar
        "Volver".
@@ -483,8 +446,6 @@ Flujos alternativos:
       reposición en ese momento.
 
 Postcondiciones:
-    - Las alertas marcadas como resueltas pasan a estado
-      resuelta = true.
     - Las órdenes de reposición confirmadas actualizan el stock
       del inventario y resuelven automáticamente las alertas
       STOCK_MINIMO correspondientes.
@@ -503,7 +464,10 @@ Descripción:
     agrupando todos los medicamentos con alertas de STOCK_MINIMO
     activas. La cantidad solicitada para cada medicamento es el
     doble de su stock mínimo. La orden queda en estado PENDIENTE
-    hasta ser aprobada o cancelada.
+    hasta ser aprobada o cancelada. Las órdenes también se
+    generan automáticamente al validar recetas sin stock ni
+    alternativas, y durante la comprobación semanal de crónicos
+    (UC16).
 
 Precondiciones:
     - Existen alertas de tipo STOCK_MINIMO activas en el sistema.
@@ -560,11 +524,20 @@ Flujo principal:
        PENDIENTE.
     5. Para cada línea de la orden, el sistema suma la cantidad
        solicitada al stock actual del medicamento.
-    6. Si el nuevo stock supera el stock mínimo, el sistema
-       resuelve automáticamente la alerta STOCK_MINIMO activa
-       de ese medicamento (si la hay).
-    7. El sistema cambia el estado de la orden a APROBADA.
-    8. El sistema muestra confirmación de la recepción.
+    6. Si la orden tiene idRecetaOrigen != 0 y la receta origen
+       está en estado DISPENSADA (crónica), el sistema localiza
+       la receta y marca las líneas del medicamento recibido con
+       proximaCajaReservada = true.
+    7. El sistema recorre todas las recetas en PENDIENTE_STOCK.
+       Si para alguna de ellas calcularStockDisponible ≥ cajas
+       requeridas en todas sus líneas, su estado pasa
+       automáticamente a STOCK_RESERVADO.
+    8. Si el stock disponible (calcularStockDisponible) supera
+       el stock mínimo, el sistema resuelve automáticamente
+       la alerta STOCK_MINIMO activa de ese medicamento
+       (si la hay).
+    9. El sistema cambia el estado de la orden a APROBADA.
+   10. El sistema muestra confirmación de la recepción.
 
 Flujos alternativos:
     - Si no hay órdenes pendientes, el sistema lo indica y
@@ -578,6 +551,9 @@ Postcondiciones:
     - La orden pasa a estado APROBADA.
     - Las alertas STOCK_MINIMO cuyo medicamento ha recuperado
       stock suficiente quedan resueltas automáticamente.
+    - Las recetas en PENDIENTE_STOCK que ya tienen stock
+      suficiente para todas sus líneas avanzan automáticamente
+      a STOCK_RESERVADO.
 
 
 ══════════════════════════════════════════════════════════════
@@ -673,3 +649,55 @@ Postcondiciones:
       de forma bidireccional en ambos medicamentos.
     - Al intentar dispensar una receta con stock insuficiente,
       el sistema muestra las alternativas disponibles.
+
+
+══════════════════════════════════════════════════════════════
+UC16 - Comprobación Semanal de Crónicos
+══════════════════════════════════════════════════════════════
+
+Nombre del caso de uso: Comprobación Semanal de Crónicos
+
+Actor/es: Personal de Farmacia (incluido desde UC4)
+
+Descripción:
+    El Personal ejecuta la revisión semanal de recetas crónicas
+    dispensadas. Para cada línea con reposición en los próximos
+    7 días, el sistema reserva stock si lo hay o genera una
+    orden de reposición. El día previo a la entrega, notifica
+    al paciente y descuenta el stock.
+
+Precondiciones:
+    - Existen recetas en estado DISPENSADA con cronica = true.
+
+Flujo principal:
+    1. El Personal selecciona "Comprobación semanal de
+       crónicos".
+    2. El sistema itera todas las recetas crónicas en estado
+       DISPENSADA.
+    3. Para cada línea con cajasRestantes > 0,
+       fechaProximaReposicion dentro de los próximos 7 días y
+       ordenReposicionGenerada = false:
+       a. Si el stock disponible (calcularStockDisponible) ≥ 1:
+          proximaCajaReservada = true.
+       b. Si no: crea una OrdenReposicion con
+          idRecetaOrigen = receta.id para ese medicamento.
+       c. En ambos casos: setOrdenReposicionGenerada(true).
+    4. Para cada línea con fechaProximaReposicion = mañana:
+       a. Notifica al paciente.
+       b. m.stock -= 1; cajasRestantes -= 1.
+       c. Avanza fechaProximaReposicion; resetea
+          proximaCajaReservada y ordenReposicionGenerada.
+    5. El sistema muestra un resumen de líneas procesadas.
+
+Flujos alternativos:
+    - Si no hay recetas crónicas dispensadas, el sistema lo
+      indica y regresa al menú.
+    - Si una orden generada en el paso 3b es confirmada (UC13),
+      el stock queda reservado automáticamente para el paciente
+      (proximaCajaReservada = true).
+
+Postcondiciones:
+    - Las líneas con reposición inminente tienen stock reservado
+      o una OrdenReposicion pendiente.
+    - El stock queda decrementado para las entregas del día
+      siguiente.

@@ -28,8 +28,10 @@ enum CategoriaMedicamento {
 }
 
 enum EstadoReceta {
-    PENDIENTE
+    PENDIENTE_VALIDAR
     PENDIENTE_AUTORIZACION
+    PENDIENTE_MEDICO
+    STOCK_RESERVADO
     DISPENSADA
     CANCELADA
 }
@@ -81,10 +83,13 @@ class Medicamento {
     - nombre : String
     - stock : int
     - stockMinimo : int
+    - dosisMaximaMg : int
+    - unidadesPorCaja : int
     - fechaCaducidad : LocalDate
     - precioUnitario : double
     - restringido : boolean
     - alternativas : List<Integer>
+    - interaccionesPeligrosas : List<Integer>
     + toString() : String
 }
 
@@ -102,14 +107,20 @@ class Receta {
     - id : int
     - fecha : LocalDate
     - cronica : boolean
+    - fechaDispensacion : LocalDate
     + toString() : String
 }
 
 class LineaReceta << (A,orchid) asociativa >> {
-    - dosis : String
-    - frecuencia : String
+    - dosisMg : int
+    - tomasPorDia : int
     - duracionDias : int
-    - cantidad : int
+    - cajas : int
+    - cajasRestantes : int
+    - duracionCaja : int
+    - fechaProximaReposicion : LocalDate
+    - ordenReposicionGenerada : boolean
+    - proximaCajaReservada : boolean
 }
 
 Receta         ..|> Serializable
@@ -130,6 +141,7 @@ LineaReceta    -->  Medicamento  : medicamento
 class OrdenReposicion {
     - id : int
     - fecha : LocalDate
+    - idRecetaOrigen : int
     + toString() : String
 }
 
@@ -166,18 +178,17 @@ Alerta         --> Medicamento : medicamento
 
 class SistemaFarmacia {
     - nextIdMedicamento : int
-    - nextIdPaciente : int
-    - nextIdMedico : int
-    - nextIdReceta : int
     - nextIdAlerta : int
     - nextIdOrden : int
     + agregarMedicamento(m : Medicamento) : void
     + eliminarMedicamento(id : int) : boolean
     + añadirAlternativa(idA : int, idB : int) : void
     + eliminarAlternativa(idA : int, idB : int) : void
-    + agregarPaciente(p : Paciente) : void
-    + agregarMedico(m : Medico) : void
-    + agregarReceta(r : Receta) : void
+    + calcularStockReservado(id : int) : int
+    + calcularStockDisponible(id : int) : int
+    + tieneInteraccionesPeligrosas(r : Receta) : boolean
+    + tieneDosisExcesiva(r : Receta) : boolean
+    + comprobarReposicionCronicos() : int
     + agregarAlerta(a : Alerta) : void
     + agregarOrden(o : OrdenReposicion) : void
     + generarAlertasIniciales() : void

@@ -15,10 +15,10 @@ rectangle "Sistema de Gestión de Farmacia Hospitalaria" {
 
     ' --- Recetas ---
     (Gestionar Recetas\nMédicas) as UC4
-    (Crear Receta) as UC5
-    (Dispensar Receta) as UC6
-    (Cancelar Receta) as UC7
+    (Validar y Reservar Stock) as UC6
+    (Dispensar Receta) as UC7
     (Autorizar Receta\nRestringida) as UC8
+    (Comprobación Semanal\nde Crónicos) as UC16
 
     ' --- Datos Maestros ---
     (Gestionar Pacientes) as UC9
@@ -41,27 +41,21 @@ rectangle "Sistema de Gestión de Farmacia Hospitalaria" {
     PF -- UC11
 
     ' === Inventario ===
-    ' UC1 siempre incluye la consulta del catálogo
     UC1 ..> UC2 : <<include>>
-    ' La alerta se genera de forma condicional al añadir o editar
     UC3 ..> UC1 : <<extend>>
-    ' Gestionar alternativas es opcional dentro de la gestión de inventario
     UC15 ..> UC1 : <<extend>>
 
     ' === Recetas ===
-    UC4 ..> UC5 : <<include>>
     UC4 ..> UC6 : <<include>>
     UC4 ..> UC7 : <<include>>
+    UC4 ..> UC16 : <<include>>
     ' Solo cuando la receta contiene medicamentos restringidos
-    UC8 ..> UC5 : <<extend>>
+    UC8 ..> UC6 : <<extend>>
     CF -- UC8
 
     ' === Alertas y Reposición ===
-    ' Solo se genera una orden cuando existen alertas de STOCK_MINIMO activas
     UC12 ..> UC11 : <<extend>>
-    ' Confirmar recepción actualiza el stock al recibir la mercancía
     UC13 ..> UC11 : <<extend>>
-    ' Retirar stock caducado pone el stock a 0 y genera alerta de reposición
     UC14 ..> UC11 : <<extend>>
 }
 @enduml

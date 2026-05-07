@@ -2,9 +2,12 @@ package ui;
 
 import model.Alerta;
 import model.LineaOrden;
+import model.LineaReceta;
 import model.Medicamento;
 import model.OrdenReposicion;
+import model.Receta;
 import model.enums.EstadoOrden;
+import model.enums.EstadoReceta;
 import model.enums.TipoAlerta;
 import sistema.SistemaFarmacia;
 
@@ -44,27 +47,25 @@ public class MenuAlertas {
             System.out.println("===== ALERTAS Y REPOSICIONES =====");
             System.out.println("  1. Ver alertas activas");
             System.out.println("  2. Ver todas las alertas");
-            System.out.println("  3. Marcar alerta como resuelta");
-            System.out.println("  4. Generar orden de reposicion");
-            System.out.println("  5. Ver ordenes de reposicion");
-            System.out.println("  6. Confirmar recepcion de reposicion");
-            System.out.println("  7. Cancelar orden de reposicion");
-            System.out.println("  8. Retirar stock de medicamento caducado");
+            System.out.println("  3. Generar orden de reposicion");
+            System.out.println("  4. Ver ordenes de reposicion");
+            System.out.println("  5. Confirmar recepcion de reposicion");
+            System.out.println("  6. Cancelar orden de reposicion");
+            System.out.println("  7. Retirar stock de medicamento caducado");
             System.out.println("  0. Volver");
             System.out.println("==================================");
             System.out.print("  Opcion: ");
 
-            int opcion = Consola.leerEntero(0, 8);
+            int opcion = Consola.leerEntero(0, 7);
 
             switch (opcion) {
                 case 1 -> verAlertasActivas();
                 case 2 -> verTodasLasAlertas();
-                case 3 -> resolverAlerta();
-                case 4 -> generarOrden();
-                case 5 -> verOrdenes();
-                case 6 -> confirmarRecepcion();
-                case 7 -> cancelarOrden();
-                case 8 -> retirarStockCaducado();
+                case 3 -> generarOrden();
+                case 4 -> verOrdenes();
+                case 5 -> confirmarRecepcion();
+                case 6 -> cancelarOrden();
+                case 7 -> retirarStockCaducado();
                 case 0 -> salir = true;
             }
         }
@@ -95,35 +96,6 @@ public class MenuAlertas {
                 System.out.println("  " + a);
             }
         }
-        Consola.pausar();
-    }
-
-    private void resolverAlerta() {
-        System.out.print("  ID de la alerta a resolver: ");
-        int id = Consola.leerEnteroPositivo();
-
-        // Buscamos la alerta en la lista
-        Alerta alertaEncontrada = null;
-        for (Alerta a : sistema.getAlertas()) {
-            if (a.getId() == id) {
-                alertaEncontrada = a;
-                break;
-            }
-        }
-
-        if (alertaEncontrada == null) {
-            System.out.println("  Alerta no encontrada.");
-            Consola.pausar();
-            return;
-        }
-        if (alertaEncontrada.isResuelta()) {
-            System.out.println("  Esta alerta ya estaba resuelta.");
-            Consola.pausar();
-            return;
-        }
-
-        alertaEncontrada.setResuelta(true);
-        System.out.println("  Alerta marcada como resuelta.");
         Consola.pausar();
     }
 
@@ -222,17 +194,14 @@ public class MenuAlertas {
             Medicamento m = sistema.buscarMedicamentoPorId(linea.getMedicamento().getId());
             if (m != null) {
                 m.setStock(m.getStock() + linea.getCantidadSolicitada());
-                System.out.println("  Stock actualizado: " + m.getNombre()
-                        + " -> " + m.getStock() + " unidades");
+                System.out.println("  Stock actualizado: " + m.getNombre() + " -> " + m.getStock() + " unidades");
 
-                // Si el nuevo stock supera el minimo, resolver la alerta STOCK_MINIMO activa
-                if (m.getStock() > m.getStockMinimo()) {
+                // Si el stock disponible (descontando reservas) supera el minimo, resolver la alerta STOCK_MINIMO activa
+                if (sistema.calcularStockDisponible(m.getId()) > m.getStockMinimo()) {
                     for (Alerta a : sistema.getAlertasActivas()) {
-                        if (a.getMedicamento().getId() == m.getId()
-                                && a.getTipo() == TipoAlerta.STOCK_MINIMO) {
+                        if (a.getMedicamento().getId() == m.getId() && a.getTipo() == TipoAlerta.STOCK_MINIMO) {
                             a.setResuelta(true);
-                            System.out.println("  [AUTO] Alerta de stock minimo resuelta para: "
-                                    + m.getNombre());
+                            System.out.println("  [AUTO] Alerta de stock minimo resuelta para: " + m.getNombre());
                             break;
                         }
                     }
@@ -240,7 +209,40 @@ public class MenuAlertas {
             }
         }
 
+        // Si la orden estaba vinculada a una receta cronica dispensada, reservar la caja para ese paciente
+        if (orden.getIdRecetaOrigen() != 0) {
+            Receta receta = sistema.buscarRecetaPorId(orden.getIdRecetaOrigen());
+            if (receta != null && receta.getEstado() == EstadoReceta.DISPENSADA) {
+                for (LineaOrden lo : orden.getLineas()) {
+                    for (LineaReceta lr : receta.getLineas()) {
+                        if (lr.getMedicamento().getId() == lo.getMedicamento().getId()) {
+                            lr.setProximaCajaReservada(true);
+                            System.out.println("  [CRONICA] Caja reservada para "
+                                    + receta.getPaciente().getNombreCompleto()
+                                    + " (" + lo.getMedicamento().getNombre() + ").");
+                        }
+                    }
+                }
+            }
+        }
+
         orden.setEstado(EstadoOrden.APROBADA);
+
+        // Avanzar automaticamente a STOCK_RESERVADO las recetas en PENDIENTE_STOCK
+        // cuyas lineas ya tienen stock suficiente tras esta recepcion
+        for (Receta r : sistema.getRecetas()) {
+            if (r.getEstado() == EstadoReceta.PENDIENTE_STOCK) {
+                boolean ahoraSuficiente = r.getLineas().stream()
+                        .allMatch(lr -> sistema.calcularStockDisponible(lr.getMedicamento().getId()) >= lr.getCajas());
+                if (ahoraSuficiente) {
+                    r.setEstado(EstadoReceta.STOCK_RESERVADO);
+                    System.out.println("  [AUTO] Receta #" + r.getId()
+                            + " (" + r.getPaciente().getNombreCompleto()
+                            + ") avanzada a STOCK_RESERVADO. Lista para dispensar.");
+                }
+            }
+        }
+
         System.out.println("  Recepcion confirmada. Stock actualizado.");
         Consola.pausar();
     }

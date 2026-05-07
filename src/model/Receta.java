@@ -7,14 +7,11 @@ import java.util.List;
 
 /**
  * Representa una receta médica emitida dentro del sistema
- * de la farmacia hospitalaria.
- * 
- * Vincula a un Paciente con un Medico y
- * contiene las líneas de medicamentos prescritos. Al
- * crearse, el estado se fija automáticamente a
- * PENDIENTE si algún medicamento
- * prescrito es de uso restringido, el menú cambia el
- * estado a PENDIENTE_AUTORIZACION antes de persistir la receta.
+ * de la farmacia.
+ *
+ * Vincula a un Paciente con un Medico y contiene las líneas
+ * de medicamentos prescritos. Al crearse el estado se fija
+ * automáticamente a PENDIENTE.
  */
 public class Receta implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -26,6 +23,7 @@ public class Receta implements Serializable {
     private LocalDate fecha;
     private EstadoReceta estado;
     private boolean cronica;
+    private LocalDate fechaDispensacion;
 
     /**
      * Crea una nueva Receta con estado inicial PENDIENTE.
@@ -45,7 +43,7 @@ public class Receta implements Serializable {
         this.medico = medico;
         this.lineas = lineas;
         this.fecha = fecha;
-        this.estado = EstadoReceta.PENDIENTE;
+        this.estado = EstadoReceta.PENDIENTE_VALIDAR;
         this.cronica = cronica;
     }
 
@@ -94,8 +92,7 @@ public class Receta implements Serializable {
     public void setMedico(Medico medico) { this.medico = medico; }
 
     /**
-     * Devuelve las líneas de medicamentos prescritos en
-     * esta receta.
+     * Devuelve las líneas de medicamentos prescritos en esta receta.
      *
      * @return lista de líneas de receta
      */
@@ -143,31 +140,45 @@ public class Receta implements Serializable {
     /**
      * Indica si esta receta es crónica.
      *
-     * @return true si la receta es crónica;
-     *         false en caso contrario
+     * @return true si la receta es crónica
      */
     public boolean isCronica() { return cronica; }
 
     /**
      * Establece si esta receta es crónica.
      *
-     * @param cronica true para marcarla como
-     *                crónica
+     * @param cronica true para marcarla como crónica
      */
     public void setCronica(boolean cronica) {
         this.cronica = cronica;
     }
 
     /**
+     * Devuelve la fecha en que se dispensó esta receta.
+     * Solo relevante para recetas crónicas dispensadas.
+     *
+     * @return la fecha de dispensación, o null si no se ha dispensado
+     */
+    public LocalDate getFechaDispensacion() { return fechaDispensacion; }
+
+    /**
+     * Establece la fecha de dispensación de esta receta.
+     *
+     * @param fechaDispensacion la fecha en que se entregó
+     */
+    public void setFechaDispensacion(LocalDate fechaDispensacion) {
+        this.fechaDispensacion = fechaDispensacion;
+    }
+
+    /**
      * Devuelve una representación textual de la receta con
      * formato tabular para su visualización en consola.
      *
-     * @return cadena con id, paciente, médico, fecha,
-     *         estado e indicador de receta crónica
+     * @return cadena con id, paciente, médico, fecha, estado e indicador crónico
      */
     @Override
     public String toString() {
-        return String.format("[%d] Paciente: %-25s | Médico: Dr/a. %-25s | Fecha: %s | Estado: %-25s | %s",
+        return String.format("[%d] Paciente: %-25s | Médico: Dr/a. %-25s | Fecha: %s | Estado: %-22s | %s",
                 id, paciente.getNombreCompleto(), medico.getNombreCompleto(),
                 fecha, estado, cronica ? "[CRÓNICA]" : "");
     }

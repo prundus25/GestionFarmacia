@@ -25,29 +25,33 @@ public class Medicamento implements Serializable {
     private LocalDate fechaCaducidad;
     private double precioUnitario;
     private boolean restringido;
+    private int dosisMaximaMg;
+    private int unidadesPorCaja;
     private List<Integer> alternativas = new ArrayList<>();
+    private List<Integer> interaccionesPeligrosas = new ArrayList<>();
 
     /**
-     * Crea un nuevo Medicamento con todos sus
-     * atributos.
+     * Crea un nuevo Medicamento con todos sus atributos.
      *
-     * @param id             identificador único asignado
-     *                       por el sistema
-     * @param nombre         nombre del medicamento
-     * @param categoria      categoría terapéutica
-     * @param stock          unidades disponibles iniciales
-     * @param stockMinimo    umbral mínimo de stock
-     * @param fechaCaducidad fecha de caducidad
-     * @param precioUnitario precio por unidad en euros
-     * @param restringido    true si requiere
-     *                       autorización para dispensarse
+     * @param id              identificador único asignado por el sistema
+     * @param nombre          nombre del medicamento
+     * @param categoria       categoría terapéutica
+     * @param stock           unidades disponibles iniciales
+     * @param stockMinimo     umbral mínimo de stock
+     * @param fechaCaducidad  fecha de caducidad
+     * @param precioUnitario  precio por unidad en euros
+     * @param restringido     true si requiere autorización para dispensarse
+     * @param dosisMaximaMg   dosis máxima permitida por toma en miligramos
+     * @param unidadesPorCaja número de unidades que contiene una caja
      */
     public Medicamento(int id, String nombre,
                        CategoriaMedicamento categoria,
                        int stock, int stockMinimo,
                        LocalDate fechaCaducidad,
                        double precioUnitario,
-                       boolean restringido) {
+                       boolean restringido,
+                       int dosisMaximaMg,
+                       int unidadesPorCaja) {
         this.id = id;
         this.nombre = nombre;
         this.categoria = categoria;
@@ -56,6 +60,8 @@ public class Medicamento implements Serializable {
         this.fechaCaducidad = fechaCaducidad;
         this.precioUnitario = precioUnitario;
         this.restringido = restringido;
+        this.dosisMaximaMg = dosisMaximaMg;
+        this.unidadesPorCaja = unidadesPorCaja;
     }
 
     /**
@@ -190,12 +196,51 @@ public class Medicamento implements Serializable {
     }
 
     /**
-     * Devuelve la lista de IDs de medicamentos alternativos
-     * a este.
+     * Devuelve la dosis máxima permitida por toma en miligramos.
+     *
+     * @return la dosis máxima en mg
+     */
+    public int getDosisMaximaMg() { return dosisMaximaMg; }
+
+    /**
+     * Establece la dosis máxima permitida por toma en miligramos.
+     *
+     * @param dosisMaximaMg la nueva dosis máxima en mg
+     */
+    public void setDosisMaximaMg(int dosisMaximaMg) {
+        this.dosisMaximaMg = dosisMaximaMg;
+    }
+
+    /**
+     * Devuelve el número de unidades que contiene una caja.
+     *
+     * @return unidades por caja
+     */
+    public int getUnidadesPorCaja() { return unidadesPorCaja; }
+
+    /**
+     * Establece el número de unidades que contiene una caja.
+     *
+     * @param unidadesPorCaja el nuevo número de unidades por caja
+     */
+    public void setUnidadesPorCaja(int unidadesPorCaja) {
+        this.unidadesPorCaja = unidadesPorCaja;
+    }
+
+    /**
+     * Devuelve la lista de IDs de medicamentos alternativos a este.
      *
      * @return lista mutable de IDs de alternativas
      */
     public List<Integer> getAlternativas() { return alternativas; }
+
+    /**
+     * Devuelve la lista de IDs de medicamentos con los que este
+     * tiene una interacción peligrosa.
+     *
+     * @return lista mutable de IDs de interacciones peligrosas
+     */
+    public List<Integer> getInteraccionesPeligrosas() { return interaccionesPeligrosas; }
 
     /**
      * Devuelve una representación textual del medicamento

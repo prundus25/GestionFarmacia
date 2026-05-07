@@ -1,32 +1,48 @@
 @startuml
 title Ciclo de Vida de la Receta Médica
 
-[*] --> PENDIENTE : Receta creada\n(sin medicamentos restringidos)
-[*] --> PENDIENTE_AUTORIZACION : Receta creada\n(contiene medicamentos restringidos)
+[*] --> PENDIENTE_VALIDAR : Creación receta
 
-PENDIENTE_AUTORIZACION --> PENDIENTE : Comité autoriza\nla prescripción
+PENDIENTE_VALIDAR --> PENDIENTE_AUTORIZACION : Medicamento restringido
+PENDIENTE_VALIDAR --> PENDIENTE_MEDICO : Interacción peligrosa,\ndosis excesiva o\nalternativas disponibles
+PENDIENTE_VALIDAR --> PENDIENTE_STOCK : Stock insuficiente\nsin alternativas
+PENDIENTE_STOCK --> STOCK_RESERVADO : Recepción de pedido\n[stock suficiente] (auto)
+PENDIENTE_VALIDAR --> STOCK_RESERVADO : Validación correcta\ny stock suficiente
 
-PENDIENTE --> DISPENSADA : Stock verificado\nMedicamentos entregados
+PENDIENTE_AUTORIZACION --> PENDIENTE_VALIDAR : Autorización comité
+PENDIENTE_MEDICO --> PENDIENTE_VALIDAR : Revisión médico
 
-PENDIENTE --> CANCELADA : Cancelada por\nel personal
-
-PENDIENTE_AUTORIZACION --> CANCELADA : Cancelada antes\nde la autorización
+STOCK_RESERVADO --> DISPENSADA : Dispensación receta
 
 DISPENSADA --> [*]
-CANCELADA  --> [*]
 
-note right of PENDIENTE_AUTORIZACION
-  El estado cambia a PENDIENTE
-  antes de poder ser dispensada.
-  No se puede dispensar directamente
-  desde PENDIENTE_AUTORIZACION.
+note right of PENDIENTE_STOCK
+  La receta ha superado todas las
+  comprobaciones (restricciones,
+  interacciones, dosis) pero falta stock
+  y no hay alternativas disponibles.
+  Se genera una OrdenReposicion vinculada
+  a esta receta (idRecetaOrigen).
+  Al confirmar la recepción del pedido,
+  si todas las líneas tienen stock
+  suficiente, la receta avanza
+  automáticamente a STOCK_RESERVADO.
+end note
+
+note right of STOCK_RESERVADO
+  El stock queda comprometido para esta
+  receta mediante calcularStockDisponible.
+  No se descuenta físicamente todavía.
+  Solo se puede dispensar desde este estado.
 end note
 
 note right of DISPENSADA
-  Se descuenta el stock de cada
-  medicamento al entrar en este estado.
-  Si algún stock queda bajo mínimo,
+  Se descuenta el stock real al dispensar.
+  Si algún stock queda ≤ stockMinimo,
   se genera una Alerta STOCK_MINIMO.
+  Si la receta es crónica, se inicializa
+  el seguimiento de reposiciones por línea
+  (cajasRestantes, fechaProximaReposicion).
 end note
 
 @enduml
@@ -38,7 +54,7 @@ end note
 @startuml
 title Ciclo de Vida de la Orden de Reposición
 
-[*] --> PENDIENTE : Orden generada\nautomáticamente desde\nalertas de STOCK_MINIMO
+[*] --> PENDIENTE : Orden generada:\n- desde alertas de STOCK_MINIMO\n- al validar receta sin stock/alternativas\n- por comprobaci\u00f3n semanal de cr\u00f3nicos
 
 PENDIENTE --> APROBADA  : Personal aprueba\nla orden
 
@@ -48,15 +64,19 @@ APROBADA  --> [*]
 CANCELADA --> [*]
 
 note right of APROBADA
-  Al aprobar, el sistema suma
-  la cantidadSolicitada de cada
-  LineaOrden al stock del
-  medicamento correspondiente.
+  Al confirmar la recepción, el sistema
+  suma la cantidadSolicitada de cada
+  LineaOrden al stock del medicamento.
+  Si idRecetaOrigen != 0, la caja queda
+  reservada para ese paciente crónico
+  (proximaCajaReservada = true).
+  Las alertas STOCK_MINIMO abastecidas
+  se resuelven automáticamente.
 end note
 
 note right of PENDIENTE
   Solo las órdenes en estado
-  PENDIENTE pueden ser aprobadas
+  PENDIENTE pueden ser confirmadas
   o canceladas.
 end note
 

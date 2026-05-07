@@ -4,7 +4,8 @@ title Gestión de Alertas y Proceso de Reposición de Stock
 start
 
 ' --- Generación automática de alerta ---
-:El sistema descuenta stock al dispensar una receta;
+:El sistema descuenta stock al dispensar una receta
+o al avanzar un ciclo crónico;
 
 if (¿Stock del medicamento ≤ stockMínimo?) then (sí)
     if (¿Ya existe Alerta STOCK_MINIMO activa\npara ese medicamento?) then (no)
@@ -33,18 +34,28 @@ endif
 ' --- Gestión de la orden ---
 :Personal de Farmacia consulta órdenes pendientes;
 
-if (¿Acción sobre la orden?) then (Aprobar)
+note right
+  Las órdenes pueden provenir de:
+  - Alertas STOCK_MINIMO activas (generadas manualmente)
+  - Recetas sin stock ni alternativas (al validar)
+  - Comprobación semanal de crónicos (idRecetaOrigen != 0)
+end note
+
+if (¿Acción sobre la orden?) then (Confirmar recepción)
     :Sumar cantidadSolicitada al stock\nde cada medicamento de la orden;
+    if (¿La orden tiene idRecetaOrigen != 0\ny la receta está en DISPENSADA?) then (sí)
+        :Buscar receta crónica origen;
+        :Marcar líneas correspondientes\ncon proximaCajaReservada = true;
+    else (no)
+    endif
+    :Si calcularStockDisponible > stockMinimo\n→ resolver alerta STOCK_MINIMO activa;
     :Cambiar estado OrdenReposicion → APROBADA;
+    :Para cada receta en PENDIENTE_STOCK:\nsi calcularStockDisponible ≥ cajas requeridas\n→ Estado → STOCK_RESERVADO [auto];
     :Mostrar confirmación;
 else (Cancelar)
     :Cambiar estado OrdenReposicion → CANCELADA;
     :Mostrar confirmación;
 endif
-
-' --- Resolver alertas manualmente ---
-:Personal puede marcar alertas\nindividualmente como resueltas;
-:Alerta.resuelta = true;
 
 stop
 @enduml

@@ -21,10 +21,11 @@ public class OrdenReposicion implements Serializable {
     private LocalDate fecha;
     private List<LineaOrden> lineas;
     private EstadoOrden estado;
+    private int idRecetaOrigen;
 
     /**
-     * Crea una nueva OrdenReposicion con estado
-     * inicial PENDIENTE.
+     * Crea una nueva OrdenReposicion con estado inicial PENDIENTE
+     * y sin receta origen (orden manual o de alerta de stock).
      *
      * @param id     identificador único asignado por el sistema
      * @param fecha  fecha de creación de la orden
@@ -36,7 +37,32 @@ public class OrdenReposicion implements Serializable {
         this.fecha = fecha;
         this.lineas = lineas;
         this.estado = EstadoOrden.PENDIENTE;
+        this.idRecetaOrigen = 0;
     }
+
+    /**
+     * Crea una nueva OrdenReposicion con estado inicial PENDIENTE
+     * vinculada a una receta cronica concreta.
+     *
+     * @param id             identificador único asignado por el sistema
+     * @param fecha          fecha de creación de la orden
+     * @param lineas         líneas de medicamentos a reponer
+     * @param idRecetaOrigen id de la receta cronica que origina la orden;
+     *                       usar 0 si no procede de ninguna receta
+     */
+    public OrdenReposicion(int id, LocalDate fecha,
+                           List<LineaOrden> lineas, int idRecetaOrigen) {
+        this(id, fecha, lineas);
+        this.idRecetaOrigen = idRecetaOrigen;
+    }
+
+    /**
+     * Devuelve el id de la receta cronica que origino esta orden,
+     * o 0 si no procede de ninguna receta.
+     *
+     * @return id de la receta origen, o 0
+     */
+    public int getIdRecetaOrigen() { return idRecetaOrigen; }
 
     /**
      * Devuelve el identificador único de esta orden.

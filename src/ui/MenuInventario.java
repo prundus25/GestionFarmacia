@@ -132,24 +132,35 @@ public class MenuInventario {
         }
         System.out.println();
         System.out.println("--- DETALLE ---");
-        System.out.println("  ID:           " + m.getId());
-        System.out.println("  Nombre:       " + m.getNombre());
-        System.out.println("  Categoria:    " + m.getCategoria());
-        System.out.println("  Stock:        " + m.getStock());
-        System.out.println("  Stock minimo: " + m.getStockMinimo());
-        System.out.println("  Caducidad:    " + m.getFechaCaducidad());
-        System.out.println("  Precio:       " + m.getPrecioUnitario() + " EUR");
-        System.out.println("  Restringido:  " + (m.isRestringido() ? "SI" : "NO"));
+        System.out.println("  ID:              " + m.getId());
+        System.out.println("  Nombre:          " + m.getNombre());
+        System.out.println("  Categoria:       " + m.getCategoria());
+        System.out.println("  Stock real:      " + m.getStock());
+        System.out.println("  Stock reservado: " + sistema.calcularStockReservado(m.getId()));
+        System.out.println("  Stock disponible:" + sistema.calcularStockDisponible(m.getId()));
+        System.out.println("  Stock minimo:    " + m.getStockMinimo());
+        System.out.println("  Caducidad:       " + m.getFechaCaducidad());
+        System.out.println("  Precio:          " + m.getPrecioUnitario() + " EUR");
+        System.out.println("  Dosis maxima:    " + m.getDosisMaximaMg() + "mg");
+        System.out.println("  Uds. por caja:   " + m.getUnidadesPorCaja());
+        System.out.println("  Restringido:     " + (m.isRestringido() ? "SI" : "NO"));
         if (!m.getAlternativas().isEmpty()) {
             System.out.println("  Alternativas:");
             for (int altId : m.getAlternativas()) {
                 Medicamento alt = sistema.buscarMedicamentoPorId(altId);
-                if (alt != null) {
-                    System.out.println("    [" + alt.getId() + "] " + alt.getNombre());
-                }
+                if (alt != null) System.out.println("    [" + alt.getId() + "] " + alt.getNombre());
             }
         } else {
-            System.out.println("  Alternativas: ninguna registrada");
+            System.out.println("  Alternativas:    ninguna registrada");
+        }
+        if (!m.getInteraccionesPeligrosas().isEmpty()) {
+            System.out.println("  Interacciones peligrosas:");
+            for (int intId : m.getInteraccionesPeligrosas()) {
+                Medicamento inter = sistema.buscarMedicamentoPorId(intId);
+                if (inter != null) System.out.println("    [" + inter.getId() + "] " + inter.getNombre());
+            }
+        } else {
+            System.out.println("  Interacciones:   ninguna registrada");
         }
         Consola.pausar();
     }
@@ -183,9 +194,14 @@ public class MenuInventario {
         System.out.print("  ¿Es medicamento restringido? (s/n): ");
         boolean restringido = Consola.scanner.nextLine().trim().equalsIgnoreCase("s");
 
-        // Creamos el medicamento con ID 0, el sistema le asignara el ID correcto
+        System.out.print("  Dosis maxima permitida (mg): ");
+        int dosisMaxima = Consola.leerEnteroPositivo();
+
+        System.out.print("  Unidades por caja: ");
+        int unidadesPorCaja = Consola.leerEnteroPositivo();
+
         Medicamento nuevo = new Medicamento(0, nombre, categoria, stock, stockMinimo,
-                fechaCaducidad, precio, restringido);
+                fechaCaducidad, precio, restringido, dosisMaxima, unidadesPorCaja);
         sistema.agregarMedicamento(nuevo);
 
         // Comprobamos si hay que generar alertas para el nuevo medicamento

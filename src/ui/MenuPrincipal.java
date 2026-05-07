@@ -31,7 +31,7 @@ public class MenuPrincipal {
      */
     public void iniciar() {
         System.out.println("============================================");
-        System.out.println("  FARMACIA HOSPITALARIA - SISTEMA DE GESTION");
+        System.out.println(" FARMACIA HOSPITALARIA - SISTEMA DE GESTION");
         System.out.println("============================================");
 
         boolean salir = false;

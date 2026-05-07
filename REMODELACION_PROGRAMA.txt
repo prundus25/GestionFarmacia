@@ -1,0 +1,45 @@
+REMODELACIÓN PROGRAMA
+Hay que hacer unos cambios bastante grandes al programa, pues tras una tutoría he podido darme cuenta de qué es necesario realmente.
+Todos los nombres de variables/métodos etc. que te voy a ir indicando son orientativos y puedes cambiarlos si se te ocurre algo mejor o más descriptivo de lo que representan.
+Primero de todo aclarar que esto es una gestión de farmacia, por lo que las funcionalidades que tenga el sistema serán solo para el rol de farmacéutico tengo entendido.
+Por lo tanto, hay que borrar bastantes cosas. Te voy a indicar de forma un poco desordenada (leyendo el enunciado) todos los cambios que se me han ido ocurriendo.
+No hay rol médico pues es una farmacia, por lo tanto habrá que recibir recetas ya hechas en el sistema (tener datos de prueba cargados con recetas ya hechas).
+El rol de comité farmacoterapéutico no debería existir tampoco, ya que es algo externo.
+Por lo tanto, en el programa solo deberían existir las funciones que necesita el rol de farmacéutico. Habría que quitar cosas como: 
+crear, editar y eliminar: recetas, médicos y pacientes; pues estos datos en un sistema normal vendrían ya cargados o dados de forma externa, la farmacia solo trabaja con los datos.
+(fabricar datos de ejemplo pertinetes para poder probar las funcionalidades del sistema).
+
+Mantener cosas como control de inventario, dispensación de recetas, generar alertas, órdenes de reposición, y demás.
+
+Implementar aviso cuando hay una interacción peligrosa de medicamentos, y si las dosis indicadas son incorrectas. En cualquiera de estos casos, la receta se podría quedar en un
+estado como pendiente_medico, y se muestra otro aviso de médico avisado o informado, para que éste lo revise y corrija lo necesario.
+Implementar "En caso de que algún medicamento no esté disponible, se procede a buscar alternativas y a informar al médico sobre la situación."
+Con estos cambios cada medicamento debería tener una lista de interacciones peligrosas y otra de alternativas (para cuando no hay stock), supongo.
+
+(Sobre todo lo que sigue: coméntame si es buena idea implementarlo como te comento, o dime cómo se podría hacer de forma simple, sin meter demasiado código complicado solo para generar esas reposiciones automáticas).
+Con estos cambios creo que deberíamos cambiar la forma en la que se registran los datos de la receta, sobre todo lo de las cantidades, para así poder implementar
+la parte "Para tratamientos crónicos, el sistema programa reposiciones automáticas y notifica al paciente". Podríamos cambiar también la clase medicamento y ponerle una cantidad
+de "unidades" para indicar cuántas vienen en 1 caja. Por lo tanto, podríamos tener la dosis de la unidad (25mg por ejemplo) y la cantidad total de unidades en la caja.
+No hace falta hacer diferentes versiones o cajas de medicamentos con diferentes cantidades, es decir no hace falta que sea realista.
+De esta forma, con la receta calculamos las cajas totales que necesitará el paciente durante la duración que indica la receta, calcular cuánto le dura una caja, y
+cuando sabemos que está próximo a necesitar la siguiente caja, comprobar que haya stock y reservarlo, además notificar al paciente
+(mostrar un simple aviso en la consola de paciente notificado).
+
+Por otra parte, distinguir entre recetas pendientes que tienen stock y las que no. Es decir, que las recetas tengan como estados posibles: pendiente, PENDIENTE_AUTORIZACIÓN, pendiente_medico, pendiente_stock_reservado(o algo así) y dispensada.
+Pendiente_stock_reservado sería el último estado (tras todas las comprobaciones y validaciones que hace el farmacéutico) antes de pasar a dispensada.
+Esto significaría tener un stock virtual y un stock real?? Pues se necesita calcular las necesidades de stock según todas las recetas pendientes que sean correctas (este cálculo se realizaría
+durante el paso del estado respectivo al pendiente_stock_reservado), y si no hay suficiente stock real pedir reposición. Aparte, habría que descontar del stock real las cantidades de medicamentos que se indiquen en todas las recetas en estado
+pendiente_stock_reservado, lo que nos daría otro stock que sería stock usable o stock restante o stock útil, ponle tú el nombre más apropiado que se te ocurra.
+
+En cuanto al stock, se me ha ocurrido que al stock real se le van a estar restando las recetas pendiente_stock_reservado, y también las recetas activas crónicas que tengan reposiciones próximas, por lo tanto quizás se podría hacer un método
+que calcule todo esto y obtenga si es necesario generar órden de reposición o no. Pero habría que tener en cuenta también, en cuanto a crónicos específicamente, la fecha en la que van a necesitar la próxima dosis. Quizás esta comprobación de
+stock se podría hacer semanalmente (es decir, cada semana se comprueba si habrá stock para la semana que viene) y se revisarán todas las recetas que necesiten reposición para esa semana, calculando el stock y viendo si es suficiente.
+Dime si la idea es correcta y cómo la mejorarías.
+
+Indicaciones en cuanto a la forma de codificar esto:
+Puedes usar funciones agregadas (.stream().anyMatch() etcétera) en el programa ya que es algo que hemos aprendido y simplifica mucho algunos bucles, pero no las hagas de un nivel muy alto/complejo.
+En los comentarios que vayas añadiendo/editanddo no uses cosas como @code o @link, solo @param y @return y ya.
+Finalmente, cambiar los datos hardcodeados para que incluyan datos en los campos de interacciones peligrosas, alternativas, etc. Es decir, que se incluyan datos de prueba
+para casi cada caso, principalmente porque como rol de farmacéutico no se pueden crear esos datos así que estaría bien que el programa ya traiga datos para probar sus funcionalidades.
+
+Aparte, todo esto conllevaría bastantes cambios en los diagramas pero por ahora céntrate solo en el código.
