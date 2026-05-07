@@ -463,8 +463,8 @@ public class SistemaFarmacia implements Serializable {
      * Carga el sistema siguiendo esta estrategia:
      * Si existe data/farmacia.dat, lo deserializa y lo devuelve.
      * Si existe data/datosIniciales.dat, lo deserializa como punto de partida.
-     * Si ninguno existe, genera los datos de ejemplo en memoria, que se serializarán en
-     * data/farmacia.dat, y los devuelve.
+     * Si ninguno existe, carga los datos de ejemplo "harcodeados", que se serializarán en
+     * data/farmacia.dat una vez finalice el programa, y los devuelve.
      *
      * @return la instancia de SistemaFarmacia lista para usar
      */
@@ -505,7 +505,7 @@ public class SistemaFarmacia implements Serializable {
         s.cargarDatosEjemplo();
         return s;
     }
-
+    
     private void cargarDatosEjemplo() {
         cargarMedicamentosIniciales();
         cargarPacientesIniciales();
@@ -537,28 +537,20 @@ public class SistemaFarmacia implements Serializable {
     private void cargarPacientesIniciales() {
         Paciente p1 = new Paciente(1, "María",   "García López",      LocalDate.of(1978,  4, 12), "12345678A");
         pacientes.add(p1);
-
         Paciente p2 = new Paciente(2, "Juan",    "Martínez Ruiz",     LocalDate.of(1965,  9, 23), "23456789B");
         pacientes.add(p2);
-
         Paciente p3 = new Paciente(3, "Ana",     "Fernández Torres",  LocalDate.of(1990,  1,  5), "34567890C");
         pacientes.add(p3);
-
         Paciente p4 = new Paciente(4, "Carlos",  "Pérez Sánchez",     LocalDate.of(1952, 11, 30), "45678901D");
         pacientes.add(p4);
-
         Paciente p5 = new Paciente(5, "Lucía",   "Ramírez Díaz",      LocalDate.of(2001,  7, 18), "56789012E");
         pacientes.add(p5);
-
         Paciente p6 = new Paciente(6, "Miguel",  "López González",    LocalDate.of(1973,  3,  7), "67890123F");
         pacientes.add(p6);
-
         Paciente p7 = new Paciente(7, "Elena",   "Jiménez Castro",    LocalDate.of(1987, 12, 14), "78901234G");
         pacientes.add(p7);
-
         Paciente p8 = new Paciente(8, "Roberto", "Morales Vega",      LocalDate.of(1944,  6, 25), "89012345H");
         pacientes.add(p8);
-
         nextIdPaciente = 9;
     }
 
