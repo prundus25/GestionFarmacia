@@ -211,7 +211,7 @@ public class MenuRecetas {
 
         // Aviso genérico de interacciones
         System.out.println("  [AVISO] Recuerde verificar manualmente posibles interacciones entre los medicamentos prescritos.");
-
+        
         // Crear la receta
         Receta receta = new Receta(0, paciente, medico, lineas, LocalDate.now(), cronica);
 

@@ -74,6 +74,20 @@ Historial de recetas por paciente
 
 21. Cambios diagramas
 Estados Receta -> quitar la flecha que va de pendiente a PENDIENTE_AUTORIZACIÓN
+------------------
+22.
+añadir roles pero sin inicio de sesión - solo elección de menús según rol.
+
+no hay rol médico pues es una farmacia - recibir las recetas ya hechas.
+
+rol comité farmacoterapéutico no debería existir tampoco no???
+
+estados receta - Cambiar de pasado a presente los verbos (cambiar receta creada a crear receta)
+
+distinguir pendientes que tienen stock y las que no. es decir, añadir estado pendiente - pendiente_stock_reservado??? y dispensada
+esto significaría tener un stock virtual y un stock real?? Pues se necesita calcular las necesidades de stock según todas las recetas pendientes y si no hay suficiente stock real pedir reposición.
+
+el evento recibir reposición hace que se comprueben las recetas pendientes de stock y se lance un aviso de que ya se pueden dispensar
 
 
 ----------------
