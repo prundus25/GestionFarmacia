@@ -4,8 +4,6 @@ title Ciclo de Vida de la Receta Médica
 [*] --> PENDIENTE : Receta creada\n(sin medicamentos restringidos)
 [*] --> PENDIENTE_AUTORIZACION : Receta creada\n(contiene medicamentos restringidos)
 
-PENDIENTE --> PENDIENTE_AUTORIZACION : Medicamento restringido\ndetectado al crear
-
 PENDIENTE_AUTORIZACION --> PENDIENTE : Comité autoriza\nla prescripción
 
 PENDIENTE --> DISPENSADA : Stock verificado\nMedicamentos entregados

@@ -72,6 +72,10 @@ Alergias del paciente
 Enfermedades crónicas del paciente
 Historial de recetas por paciente
 
+21. Cambios diagramas
+Estados Receta -> quitar la flecha que va de pendiente a PENDIENTE_AUTORIZACIÓN
+
+
 ----------------
 Cosa a revisar / tener en cuenta en la parte de programación según IA:
 ⚠️ Único punto a revisar

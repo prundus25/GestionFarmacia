@@ -216,13 +216,7 @@ public class MenuRecetas {
         Receta receta = new Receta(0, paciente, medico, lineas, LocalDate.now(), cronica);
 
         // Si hay medicamentos restringidos la receta necesita autorización del comité
-        boolean tieneRestringidos = false;
-        for (LineaReceta l : lineas) {
-            if (l.getMedicamento().isRestringido()) {
-                tieneRestringidos = true;
-                break;
-            }
-        }
+        boolean tieneRestringidos = lineas.stream().anyMatch(l -> l.getMedicamento().isRestringido());
 
         if (tieneRestringidos) {
             receta.setEstado(EstadoReceta.PENDIENTE_AUTORIZACION);
