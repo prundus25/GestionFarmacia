@@ -631,9 +631,10 @@ public class SistemaFarmacia implements Serializable {
     
     /**
      * Coordina la carga completa de datos de ejemplo en la primera ejecución.
-     * Solo para uso interno en la carga de datos de ejemplo. Se ha usado para generar
-     * datosIniciales.dat, pero se ha mantenido también el código para el caso de que 
-     * se borren accidentalmente los archivos .dat
+     * Solo para uso interno en la carga de datos de ejemplo. 
+     * 
+     * Se ha usado para generar datosIniciales.dat, pero se ha mantenido también en código
+     * para el caso de que se borren accidentalmente los archivos .dat
      */
     private void cargarDatosEjemplo() {
         cargarMedicamentosIniciales();
