@@ -32,30 +32,12 @@ public class LineaOrden implements Serializable {
     public Medicamento getMedicamento() { return medicamento; }
 
     /**
-     * Establece el medicamento de esta línea de orden.
-     *
-     * @param medicamento el nuevo medicamento
-     */
-    public void setMedicamento(Medicamento medicamento) {
-        this.medicamento = medicamento;
-    }
-
-    /**
      * Devuelve la cantidad de unidades solicitadas.
      *
      * @return la cantidad solicitada
      */
     public int getCantidadSolicitada() {
         return cantidadSolicitada;
-    }
-
-    /**
-     * Establece la cantidad de unidades solicitadas.
-     *
-     * @param cantidadSolicitada la nueva cantidad
-     */
-    public void setCantidadSolicitada(int cantidadSolicitada) {
-        this.cantidadSolicitada = cantidadSolicitada;
     }
 
     /**

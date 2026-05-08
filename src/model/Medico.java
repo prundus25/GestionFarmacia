@@ -37,29 +37,11 @@ public class Medico extends Persona {
     public String getEspecialidad() { return especialidad; }
 
     /**
-     * Establece la especialidad médica de este facultativo.
-     *
-     * @param especialidad la nueva especialidad
-     */
-    public void setEspecialidad(String especialidad) {
-        this.especialidad = especialidad;
-    }
-
-    /**
      * Devuelve el número de colegiado de este facultativo.
      *
      * @return el número de colegiado
      */
     public String getNumeroColegiado() { return numeroColegiado; }
-
-    /**
-     * Establece el número de colegiado de este facultativo.
-     *
-     * @param numeroColegiado el nuevo número de colegiado
-     */
-    public void setNumeroColegiado(String numeroColegiado) {
-        this.numeroColegiado = numeroColegiado;
-    }
 
     /**
      * Devuelve una representación textual del médico con

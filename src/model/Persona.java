@@ -40,13 +40,6 @@ public abstract class Persona implements Serializable {
     public int getId() { return id; }
 
     /**
-     * Establece el identificador único de esta persona.
-     *
-     * @param id el nuevo identificador
-     */
-    public void setId(int id) { this.id = id; }
-
-    /**
      * Devuelve el nombre de pila de esta persona.
      *
      * @return el nombre de pila
@@ -54,25 +47,11 @@ public abstract class Persona implements Serializable {
     public String getNombre() { return nombre; }
 
     /**
-     * Establece el nombre de pila de esta persona.
-     *
-     * @param nombre el nuevo nombre de pila
-     */
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    /**
      * Devuelve los apellidos de esta persona.
      *
      * @return los apellidos
      */
     public String getApellidos() { return apellidos; }
-
-    /**
-     * Establece los apellidos de esta persona.
-     *
-     * @param apellidos los nuevos apellidos
-     */
-    public void setApellidos(String apellidos) { this.apellidos = apellidos; }
 
     /**
      * Devuelve el nombre completo concatenando nombre y

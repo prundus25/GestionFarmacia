@@ -55,27 +55,11 @@ public class Receta implements Serializable {
     public int getId() { return id; }
 
     /**
-     * Establece el identificador único de esta receta.
-     *
-     * @param id el nuevo identificador
-     */
-    public void setId(int id) { this.id = id; }
-
-    /**
      * Devuelve el paciente asociado a esta receta.
      *
      * @return el paciente
      */
     public Paciente getPaciente() { return paciente; }
-
-    /**
-     * Establece el paciente asociado a esta receta.
-     *
-     * @param paciente el nuevo paciente
-     */
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
-    }
 
     /**
      * Devuelve el médico que emitió esta receta.
@@ -85,13 +69,6 @@ public class Receta implements Serializable {
     public Medico getMedico() { return medico; }
 
     /**
-     * Establece el médico que emitió esta receta.
-     *
-     * @param medico el nuevo médico
-     */
-    public void setMedico(Medico medico) { this.medico = medico; }
-
-    /**
      * Devuelve las líneas de medicamentos prescritos en esta receta.
      *
      * @return lista de líneas de receta
@@ -99,27 +76,11 @@ public class Receta implements Serializable {
     public List<LineaReceta> getLineas() { return lineas; }
 
     /**
-     * Establece las líneas de medicamentos de esta receta.
-     *
-     * @param lineas la nueva lista de líneas
-     */
-    public void setLineas(List<LineaReceta> lineas) {
-        this.lineas = lineas;
-    }
-
-    /**
      * Devuelve la fecha de emisión de esta receta.
      *
      * @return la fecha de emisión
      */
     public LocalDate getFecha() { return fecha; }
-
-    /**
-     * Establece la fecha de emisión de esta receta.
-     *
-     * @param fecha la nueva fecha de emisión
-     */
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
     /**
      * Devuelve el estado actual de esta receta.
@@ -143,15 +104,6 @@ public class Receta implements Serializable {
      * @return true si la receta es crónica
      */
     public boolean isCronica() { return cronica; }
-
-    /**
-     * Establece si esta receta es crónica.
-     *
-     * @param cronica true para marcarla como crónica
-     */
-    public void setCronica(boolean cronica) {
-        this.cronica = cronica;
-    }
 
     /**
      * Devuelve la fecha en que se dispensó esta receta.

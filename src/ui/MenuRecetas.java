@@ -11,10 +11,19 @@ import java.util.List;
 
 /**
  * Menú de gestión de recetas médicas.
- * 
+ *
  * Permite al farmacéutico listar, validar, reservar stock
  * y dispensar recetas. También ofrece la comprobación
  * semanal de reposiciones para recetas crónicas.
+ *
+ * NOTA DE DISEÑO: Los estados PENDIENTE_AUTORIZACION y PENDIENTE_MEDICO
+ * son gestionados por el comité farmacoterapéutico y el médico
+ * respectivamente, que son actores externos a este módulo de farmacia.
+ * Por tanto, no se expone ninguna opción para sacar una receta de esos
+ * estados: esa transición se produce en otra parte del sistema a la que
+ * el personal de farmacia no tiene acceso. Desde este menú solo se
+ * actúa sobre recetas en PENDIENTE_VALIDAR (validar y reservar stock)
+ * y STOCK_RESERVADO (dispensar).
  */
 public class MenuRecetas {
 
@@ -39,33 +48,27 @@ public class MenuRecetas {
             System.out.println("===== GESTION DE RECETAS =====");
             System.out.println("  1. Listar todas las recetas");
             System.out.println("  2. Recetas pendientes de validar");
-            System.out.println("  3. Recetas pendientes de autorizacion");
-            System.out.println("  4. Recetas pendientes de revision medica");
-            System.out.println("  5. Recetas pendientes de stock");
-            System.out.println("  6. Recetas con stock reservado");
-            System.out.println("  7. Historial por paciente");
-            System.out.println("  8. Ver detalle de receta");
-            System.out.println("  9. Validar y reservar stock");
-            System.out.println(" 10. Dispensar receta");
-            System.out.println(" 11. Comprobacion semanal de cronicos");
+            System.out.println("  3. Recetas con stock reservado");
+            System.out.println("  4. Ver detalle de receta");
+            System.out.println("  5. Validar y reservar stock");
+            System.out.println("  6. Dispensar receta");
+            System.out.println("  7. Comprobacion semanal de cronicos");
+            System.out.println("  8. Recetas por paciente");
             System.out.println("  0. Volver");
             System.out.println("==============================");
             System.out.print("  Opcion: ");
 
-            int opcion = Consola.leerEntero(0, 11);
+            int opcion = Consola.leerEntero(0, 8);
 
             switch (opcion) {
                 case  1 -> listarTodas();
                 case  2 -> listarPorEstado(EstadoReceta.PENDIENTE_VALIDAR, "PENDIENTES DE VALIDAR");
-                case  3 -> listarPorEstado(EstadoReceta.PENDIENTE_AUTORIZACION, "PENDIENTES DE AUTORIZACION DEL COMITE");
-                case  4 -> listarPorEstado(EstadoReceta.PENDIENTE_MEDICO, "PENDIENTES DE REVISION MEDICA");
-                case  5 -> listarPorEstado(EstadoReceta.PENDIENTE_STOCK, "PENDIENTES DE STOCK");
-                case  6 -> listarPorEstado(EstadoReceta.STOCK_RESERVADO, "CON STOCK RESERVADO");
-                case  7 -> historialPorPaciente();
-                case  8 -> verDetalle();
-                case  9 -> validarYReservarStock();
-                case 10 -> dispensarReceta();
-                case 11 -> comprobacionSemanal();
+                case  3 -> listarPorEstado(EstadoReceta.STOCK_RESERVADO, "CON STOCK RESERVADO");
+                case  4 -> verDetalle();
+                case  5 -> validarYReservarStock();
+                case  6 -> dispensarReceta();
+                case  7 -> comprobacionSemanal();
+                case  8 -> recetasPorPaciente();
                 case  0 -> salir = true;
             }
         }
@@ -101,7 +104,7 @@ public class MenuRecetas {
         Consola.pausar();
     }
 
-    private void historialPorPaciente() {
+    private void recetasPorPaciente() {
         System.out.print("  ID del paciente: ");
         int idPaciente = Consola.leerEnteroPositivo();
         Paciente paciente = sistema.buscarPacientePorId(idPaciente);
@@ -110,12 +113,11 @@ public class MenuRecetas {
             Consola.pausar();
             return;
         }
-
         System.out.println();
         System.out.println("--- RECETAS DE " + paciente.getNombreCompleto() + " ---");
         boolean hayAlguna = false;
         for (Receta r : sistema.getRecetas()) {
-            if (r.getPaciente().getId() == idPaciente) {
+            if (r.getPaciente() == paciente) {
                 System.out.println("  " + r);
                 hayAlguna = true;
             }
@@ -144,16 +146,16 @@ public class MenuRecetas {
         System.out.println("  Fecha:     " + receta.getFecha());
         System.out.println("  Estado:    " + receta.getEstado());
         System.out.println("  Cronica:   " + (receta.isCronica() ? "Si" : "No"));
+        if (receta.getFechaDispensacion() != null) {
+            System.out.println("  Dispensada: " + receta.getFechaDispensacion());
+        }
         System.out.println("  Medicamentos:");
         for (LineaReceta l : receta.getLineas()) {
             System.out.println("" + l);
-            System.out.println("    (dias por caja: " + l.calcularDiasPorCaja()
-                    + " | stock disponible: "
+            System.out.println("    (stock disponible: "
                     + sistema.calcularStockDisponible(l.getMedicamento().getId()) + " caja(s))");
             if (receta.isCronica() && receta.getEstado() == EstadoReceta.DISPENSADA) {
-                System.out.println("    Cajas restantes:   " + l.getCajasRestantes());
-                System.out.println("    Duracion caja:     " + l.getDuracionCaja() + " dias");
-                System.out.println("    Prox. reposicion:  " + l.getFechaProximaReposicion());
+                System.out.println("    Prox. reposicion: " + l.getFechaProximaReposicion());
             }
         }
         Consola.pausar();
@@ -274,7 +276,7 @@ public class MenuRecetas {
                 int falta = l.getCajas() - disponible;
                 ArrayList<LineaOrden> lineasOrden = new ArrayList<>();
                 lineasOrden.add(new LineaOrden(l.getMedicamento(), falta));
-                OrdenReposicion orden = new OrdenReposicion(0, LocalDate.now(), lineasOrden, receta.getId());
+                OrdenReposicion orden = new OrdenReposicion(0, LocalDate.now(), lineasOrden);
                 sistema.agregarOrden(orden);
                 System.out.println("  [ORDEN #" + orden.getId() + "] Reposicion generada para "
                         + l.getMedicamento().getNombre() + " (" + falta + " caja(s)).");
@@ -349,13 +351,9 @@ public class MenuRecetas {
 
         if (receta.isCronica()) {
             for (LineaReceta linea : receta.getLineas()) {
-                int duracionCaja = linea.calcularDiasPorCaja();
-                linea.setDuracionCaja(duracionCaja);
-                linea.setCajasRestantes(linea.getCajas() - 1);
-                linea.setFechaProximaReposicion(LocalDate.now().plusDays(duracionCaja));
+                linea.setFechaProximaReposicion(LocalDate.now().plusDays(linea.getFrecuenciaDias()));
                 System.out.println("  [" + linea.getMedicamento().getNombre() + "] "
-                        + "Proxima reposicion: " + linea.getFechaProximaReposicion()
-                        + " (cajas restantes: " + linea.getCajasRestantes() + ")");
+                        + "Proxima reposicion: " + linea.getFechaProximaReposicion());
             }
         }
 

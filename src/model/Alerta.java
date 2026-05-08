@@ -93,13 +93,6 @@ public class Alerta implements Serializable {
     public LocalDate getFecha() { return fecha; }
 
     /**
-     * Establece la fecha de generación de esta alerta.
-     *
-     * @param fecha la nueva fecha
-     */
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
-
-    /**
      * Indica si esta alerta ya ha sido resuelta.
      *
      * @return true si ha sido resuelta;

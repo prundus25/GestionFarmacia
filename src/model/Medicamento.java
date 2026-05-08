@@ -11,7 +11,7 @@ import java.util.List;
  * hospitalaria.
  * 
  * Almacena los datos de identificación, clasificación,
- * control de stock, caducidad, precio y posible restricción
+ * control de stock, caducidad y posible restricción
  * de dispensación.
  */
 public class Medicamento implements Serializable {
@@ -23,10 +23,9 @@ public class Medicamento implements Serializable {
     private int stock;
     private int stockMinimo;
     private LocalDate fechaCaducidad;
-    private double precioUnitario;
     private boolean restringido;
     private int dosisMaximaMg;
-    private int unidadesPorCaja;
+    private double precioUnitario;
     private List<Integer> alternativas = new ArrayList<>();
     private List<Integer> interaccionesPeligrosas = new ArrayList<>();
 
@@ -39,29 +38,26 @@ public class Medicamento implements Serializable {
      * @param stock           unidades disponibles iniciales
      * @param stockMinimo     umbral mínimo de stock
      * @param fechaCaducidad  fecha de caducidad
-     * @param precioUnitario  precio por unidad en euros
      * @param restringido     true si requiere autorización para dispensarse
      * @param dosisMaximaMg   dosis máxima permitida por toma en miligramos
-     * @param unidadesPorCaja número de unidades que contiene una caja
+     * @param precioUnitario  precio unitario en euros
      */
     public Medicamento(int id, String nombre,
                        CategoriaMedicamento categoria,
                        int stock, int stockMinimo,
                        LocalDate fechaCaducidad,
-                       double precioUnitario,
                        boolean restringido,
                        int dosisMaximaMg,
-                       int unidadesPorCaja) {
+                       double precioUnitario) {
         this.id = id;
         this.nombre = nombre;
         this.categoria = categoria;
         this.stock = stock;
         this.stockMinimo = stockMinimo;
         this.fechaCaducidad = fechaCaducidad;
-        this.precioUnitario = precioUnitario;
         this.restringido = restringido;
         this.dosisMaximaMg = dosisMaximaMg;
-        this.unidadesPorCaja = unidadesPorCaja;
+        this.precioUnitario = precioUnitario;
     }
 
     /**
@@ -86,29 +82,12 @@ public class Medicamento implements Serializable {
     public String getNombre() { return nombre; }
 
     /**
-     * Establece el nombre de este medicamento.
-     *
-     * @param nombre el nuevo nombre
-     */
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    /**
      * Devuelve la categoría terapéutica de este
      * medicamento.
      *
      * @return la categoría terapéutica
      */
     public CategoriaMedicamento getCategoria() { return categoria; }
-
-    /**
-     * Establece la categoría terapéutica de este
-     * medicamento.
-     *
-     * @param categoria la nueva categoría terapéutica
-     */
-    public void setCategoria(CategoriaMedicamento categoria) {
-        this.categoria = categoria;
-    }
 
     /**
      * Devuelve las unidades disponibles actualmente en
@@ -134,48 +113,11 @@ public class Medicamento implements Serializable {
     public int getStockMinimo() { return stockMinimo; }
 
     /**
-     * Establece el umbral mínimo de stock de este
-     * medicamento.
-     *
-     * @param stockMinimo el nuevo umbral mínimo
-     */
-    public void setStockMinimo(int stockMinimo) {
-        this.stockMinimo = stockMinimo;
-    }
-
-    /**
      * Devuelve la fecha de caducidad de este medicamento.
      *
      * @return la fecha de caducidad
      */
     public LocalDate getFechaCaducidad() { return fechaCaducidad; }
-
-    /**
-     * Establece la fecha de caducidad de este medicamento.
-     *
-     * @param fechaCaducidad la nueva fecha de caducidad
-     */
-    public void setFechaCaducidad(LocalDate fechaCaducidad) {
-        this.fechaCaducidad = fechaCaducidad;
-    }
-
-    /**
-     * Devuelve el precio unitario de este medicamento
-     * en euros.
-     *
-     * @return el precio unitario
-     */
-    public double getPrecioUnitario() { return precioUnitario; }
-
-    /**
-     * Establece el precio unitario de este medicamento
-     * en euros.
-     *
-     * @param precioUnitario el nuevo precio unitario
-     */
-    public void setPrecioUnitario(double precioUnitario) {
-        this.precioUnitario = precioUnitario;
-    }
 
     /**
      * Indica si este medicamento es de uso restringido.
@@ -186,16 +128,6 @@ public class Medicamento implements Serializable {
     public boolean isRestringido() { return restringido; }
 
     /**
-     * Establece si este medicamento es de uso restringido.
-     *
-     * @param restringido true para marcar el
-     *                    medicamento como restringido
-     */
-    public void setRestringido(boolean restringido) {
-        this.restringido = restringido;
-    }
-
-    /**
      * Devuelve la dosis máxima permitida por toma en miligramos.
      *
      * @return la dosis máxima en mg
@@ -203,29 +135,11 @@ public class Medicamento implements Serializable {
     public int getDosisMaximaMg() { return dosisMaximaMg; }
 
     /**
-     * Establece la dosis máxima permitida por toma en miligramos.
+     * Devuelve el precio unitario de este medicamento en euros.
      *
-     * @param dosisMaximaMg la nueva dosis máxima en mg
+     * @return el precio unitario
      */
-    public void setDosisMaximaMg(int dosisMaximaMg) {
-        this.dosisMaximaMg = dosisMaximaMg;
-    }
-
-    /**
-     * Devuelve el número de unidades que contiene una caja.
-     *
-     * @return unidades por caja
-     */
-    public int getUnidadesPorCaja() { return unidadesPorCaja; }
-
-    /**
-     * Establece el número de unidades que contiene una caja.
-     *
-     * @param unidadesPorCaja el nuevo número de unidades por caja
-     */
-    public void setUnidadesPorCaja(int unidadesPorCaja) {
-        this.unidadesPorCaja = unidadesPorCaja;
-    }
+    public double getPrecioUnitario() { return precioUnitario; }
 
     /**
      * Devuelve la lista de IDs de medicamentos alternativos a este.
@@ -251,8 +165,8 @@ public class Medicamento implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format("[%d] %-25s | %-20s | Stock: %3d (min: %2d) | Cad.: %s | €%.2f %s",
-                id, nombre, categoria, stock, stockMinimo, fechaCaducidad, precioUnitario,
+        return String.format("[%d] %-25s | %-20s | Stock: %3d (min: %2d) | %6.2f EUR | Cad.: %s %s",
+                id, nombre, categoria, stock, stockMinimo, precioUnitario, fechaCaducidad,
                 restringido ? "[RESTRINGIDO]" : "");
     }
 }

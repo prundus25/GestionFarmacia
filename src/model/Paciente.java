@@ -43,27 +43,11 @@ public class Paciente extends Persona {
     public LocalDate getFechaNacimiento() { return fechaNacimiento; }
 
     /**
-     * Establece la fecha de nacimiento de este paciente.
-     *
-     * @param fechaNacimiento la nueva fecha de nacimiento
-     */
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    /**
      * Devuelve el DNI de este paciente.
      *
      * @return el DNI
      */
     public String getDni() { return dni; }
-
-    /**
-     * Establece el DNI de este paciente.
-     *
-     * @param dni el nuevo DNI
-     */
-    public void setDni(String dni) { this.dni = dni; }
 
     /**
      * Devuelve una representación textual del paciente con

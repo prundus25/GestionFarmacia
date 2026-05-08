@@ -2,7 +2,6 @@ package ui;
 
 import model.Alerta;
 import model.LineaOrden;
-import model.LineaReceta;
 import model.Medicamento;
 import model.OrdenReposicion;
 import model.Receta;
@@ -16,10 +15,10 @@ import java.util.ArrayList;
 
 /**
  * Menú de gestión de alertas y órdenes de reposición.
- * Permite ver alertas activas o históricas, marcarlas
- * como resueltas, generar órdenes de reposición a
- * partir de alertas de stock mínimo activas, confirmar
- * la recepción de las reposiciones o cancelarlas.
+ * Permite ver alertas activas o históricas, generar
+ * órdenes de reposición a partir de alertas de stock
+ * mínimo activas, confirmar la recepción de las
+ * reposiciones y retirar medicamentos caducados.
  */
 public class MenuAlertas {
 
@@ -50,13 +49,12 @@ public class MenuAlertas {
             System.out.println("  3. Generar orden de reposicion");
             System.out.println("  4. Ver ordenes de reposicion");
             System.out.println("  5. Confirmar recepcion de reposicion");
-            System.out.println("  6. Cancelar orden de reposicion");
-            System.out.println("  7. Retirar stock de medicamento caducado");
+            System.out.println("  6. Retirar stock de medicamento caducado");
             System.out.println("  0. Volver");
             System.out.println("==================================");
             System.out.print("  Opcion: ");
 
-            int opcion = Consola.leerEntero(0, 7);
+            int opcion = Consola.leerEntero(0, 6);
 
             switch (opcion) {
                 case 1 -> verAlertasActivas();
@@ -64,8 +62,7 @@ public class MenuAlertas {
                 case 3 -> generarOrden();
                 case 4 -> verOrdenes();
                 case 5 -> confirmarRecepcion();
-                case 6 -> cancelarOrden();
-                case 7 -> retirarStockCaducado();
+                case 6 -> retirarStockCaducado();
                 case 0 -> salir = true;
             }
         }
@@ -209,23 +206,6 @@ public class MenuAlertas {
             }
         }
 
-        // Si la orden estaba vinculada a una receta cronica dispensada, reservar la caja para ese paciente
-        if (orden.getIdRecetaOrigen() != 0) {
-            Receta receta = sistema.buscarRecetaPorId(orden.getIdRecetaOrigen());
-            if (receta != null && receta.getEstado() == EstadoReceta.DISPENSADA) {
-                for (LineaOrden lo : orden.getLineas()) {
-                    for (LineaReceta lr : receta.getLineas()) {
-                        if (lr.getMedicamento().getId() == lo.getMedicamento().getId()) {
-                            lr.setProximaCajaReservada(true);
-                            System.out.println("  [CRONICA] Caja reservada para "
-                                    + receta.getPaciente().getNombreCompleto()
-                                    + " (" + lo.getMedicamento().getNombre() + ").");
-                        }
-                    }
-                }
-            }
-        }
-
         orden.setEstado(EstadoOrden.APROBADA);
 
         // Avanzar automaticamente a STOCK_RESERVADO las recetas en PENDIENTE_STOCK
@@ -244,27 +224,6 @@ public class MenuAlertas {
         }
 
         System.out.println("  Recepcion confirmada. Stock actualizado.");
-        Consola.pausar();
-    }
-
-    private void cancelarOrden() {
-        System.out.print("  ID de la orden a cancelar: ");
-        int id = Consola.leerEnteroPositivo();
-
-        OrdenReposicion orden = sistema.buscarOrdenPorId(id);
-        if (orden == null) {
-            System.out.println("  Orden no encontrada.");
-            Consola.pausar();
-            return;
-        }
-        if (orden.getEstado() != EstadoOrden.PENDIENTE) {
-            System.out.println("  Solo se pueden cancelar ordenes en estado PENDIENTE.");
-            Consola.pausar();
-            return;
-        }
-
-        orden.setEstado(EstadoOrden.CANCELADA);
-        System.out.println("  Orden cancelada.");
         Consola.pausar();
     }
 

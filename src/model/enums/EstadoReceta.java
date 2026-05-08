@@ -18,6 +18,5 @@ public enum EstadoReceta {
     PENDIENTE_MEDICO,
     PENDIENTE_STOCK,
     STOCK_RESERVADO,
-    DISPENSADA,
-    CANCELADA
+    DISPENSADA
 }
