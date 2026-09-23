@@ -1,4 +1,4 @@
-Proyecto grupal final de 1er curso DAM.
+Proyecto grupal final de 1er curso DAM. IA empleada durante el desarrollo.
 Este proyecto CRUD, realizado en grupo, consiste en una aplicación Java de consola para gestionar una farmacia hospitalaria.
 Permite controlar el inventario de medicamentos, su stock, caducidad, restricciones y alternativas.
 También gestiona la validación y dispensación de recetas, detectando interacciones, dosis excesivas y falta de existencias.
